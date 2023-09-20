@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class MerchantPanelProvider extends PanelProvider
@@ -29,7 +30,11 @@ class MerchantPanelProvider extends PanelProvider
             ->id('merchant')
             ->path('merchant')
             ->default()
+            ->login()
+            ->registration(null)
             ->tenant(Merchant::class, 'uuid')
+            ->tenantRegistration(MerchantRegistration::class)
+            ->tenantProfile(MerchantProfile::class)
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
@@ -39,13 +44,10 @@ class MerchantPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
             ])
             ->topNavigation()
-            ->login()
-            ->registration(null)
-            ->tenantRegistration(MerchantRegistration::class)
-            ->tenantProfile(MerchantProfile::class)
             ->viteTheme('resources/css/filament/merchant/theme.css')
             ->font('Be Vietnam Pro', 'https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700')
             ->maxContentWidth('full')
+            ->renderHook('panels::head.end', fn (): string => Blade::render('@lemonJS'))
             ->discoverResources(in: app_path('Filament/Merchant/Resources'), for: 'App\\Filament\\Merchant\\Resources')
             ->discoverPages(in: app_path('Filament/Merchant/Pages'), for: 'App\\Filament\\Merchant\\Pages')
             ->pages([

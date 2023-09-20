@@ -28,6 +28,7 @@ class MerchantRegistration extends Page
                     ->tel()
                     ->telRegex('/^0[8][1-9]\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/')
                     ->helperText(__('Example: 081234567890'))
+                    ->unique()
                     ->required(),
                 Forms\Components\Textarea::make('address')
                     ->label(__('Address'))

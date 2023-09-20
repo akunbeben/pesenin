@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid();
             $table->string('name');
             $table->text('address');
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->timestamps();
         });
     }
