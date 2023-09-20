@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
+            $table->uuid();
+            $table->string('name');
+            $table->text('address');
+            $table->string('phone');
             $table->timestamps();
         });
     }

@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Merchant\Pages\MerchantProfile;
+use App\Filament\Merchant\Pages\MerchantRegistration;
+use App\Models\Merchant;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -26,6 +29,7 @@ class MerchantPanelProvider extends PanelProvider
             ->id('merchant')
             ->path('merchant')
             ->default()
+            ->tenant(Merchant::class, 'uuid')
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
@@ -34,6 +38,11 @@ class MerchantPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
+            ->topNavigation()
+            ->login()
+            ->registration(null)
+            ->tenantRegistration(MerchantRegistration::class)
+            ->tenantProfile(MerchantProfile::class)
             ->viteTheme('resources/css/filament/merchant/theme.css')
             ->discoverResources(in: app_path('Filament/Merchant/Resources'), for: 'App\\Filament\\Merchant\\Resources')
             ->discoverPages(in: app_path('Filament/Merchant/Pages'), for: 'App\\Filament\\Merchant\\Pages')
