@@ -38,6 +38,7 @@ class CentralPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
+            ->font('Be Vietnam Pro', 'https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700')
             ->topNavigation()
             ->maxContentWidth('full')
             ->viteTheme('resources/css/filament/central/theme.css')

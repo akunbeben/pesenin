@@ -10,7 +10,7 @@ class MerchantProfile extends Page
 {
     public static function getLabel(): string
     {
-        return __('Merchant Setting');
+        return __('Merchant setting');
     }
 
     public function form(Form $form): Form
@@ -18,7 +18,7 @@ class MerchantProfile extends Page
         return $form
             ->schema([
                 Forms\Components\Tabs::make()->schema([
-                    Forms\Components\Tabs\Tab::make(__('Merchant Detail'))->schema([
+                    Forms\Components\Tabs\Tab::make(__('Merchant detail'))->schema([
                         Forms\Components\TextInput::make('name')
                             ->label(__('Name'))
                             ->autofocus()
@@ -36,5 +36,10 @@ class MerchantProfile extends Page
                     ]),
                 ]),
             ]);
+    }
+
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return __('Merchant detail saved');
     }
 }

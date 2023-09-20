@@ -44,6 +44,8 @@ class MerchantPanelProvider extends PanelProvider
             ->tenantRegistration(MerchantRegistration::class)
             ->tenantProfile(MerchantProfile::class)
             ->viteTheme('resources/css/filament/merchant/theme.css')
+            ->font('Be Vietnam Pro', 'https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700')
+            ->maxContentWidth('full')
             ->discoverResources(in: app_path('Filament/Merchant/Resources'), for: 'App\\Filament\\Merchant\\Resources')
             ->discoverPages(in: app_path('Filament/Merchant/Pages'), for: 'App\\Filament\\Merchant\\Pages')
             ->pages([
