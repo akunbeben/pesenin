@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use LemonSqueezy\Laravel\Billable;
+use OwenIt\Auditing\Auditable;
 use Spatie\Color\Rgb;
 
-class Merchant extends Model implements HasAvatar
+class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, HasAvatar
 {
+    use Auditable;
     use Billable;
     use HasAvatars;
     use HasFactory;
@@ -25,6 +27,13 @@ class Merchant extends Model implements HasAvatar
         'name',
         'address',
         'phone',
+        'city',
+        'country',
+        'zip',
+    ];
+
+    protected $auditExclude = [
+        'id',
     ];
 
     protected static function booted(): void

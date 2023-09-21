@@ -17,6 +17,9 @@ return new class extends Migration
             $table->uuid();
             $table->string('name');
             $table->text('address');
+            $table->string('city');
+            $table->string('country');
+            $table->string('zip');
             $table->string('phone')->unique();
             $table->timestamps();
         });

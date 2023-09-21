@@ -22,6 +22,12 @@ class MerchantResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('user_id')
+                    ->required()
+                    ->relationship('user', 'name')
+                    ->native(false)
+                    ->label(__('Owner'))
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('name')
                     ->label(__('Name'))
                     ->autofocus()
@@ -40,6 +46,17 @@ class MerchantResource extends Resource
                     ->label(__('Address'))
                     ->required()
                     ->columnSpanFull(),
+                Forms\Components\Grid::make(3)->schema([
+                    Forms\Components\TextInput::make('city')
+                        ->label(__('City'))
+                        ->required(),
+                    Forms\Components\TextInput::make('zip')
+                        ->label(__('Zip Code'))
+                        ->required(),
+                    Forms\Components\TextInput::make('country')
+                        ->label(__('Country'))
+                        ->required(),
+                ]),
             ]);
     }
 
@@ -57,6 +74,8 @@ class MerchantResource extends Resource
                     ->toggleable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Time'))
+                    ->description(fn (Merchant $record) => $record->updated_at->format('M j, Y H:i:s'))
                     ->toggleable()
                     ->dateTime(),
             ])
@@ -65,7 +84,7 @@ class MerchantResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->modalWidth('xl'),
+                Tables\Actions\EditAction::make()->modalWidth('2xl'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -83,11 +102,21 @@ class MerchantResource extends Resource
                     ->tabs([
                         Infolists\Components\Tabs\Tab::make('General')
                             ->icon('heroicon-m-adjustments-horizontal')
-                            ->columns(3)
+                            ->columns(2)
                             ->schema([
                                 Infolists\Components\TextEntry::make('name'),
-                                Infolists\Components\TextEntry::make('phone'),
-                                Infolists\Components\TextEntry::make('address'),
+                                Infolists\Components\TextEntry::make('phone')
+                                    ->icon('heroicon-o-square-2-stack')
+                                    ->iconPosition(\Filament\Support\Enums\IconPosition::After)
+                                    ->copyable(),
+                                Infolists\Components\TextEntry::make('city'),
+                                Infolists\Components\TextEntry::make('zip'),
+                                Infolists\Components\TextEntry::make('country'),
+                                Infolists\Components\TextEntry::make('address')
+                                    ->icon('heroicon-o-square-2-stack')
+                                    ->iconPosition(\Filament\Support\Enums\IconPosition::After)
+                                    ->copyable()
+                                    ->columnSpanFull(),
                             ]),
                         Infolists\Components\Tabs\Tab::make('History')
                             ->icon('heroicon-m-clock')
@@ -98,6 +127,13 @@ class MerchantResource extends Resource
                             ]),
                     ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            \Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

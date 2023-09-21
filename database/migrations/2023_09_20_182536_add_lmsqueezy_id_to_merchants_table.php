@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('lmsqueezy_id')->after('remember_token');
+        Schema::table('merchants', function (Blueprint $table) {
+            $table->string('lmsqueezy_id')->nullable()->after('phone');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('merchants', function (Blueprint $table) {
             $table->dropColumn(['lmsqueezy_id']);
         });
     }

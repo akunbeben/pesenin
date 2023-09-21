@@ -14,7 +14,8 @@ class ManageMerchants extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->modalWidth('xl')
+                ->icon('heroicon-m-plus')
+                ->modalWidth('2xl')
                 ->createAnother(false),
         ];
     }
