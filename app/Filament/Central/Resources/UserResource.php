@@ -62,7 +62,7 @@ class UserResource extends Resource
                         false => 'success',
                         true => 'warning',
                     })
-                    ->tooltip(fn (User $record): ?string => ! $record->require_reset ? null : "{$record->email}'s password need to be reset.")
+                    ->tooltip(fn (User $record): ?string => ! $record->require_reset ? null : 'Please notify the user to reset their password as soon as possible for security reasons.')
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable()
@@ -107,8 +107,8 @@ class UserResource extends Resource
                 Infolists\Components\Section::make(__('User details'))
                     ->description(
                         fn (User $record): ?string => ! $record->require_reset
-                            ? 'No action required.'
-                            : "{$record->email}'s password need to be reset."
+                            ? 'No action required at this time.'
+                            : 'Please notify the user to reset their password as soon as possible for security reasons.'
                     )
                     ->collapsible()
                     ->columns(2)
