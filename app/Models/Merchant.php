@@ -43,6 +43,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         });
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -59,10 +64,5 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][950] . ')')->toHex();
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'uuid';
     }
 }
