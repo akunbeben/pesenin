@@ -4,19 +4,26 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Filament\Facades\Filament;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
+use Filament\Panel\Concerns\HasAvatars;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Color\Rgb;
 
-class User extends Authenticatable implements HasTenants
+class User extends Authenticatable implements HasAvatar, HasTenants
 {
     use HasApiTokens;
+    use HasAvatars;
     use HasFactory;
     use Notifiable;
 
@@ -29,6 +36,8 @@ class User extends Authenticatable implements HasTenants
         'name',
         'email',
         'password',
+        'require_reset',
+        'email_verified_at',
     ];
 
     /**
@@ -49,7 +58,20 @@ class User extends Authenticatable implements HasTenants
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'require_reset' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            $user->uuid = Str::orderedUuid();
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
 
     public function canAccessTenant(Model $tenant): bool
     {
@@ -64,5 +86,18 @@ class User extends Authenticatable implements HasTenants
     public function merchants(): HasMany
     {
         return $this->hasMany(Merchant::class);
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        $name = str(Filament::getNameForDefaultAvatar($this))
+            ->trim()
+            ->explode(' ')
+            ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+            ->join(' ');
+
+        $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][950] . ')')->toHex();
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
     }
 }

@@ -69,7 +69,16 @@ class MerchantResource extends Resource
                     ->getStateUsing(fn (Merchant $record) => $record->getFilamentAvatarUrl()),
                 Tables\Columns\TextColumn::make('name')
                     ->description(fn (Merchant $record) => $record->address)
+                    ->toggleable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('Owner'))
+                    ->toggleable()
+                    ->searchable()
+                    ->url(fn (Merchant $record): string => route(
+                        'filament.central.resources.users.view',
+                        ['record' => $record->user]
+                    )),
                 Tables\Columns\TextColumn::make('phone')
                     ->toggleable()
                     ->searchable(),
