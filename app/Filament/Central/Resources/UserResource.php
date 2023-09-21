@@ -50,6 +50,19 @@ class UserResource extends Resource
                     ->toggleable()
                     ->sortable()
                     ->description(fn (User $record): string => $record->email),
+                Tables\Columns\IconColumn::make('email_verified_at')
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->label(__('Email verification'))
+                    ->icon(fn (?\Carbon\Carbon $state): string => match ((bool) $state) {
+                        true => 'heroicon-m-check-circle',
+                        false => 'heroicon-m-x-circle',
+                    })
+                    ->color(fn (?\Carbon\Carbon $state): string => match ((bool) $state) {
+                        true => 'success',
+                        false => 'warning',
+                    })
+                    ->alignCenter(),
                 Tables\Columns\IconColumn::make('require_reset')
                     ->searchable()
                     ->toggleable()
@@ -73,7 +86,10 @@ class UserResource extends Resource
                     ->dateTime(),
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('require_reset')
+                    ->label(__('Action'))
+                    ->trueLabel('No action reqiured')
+                    ->falseLabel('Action required'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->modalWidth('xl'),
