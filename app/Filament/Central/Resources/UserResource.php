@@ -87,14 +87,12 @@ class UserResource extends Resource
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data = [
+                        return [
                             ...$data,
                             'password' => Str::random(),
                             'email_verified_at' => now()->toDateTimeString(),
                             'require_reset' => true,
                         ];
-
-                        return $data;
                     })
                     ->createAnother(false)
                     ->icon('heroicon-m-plus')
