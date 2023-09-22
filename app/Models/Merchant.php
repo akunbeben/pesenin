@@ -9,6 +9,7 @@ use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use LemonSqueezy\Laravel\Billable;
 use OwenIt\Auditing\Auditable;
@@ -51,6 +52,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
     }
 
     public function getFilamentAvatarUrl(): ?string

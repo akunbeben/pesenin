@@ -28,6 +28,8 @@ namespace App\Models{
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
      * @property-read int|null $audits_count
      * @property-read \LemonSqueezy\Laravel\Customer|null $customer
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+     * @property-read int|null $products_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \LemonSqueezy\Laravel\Subscription> $subscriptions
      * @property-read int|null $subscriptions_count
      * @property-read \App\Models\User $user
@@ -49,6 +51,45 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereZip($value)
      */
     class Merchant extends \Eloquent implements \Filament\Models\Contracts\HasAvatar, \OwenIt\Auditing\Contracts\Auditable
+    {
+    }
+}
+
+namespace App\Models{
+    /**
+     * App\Models\Product
+     *
+     * @property int $id
+     * @property string $uuid
+     * @property int $merchant_id
+     * @property string $name
+     * @property string|null $description
+     * @property string $price
+     * @property bool $availability
+     * @property bool $recommended
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
+     * @property-read int|null $audits_count
+     * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+     * @property-read int|null $media_count
+     * @property-read \App\Models\Merchant $merchant
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Product query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereAvailability($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereDescription($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereMerchantId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereName($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereRecommended($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereUuid($value)
+     */
+    class Product extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable, \Spatie\MediaLibrary\HasMedia
     {
     }
 }

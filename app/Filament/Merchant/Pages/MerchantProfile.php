@@ -34,6 +34,17 @@ class MerchantProfile extends Page
                         Forms\Components\Textarea::make('address')
                             ->label(__('Address'))
                             ->required(),
+                        Forms\Components\Grid::make(3)->schema([
+                            Forms\Components\TextInput::make('city')
+                                ->label(__('City'))
+                                ->required(),
+                            Forms\Components\TextInput::make('zip')
+                                ->label(__('Zip Code'))
+                                ->required(),
+                            Forms\Components\TextInput::make('country')
+                                ->label(__('Country'))
+                                ->required(),
+                        ]),
                     ]),
                 ]),
             ]);
