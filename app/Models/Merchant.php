@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 use LemonSqueezy\Laravel\Billable;
 use OwenIt\Auditing\Auditable;
@@ -42,6 +43,8 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         static::creating(function (Merchant $merchant) {
             $merchant->uuid = Str::orderedUuid();
         });
+
+        static::created(fn (Merchant $merchant) => $merchant->setting()->create());
     }
 
     public function getRouteKeyName(): string
@@ -57,6 +60,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function setting(): HasOne
+    {
+        return $this->hasOne(Setting::class);
     }
 
     public function getFilamentAvatarUrl(): ?string

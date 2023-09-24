@@ -30,6 +30,7 @@ namespace App\Models{
      * @property-read \LemonSqueezy\Laravel\Customer|null $customer
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
      * @property-read int|null $products_count
+     * @property-read \App\Models\Setting|null $setting
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \LemonSqueezy\Laravel\Subscription> $subscriptions
      * @property-read int|null $subscriptions_count
      * @property-read \App\Models\User $user
@@ -90,6 +91,30 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereUuid($value)
      */
     class Product extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable, \Spatie\MediaLibrary\HasMedia
+    {
+    }
+}
+
+namespace App\Models{
+    /**
+     * App\Models\Setting
+     *
+     * @property int $id
+     * @property int $merchant_id
+     * @property bool $cash_mode
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCashMode($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting whereMerchantId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting whereUpdatedAt($value)
+     */
+    class Setting extends \Eloquent
     {
     }
 }
