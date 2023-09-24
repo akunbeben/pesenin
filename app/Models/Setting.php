@@ -11,9 +11,11 @@ class Setting extends Model
 
     protected $fillable = [
         'cash_mode',
+        'ikiosk_mode',
     ];
 
     protected $casts = [
         'cash_mode' => 'boolean',
+        'ikiosk_mode' => 'boolean',
     ];
 }

@@ -12,12 +12,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('tables', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Merchant::class)->constrained()->cascadeOnDelete();
-            $table->boolean('cash_mode')->default(false);
-            $table->boolean('ikiosk_mode')->default(false);
+            $table->uuid();
+            $table->string('prefix')->nullable();
+            $table->integer('number')->index();
+            $table->string('suffix')->nullable();
+            $table->integer('seats');
+            $table->tinyInteger('qr_status')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('tables');
     }
 };

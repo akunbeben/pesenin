@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.8",
         "lemonsqueezy/laravel": "^1.1",
         "owen-it/laravel-auditing": "^13.5",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "tapp/filament-auditing": "^3.0"
     },
     "require-dev": {

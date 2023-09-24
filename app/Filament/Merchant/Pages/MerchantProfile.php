@@ -51,11 +51,13 @@ class MerchantProfile extends Page
                                         ->required(),
                                 ]),
                             ]),
-                        Forms\Components\Tabs\Tab::make(__('Payment'))
+                        Forms\Components\Tabs\Tab::make(__('Miscellaneous'))
                             ->statePath('setting')
                             ->schema([
                                 Forms\Components\Toggle::make('cash_mode')
                                     ->helperText(__('You can activate it to receive cash payment from customers')),
+                                Forms\Components\Toggle::make('ikiosk_mode')
+                                    ->helperText(__('The default system uses the \'Multiple-tables QRCode ordering\' schema. If you have an iKiosk device, you can activate it, and it will switch to a single QRCode instance')),
                             ]),
                     ]),
             ]);
@@ -67,7 +69,7 @@ class MerchantProfile extends Page
             /** @var \App\Models\Merchant $record */
             $record->update($data);
 
-            $record->setting->update($data['setting']);
+            $record->setting()->updateOrCreate([], $data['setting']);
 
             return $record;
         });

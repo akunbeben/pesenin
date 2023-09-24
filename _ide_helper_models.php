@@ -33,6 +33,8 @@ namespace App\Models{
      * @property-read \App\Models\Setting|null $setting
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \LemonSqueezy\Laravel\Subscription> $subscriptions
      * @property-read int|null $subscriptions_count
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Table> $tables
+     * @property-read int|null $tables_count
      * @property-read \App\Models\User $user
      *
      * @method static \Illuminate\Database\Eloquent\Builder|Merchant newModelQuery()
@@ -102,6 +104,7 @@ namespace App\Models{
      * @property int $id
      * @property int $merchant_id
      * @property bool $cash_mode
+     * @property bool $ikiosk_mode
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon|null $updated_at
      *
@@ -111,10 +114,51 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCashMode($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Setting whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Setting whereIkioskMode($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Setting whereMerchantId($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Setting whereUpdatedAt($value)
      */
     class Setting extends \Eloquent
+    {
+    }
+}
+
+namespace App\Models{
+    /**
+     * App\Models\Table
+     *
+     * @property int $id
+     * @property int $merchant_id
+     * @property string $uuid
+     * @property string|null $prefix
+     * @property int $number
+     * @property string|null $suffix
+     * @property int $seats
+     * @property \App\Traits\Tables\QRStatus $qr_status
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property \Illuminate\Support\Carbon|null $deleted_at
+     * @property-read \App\Models\Merchant $merchant
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder|Table newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Table newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Table onlyTrashed()
+     * @method static \Illuminate\Database\Eloquent\Builder|Table query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereDeletedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereMerchantId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereNumber($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table wherePrefix($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereQrStatus($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereSeats($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereSuffix($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table whereUuid($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Table withTrashed()
+     * @method static \Illuminate\Database\Eloquent\Builder|Table withoutTrashed()
+     */
+    class Table extends \Eloquent
     {
     }
 }
