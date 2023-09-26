@@ -15,8 +15,8 @@
     </x-filament::button>
 
     <x-filament::modal slide-over id="my-cart">
-        @foreach ($selected as $prd)
-            {{ $prd->name }}
+        @foreach ($cart as $item)
+            {{ $item->name }}
         @endforeach
     </x-filament::modal>
 

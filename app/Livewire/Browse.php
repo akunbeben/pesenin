@@ -23,7 +23,7 @@ class Browse extends Component
 
     public Product $showed;
 
-    public Collection $selected;
+    public Collection $cart;
 
     #[On('show-product')]
     public function showProduct(Product $product): void
@@ -36,8 +36,8 @@ class Browse extends Component
     #[On('add-to-cart')]
     public function addToCart(Product $product): void
     {
-        if (! $this->selected->contains($product)) {
-            $this->selected->push($product);
+        if (! $this->cart->contains($product)) {
+            $this->cart->push($product);
         }
 
         $this->dispatch('close-modal', id: 'product-detail');
@@ -51,7 +51,7 @@ class Browse extends Component
 
     public function mount(Table $table): void
     {
-        $this->selected = collect([]);
+        $this->cart = collect([]);
         $this->table = $table;
     }
 
