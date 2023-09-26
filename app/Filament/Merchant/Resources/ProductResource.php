@@ -14,7 +14,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-m-archive-box';
 
     public static function form(Form $form): Form
     {
@@ -26,7 +26,6 @@ class ProductResource extends Resource
                     ->schema([
                         Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
                             ->hiddenLabel()
-                            ->required()
                             ->minFiles(1)
                             ->collection('banner')
                             ->multiple()
@@ -50,6 +49,13 @@ class ProductResource extends Resource
                             ->required()
                             ->numeric()
                             ->columnSpanFull(),
+                    ]),
+                Forms\Components\Section::make(__('Variants'))
+                    ->description(__('Product\'s variants.'))
+                    ->aside()
+                    ->schema([
+                        Forms\Components\Repeater::make('variants')
+                            ->simple(Forms\Components\TextInput::make('size')),
                     ]),
                 Forms\Components\Section::make(__('Availability'))
                     ->description(__('Product\'s availability and recommendation.'))

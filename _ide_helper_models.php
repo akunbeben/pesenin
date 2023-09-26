@@ -78,6 +78,7 @@ namespace App\Models{
      * @property-read int|null $media_count
      * @property-read \App\Models\Merchant $merchant
      *
+     * @method static \Illuminate\Database\Eloquent\Builder|Product available()
      * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Product query()

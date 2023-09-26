@@ -10,7 +10,7 @@ export default defineConfig({
                 'resources/css/filament/central/theme.css',
                 'resources/css/filament/merchant/theme.css',
             ],
-            refresh: [...refreshPaths, 'app/Filament/**', 'app/Providers/Filament/**'],
+            refresh: [...refreshPaths, 'app/Filament/**', 'app/Providers/Filament/**', 'app/Livewire/**'],
         }),
     ],
 });

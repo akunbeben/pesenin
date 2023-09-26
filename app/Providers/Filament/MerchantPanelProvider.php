@@ -50,6 +50,7 @@ class MerchantPanelProvider extends PanelProvider
             ->renderHook('panels::head.end', fn (): string => Blade::render('@lemonJS'))
             ->discoverResources(in: app_path('Filament/Merchant/Resources'), for: 'App\\Filament\\Merchant\\Resources')
             ->discoverPages(in: app_path('Filament/Merchant/Pages'), for: 'App\\Filament\\Merchant\\Pages')
+            ->databaseNotifications()
             ->pages([
                 Pages\Dashboard::class,
             ])

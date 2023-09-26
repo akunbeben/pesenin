@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -18,7 +19,7 @@ class TableResource extends Resource
 {
     protected static ?string $model = Model::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-square-3-stack-3d';
 
     public static function form(Form $form): Form
     {
@@ -98,6 +99,19 @@ class TableResource extends Resource
                         ->color('primary')
                         ->action(function (Component $livewire, Collection $records, QRGenerator $service) {
                             $service->handle($livewire, $records);
+                        })
+                        ->hidden(function (HasTable $livewire): bool {
+                            $trashedFilterState = $livewire->getTableFilterState(TrashedFilter::class) ?? [];
+
+                            if (! array_key_exists('value', $trashedFilterState)) {
+                                return false;
+                            }
+
+                            if ($trashedFilterState['value']) {
+                                return false;
+                            }
+
+                            return filled($trashedFilterState['value']);
                         }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

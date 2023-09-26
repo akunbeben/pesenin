@@ -12,11 +12,6 @@ class QRGenerator
 
     public Table | Collection $subject;
 
-    public function __construct()
-    {
-        //
-    }
-
     public function handle(Component $component, Table | Collection $subject): void
     {
         $this->component = $component;
