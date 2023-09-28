@@ -21,7 +21,7 @@ class Browse extends Component
 
     public Table $table;
 
-    public Product $showed;
+    public ?Product $showed;
 
     public Collection $cart;
 
@@ -31,6 +31,14 @@ class Browse extends Component
         $this->showed = $product;
 
         $this->dispatch('open-modal', id: 'product-detail');
+    }
+
+    #[On('close-product')]
+    public function closeProduct(): void
+    {
+        $this->showed = null;
+
+        $this->dispatch('close-modal', id: 'product-detail');
     }
 
     #[On('add-to-cart')]
