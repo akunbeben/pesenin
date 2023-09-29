@@ -33,6 +33,7 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
         'availability' => 'boolean',
         'recommended' => 'boolean',
         'variants' => 'array',
+        'price' => 'integer',
     ];
 
     protected $auditExclude = [
@@ -54,6 +55,11 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
     public function scopeAvailable(Builder $builder): Builder
     {
         return $builder->where('availability', true);
+    }
+
+    public function scopeHighlights(Builder $builder): Builder
+    {
+        return $builder->where('recommended', true);
     }
 
     public function registerMediaCollections(): void

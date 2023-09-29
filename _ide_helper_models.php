@@ -67,7 +67,8 @@ namespace App\Models{
      * @property int $merchant_id
      * @property string $name
      * @property string|null $description
-     * @property string $price
+     * @property int $price
+     * @property array|null $variants
      * @property bool $availability
      * @property bool $recommended
      * @property \Illuminate\Support\Carbon|null $created_at
@@ -79,6 +80,7 @@ namespace App\Models{
      * @property-read \App\Models\Merchant $merchant
      *
      * @method static \Illuminate\Database\Eloquent\Builder|Product available()
+     * @method static \Illuminate\Database\Eloquent\Builder|Product highlights()
      * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Product query()
@@ -92,6 +94,7 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereRecommended($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereUuid($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereVariants($value)
      */
     class Product extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable, \Spatie\MediaLibrary\HasMedia
     {

@@ -64,7 +64,8 @@ class Browse extends Component
     public function render()
     {
         return view('livewire.browse', [
-            'products' => $this->table->merchant->products()->paginate(),
+            'products' => $this->table->merchant->products()->available()->paginate(),
+            'highlights' => $this->table->merchant->products()->highlights()->get(),
         ]);
     }
 }
