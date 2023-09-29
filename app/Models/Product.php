@@ -62,6 +62,11 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
         return $builder->where('recommended', true);
     }
 
+    public function scopeSearch(Builder $builder, ?string $keyword): Builder
+    {
+        return $builder->where('name', 'LIKE', "%{$keyword}%");
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('banner')->useFallbackUrl(Vite::asset('resources/images/placeholder.png'));

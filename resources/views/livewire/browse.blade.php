@@ -1,28 +1,31 @@
-<div class="max-h-screen px-2 mx-auto sm:max-w-sm" x-data="{ showingModal: @entangle('showModal') }">
+<div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm" x-data="{ showingModal: @entangle('showModal') }">
     <div class="grid grid-cols-2 gap-2.5 py-2">
+        @if ($highlights->count())
         <span class="col-span-2 text-lg font-semibold">Recommended products</span>
-        <div class="col-span-2" x-data="{ slides: null }" wire:key="{{ rand() }}">
+        <div class="col-span-2" x-data="{ slides: null }" x-transition wire:key="{{ rand() }}">
             <div
+                x-transition
                 x-data="() => {
                     return {
                         active: 0,
+                        total: parseInt('{{ $highlights->count() }}'),
                         init() {
-                            slides = new Flickity(this.$refs.highlight, {
-                                wrapAround: true,
-                                autoPlay: 3000,
-                            });
+                            if (this.total > 1) {
+                                slides = new Flickity(this.$refs.highlight, {
+                                    wrapAround: true,
+                                    autoPlay: 2000,
+                                    cellAlign: 'left',
+                                });
 
-                            slides.on('change', i => this.active = i);
+                                slides.on('change', i => this.active = i);
+                            }
                         }
                     }
                 }"
                 x-ref="highlight"
             >
                 @foreach ($highlights as $index => $product)
-                <div
-                    class="flex w-full justify-between p-2.5 gap-x-2.5 bg-primary-500/40 rounded-xl"
-                    x-show.important="active === parseInt('{{ $index }}')"
-                >
+                <div class="flex justify-between p-2.5 gap-x-2.5 {{ $highlights->count() > 1 ? 'mx-1 w-4/5' : null }} bg-gradient-to-b from-sky-100 via-sky-200 to-sky-300 rounded-xl">
                     <div class="flex flex-col text-gray-700 grow">
                         <span class="font-semibold text-gray-700">{{ $product->name }}</span>
                         <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
@@ -35,11 +38,14 @@
                 @endforeach
             </div>
         </div>
+        @endif
         <div class="col-span-2">
             <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
                 <x-filament::input
                     placeholder="Find your favorite menu ..."
                     type="text"
+                    wire:model.live.debounce.250ms="search"
+                    class="py-2.5"
                 />
             </x-filament::input.wrapper>
         </div>
@@ -73,9 +79,20 @@
             </button>
         </div>
 
-        @foreach ($cart as $item)
-            {{ $item->name }}
-        @endforeach
+        <div class="flex flex-col p-2 grow">
+            @foreach ($cart as $item)
+                {{ $item->name }}
+            @endforeach
+
+            <div class="flex w-full mt-auto bottom-5">
+                <x-filament::button
+                    class="w-full"
+                    size="xl"
+                >
+                    Checkout
+                </x-filament::button>
+            </div>
+        </div>
     </x-filament::modal>
 
     <x-filament::modal slide-over id="product-detail">

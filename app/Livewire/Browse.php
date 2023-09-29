@@ -58,13 +58,13 @@ class Browse extends Component
     public function mount(Table $table): void
     {
         $this->cart = collect([]);
-        $this->table = $table;
+        $this->table = $table->load(['merchant']);
     }
 
     public function render()
     {
         return view('livewire.browse', [
-            'products' => $this->table->merchant->products()->available()->paginate(),
+            'products' => $this->table->merchant->products()->available()->search($this->search)->paginate(6),
             'highlights' => $this->table->merchant->products()->highlights()->get(),
         ]);
     }
