@@ -33,12 +33,10 @@ class Browse extends Component
         $this->dispatch('open-modal', id: 'product-detail');
     }
 
-    #[On('close-product')]
+    #[On('close-modal')]
     public function closeProduct(): void
     {
         $this->showed = null;
-
-        $this->dispatch('close-modal', id: 'product-detail');
     }
 
     #[On('add-to-cart')]
