@@ -11,6 +11,18 @@ export default {
         './vendor/filament/**/*.blade.php',
     ],
     theme: {
+        height: theme => ({
+            auto: 'auto',
+            ...theme('spacing'),
+            full: '100%',
+            screen: 'calc(100dvh)',
+        }),
+        minHeight: theme => ({
+            '0': '0',
+            ...theme('spacing'),
+            full: '100%',
+            screen: 'calc(100dvh)',
+        }),
         extend: {
             fontFamily: {
                 'sans': ['Be Vietnam Pro', ...defaultTheme.fontFamily.sans],

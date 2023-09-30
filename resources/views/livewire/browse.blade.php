@@ -1,4 +1,4 @@
-<div class="max-h-[100dvh] px-2 mx-auto overflow-auto sm:max-w-sm" x-data>
+<div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm" x-data>
     <div class="grid grid-cols-2 gap-2.5 py-2">
         @if ($highlights->count())
         <span class="col-span-2 text-lg font-semibold">Recommended products</span>
