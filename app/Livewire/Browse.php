@@ -28,6 +28,15 @@ class Browse extends Component
 
     public Collection $cart;
 
+    public function updatedTab(): void
+    {
+        if ($this->table->merchant->categories->contains('hashed', $this->tab)) {
+            return;
+        }
+
+        $this->tab = null;
+    }
+
     #[On('show-product')]
     public function showProduct(Product $product): void
     {
@@ -63,7 +72,7 @@ class Browse extends Component
         $this->cart = collect([]);
         $this->table = $table->load([
             'merchant' => [
-                'products',
+                'products' => ['media'],
                 'categories',
             ],
         ]);
@@ -73,6 +82,12 @@ class Browse extends Component
     {
         return view('livewire.browse', [
             'products' => $this->table->merchant->products()->available()->when($this->tab, function (Builder $query) {
+                if (! $this->table->merchant->categories->contains('hashed', $this->tab)) {
+                    $this->tab = '';
+
+                    return;
+                }
+
                 $id = (new Hashids(config('app.key'), 3))->decode($this->tab)[0];
 
                 $query->where('category_id', $id);

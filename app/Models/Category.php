@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 
 class Category extends Model
 {
@@ -41,6 +42,6 @@ class Category extends Model
             return false;
         }
 
-        return $this->getKey() === (new Hashids(config('app.key'), 3))->decode($hashed)[0];
+        return $this->getKey() === Arr::first((new Hashids(config('app.key'), 3))->decode($hashed));
     }
 }
