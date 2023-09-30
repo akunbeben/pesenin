@@ -1,4 +1,4 @@
-<div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm" x-data="{ showingModal: @entangle('showModal') }">
+<div class="max-h-[100dvh] px-2 mx-auto overflow-auto sm:max-w-sm" x-data>
     <div class="grid grid-cols-2 gap-2.5 py-2">
         @if ($highlights->count())
         <span class="col-span-2 text-lg font-semibold">Recommended products</span>
@@ -33,7 +33,7 @@
                             Add to cart
                         </x-filament::button>
                     </div>
-                    <img src="{{ $product->getFirstMediaUrl('banner') }}" alt="{{ $product->description }}" class="object-cover object-center w-20 h-20 border-b sm:w-28 sm:h-28 rounded-xl">
+                    <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-20 h-20 border-b sm:w-28 sm:h-28 rounded-xl">
                 </div>
                 @endforeach
             </div>
@@ -45,24 +45,52 @@
                     placeholder="Find your favorite menu ..."
                     type="text"
                     wire:model.live.debounce.250ms="search"
-                    class="py-2.5"
+                    class="py-3.5"
                 />
             </x-filament::input.wrapper>
         </div>
-        @foreach ($products as $product)
+        <div class="col-span-2">
+            <x-filament::tabs class="!overflow-auto">
+                <x-filament::tabs.item
+                    wire:click="$set('tab', '')"
+                    :active="blank($this->tab)"
+                >
+                    All
+                </x-filament::tabs.item>
+                @foreach ($categories as $category)
+                <x-filament::tabs.item
+                    wire:click="$set('tab', '{{ $category->hashed }}')"
+                    :active="$category->reverse($this->tab)"
+                >
+                    {{ $category->name }}
+                </x-filament::tabs.item>
+                @endforeach
+            </x-filament::tabs>
+        </div>
+
+        @forelse ($products as $product)
         <div class="bg-white shadow-xs cursor-pointer ring-1 ring-gray-200 rounded-xl" wire:click="$dispatch('show-product', { product: {{ $product->id }} })">
-            <img src="{{ $product->getFirstMediaUrl('banner') }}" alt="{{ $product->description }}" class="object-cover object-center w-full border-b sm:h-32 h-28 rounded-t-xl">
+            <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-full border-b sm:h-32 h-28 rounded-t-xl">
             <div class="flex flex-col p-2 gap-y-2.5">
                 <span class="text-xs font-semibold">{{ $product->name }}</span>
                 <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             </div>
         </div>
-        @endforeach
-    </div>
+        @empty
+        <div class="flex flex-col items-center justify-center w-full col-span-2 row-span-2 gap-5 text-gray-500 h-80">
+            <div class="p-5 bg-gray-300 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+            <span class="text-base font-semibold">Not found</span>
+        </div>
+        @endforelse
 
-    <x-filament::button x-on:click="$dispatch('view-cart')">
-        View cart
-    </x-filament::button>
+        <div class="col-span-2">
+            {!! $products->links() !!}
+        </div>
+    </div>
 
     <x-filament::modal slide-over id="my-cart">
         <div class="relative">
@@ -112,7 +140,7 @@
             @if ($showed)
                 @php
                     $images = $showed?->getMedia('banner')->isNotEmpty()
-                        ? $showed?->getMedia('banner')->map(fn ($media) => $media->original_url)
+                        ? $showed?->getMedia('banner')->map(fn ($media) => $media->getUrl())
                         : collect([$showed?->getFirstMediaUrl('banner')]);
                 @endphp
 
@@ -171,7 +199,6 @@
                 <x-filament::button
                     class="w-full"
                     size="xl"
-                    :icon="$cart->contains($showed) ? 'heroicon-m-check' : 'heroicon-m-shopping-bag'"
                     wire:click="$dispatch('add-to-cart', { product: '{{ $showed?->id }}' })"
                 >
                     Add to cart

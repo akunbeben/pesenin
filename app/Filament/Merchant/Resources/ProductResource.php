@@ -28,6 +28,7 @@ class ProductResource extends Resource
                             ->hiddenLabel()
                             ->minFiles(1)
                             ->collection('banner')
+                            ->conversion('thumbnail')
                             ->multiple()
                             ->image()
                             ->columnSpanFull(),
@@ -49,13 +50,18 @@ class ProductResource extends Resource
                             ->required()
                             ->numeric()
                             ->columnSpanFull(),
+                        Forms\Components\Select::make('category_id')
+                            ->relationship('category', 'name')
+                            ->native(false)
+                            ->label(__('Category'))
+                            ->required()
+                            ->columnSpanFull(),
                     ]),
                 Forms\Components\Section::make(__('Variants'))
                     ->description(__('Product\'s variants.'))
                     ->aside()
                     ->schema([
-                        Forms\Components\Repeater::make('variants')
-                            ->simple(Forms\Components\TextInput::make('size')),
+                        Forms\Components\Repeater::make('variants')->simple(Forms\Components\TextInput::make('size'))->default(null),
                     ]),
                 Forms\Components\Section::make(__('Availability'))
                     ->description(__('Product\'s availability and recommendation.'))

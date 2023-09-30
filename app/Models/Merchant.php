@@ -57,6 +57,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         return $this->belongsTo(User::class);
     }
 
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

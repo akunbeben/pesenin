@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use OwenIt\Auditing\Auditable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, HasMedia
 {
@@ -21,6 +22,7 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
     protected $fillable = [
         'uuid',
         'merchant_id',
+        'category_id',
         'name',
         'description',
         'price',
@@ -52,6 +54,11 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
         return $this->belongsTo(Merchant::class);
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function scopeAvailable(Builder $builder): Builder
     {
         return $builder->where('availability', true);
@@ -70,5 +77,14 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('banner')->useFallbackUrl(Vite::asset('resources/images/placeholder.png'));
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnail')
+            ->performOnCollections('banner')
+            ->nonQueued()
+            ->width(200)
+            ->height(200);
     }
 }

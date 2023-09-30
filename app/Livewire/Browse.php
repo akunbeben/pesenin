@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Product;
 use App\Models\Table;
+use Hashids\Hashids;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
@@ -17,7 +19,8 @@ class Browse extends Component
     #[Url]
     public ?string $search = null;
 
-    public bool $showModal = false;
+    #[Url]
+    public ?string $tab = null;
 
     public Table $table;
 
@@ -58,14 +61,24 @@ class Browse extends Component
     public function mount(Table $table): void
     {
         $this->cart = collect([]);
-        $this->table = $table->load(['merchant']);
+        $this->table = $table->load([
+            'merchant' => [
+                'products',
+                'categories',
+            ],
+        ]);
     }
 
     public function render()
     {
         return view('livewire.browse', [
-            'products' => $this->table->merchant->products()->available()->search($this->search)->paginate(6),
+            'products' => $this->table->merchant->products()->available()->when($this->tab, function (Builder $query) {
+                $id = (new Hashids(config('app.key'), 3))->decode($this->tab)[0];
+
+                $query->where('category_id', $id);
+            })->search($this->search)->simplePaginate(6),
             'highlights' => $this->table->merchant->products()->highlights()->get(),
+            'categories' => $this->table->merchant->categories,
         ]);
     }
 }

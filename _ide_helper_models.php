@@ -11,6 +11,33 @@
 
 namespace App\Models{
     /**
+     * App\Models\Category
+     *
+     * @property int $id
+     * @property int $merchant_id
+     * @property string $name
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property-read \App\Models\Merchant $merchant
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+     * @property-read int|null $products_count
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Category query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Category whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Category whereMerchantId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdatedAt($value)
+     */
+    class Category extends \Eloquent
+    {
+    }
+}
+
+namespace App\Models{
+    /**
      * App\Models\Merchant
      *
      * @property int $id
@@ -27,6 +54,8 @@ namespace App\Models{
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
      * @property-read int|null $audits_count
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
+     * @property-read int|null $categories_count
      * @property-read \LemonSqueezy\Laravel\Customer|null $customer
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
      * @property-read int|null $products_count
@@ -65,6 +94,7 @@ namespace App\Models{
      * @property int $id
      * @property string $uuid
      * @property int $merchant_id
+     * @property int $category_id
      * @property string $name
      * @property string|null $description
      * @property int $price
@@ -75,6 +105,7 @@ namespace App\Models{
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
      * @property-read int|null $audits_count
+     * @property-read \App\Models\Category $category
      * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
      * @property-read int|null $media_count
      * @property-read \App\Models\Merchant $merchant
@@ -84,7 +115,9 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Product query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Product search(?string $keyword)
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereAvailability($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereDescription($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)

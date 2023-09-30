@@ -16,5 +16,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Benny Rahmat',
             'email' => 'akunbeben@gmail.com',
         ]);
+
+        $this->call([DevelopmentSeeder::class]);
     }
 }
