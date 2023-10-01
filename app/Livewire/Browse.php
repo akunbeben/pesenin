@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Product;
 use App\Models\Table;
+use Detection\MobileDetect;
 use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -30,6 +31,8 @@ class Browse extends Component
 
     public function updatedTab(): void
     {
+        $this->resetPage();
+
         if ($this->table->merchant->categories->contains('hashed', $this->tab)) {
             return;
         }
@@ -91,7 +94,9 @@ class Browse extends Component
                 $id = (new Hashids(config('app.key'), 3))->decode($this->tab)[0];
 
                 $query->where('category_id', $id);
-            })->search($this->search)->simplePaginate(6),
+            })->search($this->search)->simplePaginate(
+                ($detect = new MobileDetect())->isMobile() ? ($detect->isTablet() ? 12 : 6) : 12
+            ),
             'highlights' => $this->table->merchant->products()->highlights()->get(),
             'categories' => $this->table->merchant->categories,
         ]);

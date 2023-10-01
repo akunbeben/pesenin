@@ -1,8 +1,16 @@
-<div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm" x-data>
-    <div class="grid grid-cols-2 gap-2.5 py-2">
+<div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm md:max-w-3xl" x-data>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 py-2">
+        <div class="flex items-center justify-between col-span-2 md:col-span-4">
+            <span class="text-lg font-semibold">{{ $table->name }}</span>
+            <x-filament::button
+                icon="heroicon-m-shopping-cart"
+                wire:click="$dispatch('open-modal', {id: 'my-cart'})"
+                outlined
+            />
+        </div>
         @if ($highlights->count())
-        <span class="col-span-2 text-lg font-semibold">Recommended products</span>
-        <div class="col-span-2" x-data="{ slides: null }" x-transition wire:key="{{ rand() }}">
+        <span class="col-span-2 text-lg font-semibold md:col-span-4">Recommended products</span>
+        <div class="col-span-2 md:col-span-4" x-data="{ slides: null }" x-transition wire:key="{{ rand() }}">
             <div
                 x-transition
                 x-data="() => {
@@ -39,7 +47,7 @@
             </div>
         </div>
         @endif
-        <div class="col-span-2">
+        <div class="col-span-2 md:col-span-4">
             <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
                 <x-filament::input
                     placeholder="Find your favorite menu ..."
@@ -49,7 +57,7 @@
                 />
             </x-filament::input.wrapper>
         </div>
-        <div class="col-span-2">
+        <div class="col-span-2 md:col-span-4">
             <x-filament::tabs class="!overflow-auto">
                 <x-filament::tabs.item
                     wire:click="$set('tab', '')"
@@ -77,7 +85,7 @@
             </div>
         </div>
         @empty
-        <div class="flex flex-col items-center justify-center w-full col-span-2 row-span-2 gap-5 text-gray-500 h-80">
+        <div class="flex flex-col items-center justify-center w-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4 h-80">
             <div class="p-5 bg-gray-300 rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -87,7 +95,7 @@
         </div>
         @endforelse
 
-        <div class="col-span-2">
+        <div class="col-span-2 md:col-span-4">
             {!! $products->links() !!}
         </div>
     </div>
