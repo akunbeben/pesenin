@@ -136,6 +136,33 @@ namespace App\Models{
 
 namespace App\Models{
     /**
+     * App\Models\Scan
+     *
+     * @property int $id
+     * @property int $table_id
+     * @property string $salt
+     * @property string $encoded
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property-read \App\Models\Table $table
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereEncoded($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereSalt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereTableId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereUpdatedAt($value)
+     */
+    class Scan extends \Eloquent
+    {
+    }
+}
+
+namespace App\Models{
+    /**
      * App\Models\Setting
      *
      * @property int $id

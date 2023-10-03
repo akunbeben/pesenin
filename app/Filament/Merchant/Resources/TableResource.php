@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Hashids\Hashids;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
@@ -57,9 +58,13 @@ class TableResource extends Resource
                     ->default('Open URL')
                     ->badge()
                     ->icon('heroicon-m-arrow-up-right')
-                    ->url(function (Model $record) {
-                        return \Linkeys\UrlSigner\Models\Link::query()->whereJsonContains('data', ['table' => $record->getKey()])->first()->getFullUrl();
-                    }, true),
+                    ->url(fn (Model $record) => route(
+                        'redirector',
+                        [
+                            'uid' => $record->uuid,
+                            'k' => (new Hashids(config('app.key'), 10))->encode($record->created_at->timestamp),
+                        ],
+                    ), true),
                 Tables\Columns\TextColumn::make('qr_status')
                     ->badge()
                     ->formatStateUsing(fn (Model $record) => $record->qr_status->label())

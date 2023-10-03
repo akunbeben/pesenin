@@ -19,7 +19,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['link'])->group(function () {
-    Route::get('/redirector', Redirector::class)->name('redirector');
-    Route::get('/{table:uuid}', Browse::class)->name('browse');
-});
+Route::get('/redirector', Redirector::class)->name('redirector');
+Route::get('/{table:uuid}', Browse::class)->name('browse');

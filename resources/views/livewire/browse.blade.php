@@ -1,5 +1,5 @@
 <div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm md:max-w-3xl" x-data>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 py-2">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-3.5 gap-x-2.5 py-2">
         <div class="flex items-center justify-between col-span-2 md:col-span-4">
             @if (! $this->table->merchant->setting->ikiosk_mode)
             <span class="text-lg font-semibold">{{ $table->name }}</span>
@@ -12,7 +12,7 @@
                 color="gray"
             />
         </div>
-        @if ($highlights->count())
+        {{-- @if ($highlights->count())
         <span class="col-span-2 text-lg font-semibold md:col-span-4">Recommended products</span>
         <div class="col-span-2 md:col-span-4" x-data="{ slides: null }" x-transition wire:key="{{ rand() }}">
             <div
@@ -50,7 +50,7 @@
                 @endforeach
             </div>
         </div>
-        @endif
+        @endif --}}
         <div class="col-span-2 md:col-span-4">
             <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
                 <x-filament::input
@@ -81,12 +81,21 @@
         </div>
 
         @forelse ($products as $product)
-        <div class="bg-white shadow-xs cursor-pointer ring-1 ring-gray-200 rounded-xl" wire:click="$dispatch('show-product', { product: {{ $product->id }} })">
-            <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-full border-b sm:h-32 h-28 rounded-t-xl">
-            <div class="flex flex-col p-2 gap-y-2.5">
+        <div class="relative flex flex-col cursor-pointer gap-y-2" wire:click="$dispatch('show-product', { product: {{ $product->id }} })">
+            @if ($product->recommended)
+            <span class="absolute px-2 py-1 text-xs rounded-xl left-1.5 top-1.5 bg-primary-500 text-white">Recommended</span>
+            @endif
+            <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-full border-b sm:h-32 h-28 rounded-xl">
+            <div class="flex items-center gap-1">
+                @if ($this->cart->contains($product))
+                <span class="relative inline-flex w-2 h-2 rounded-full bg-primary-500"></span>
+                @endif
                 <span class="text-xs font-semibold">{{ $product->name }}</span>
-                <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             </div>
+            <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+            <x-filament::button outlined size="xs">
+                Add to cart
+            </x-filament::button>
         </div>
         @empty
         <div class="flex flex-col items-center justify-center w-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4 h-80">

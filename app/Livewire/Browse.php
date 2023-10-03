@@ -94,9 +94,13 @@ class Browse extends Component
                 $id = (new Hashids(config('app.key'), 3))->decode($this->tab)[0];
 
                 $query->where('category_id', $id);
-            })->search($this->search)->simplePaginate(
-                ($detect = new MobileDetect())->isMobile() ? ($detect->isTablet() ? 12 : 6) : 12
-            ),
+            })->search($this->search)
+                ->orderBy('recommended', 'desc')
+                ->orderBy('name', 'asc')
+                ->orderBy('created_at', 'desc')
+                ->simplePaginate(
+                    ($detect = new MobileDetect())->isMobile() ? ($detect->isTablet() ? 12 : 6) : 12
+                ),
             'highlights' => $this->table->merchant->products()->highlights()->get(),
             'categories' => $this->table->merchant->categories,
         ]);

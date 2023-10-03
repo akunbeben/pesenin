@@ -13,5 +13,9 @@
         "types_spaces": {
             "space": "single"
         }
-    }
+    },
+    "exclude": [
+        "_ide_helper_models.php",
+        "_ide_helper.php"
+    ]
 }
