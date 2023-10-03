@@ -53,6 +53,13 @@ class TableResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Table')),
+                Tables\Columns\TextColumn::make('url')
+                    ->default('Open URL')
+                    ->badge()
+                    ->icon('heroicon-m-arrow-up-right')
+                    ->url(function (Model $record) {
+                        return \Linkeys\UrlSigner\Models\Link::query()->whereJsonContains('data', ['table' => $record->getKey()])->first()->getFullUrl();
+                    }, true),
                 Tables\Columns\TextColumn::make('qr_status')
                     ->badge()
                     ->formatStateUsing(fn (Model $record) => $record->qr_status->label())

@@ -1,11 +1,15 @@
 <div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm md:max-w-3xl" x-data>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 py-2">
         <div class="flex items-center justify-between col-span-2 md:col-span-4">
+            @if (! $this->table->merchant->setting->ikiosk_mode)
             <span class="text-lg font-semibold">{{ $table->name }}</span>
-            <x-filament::button
+            @endif
+            <x-filament::icon-button
                 icon="heroicon-m-shopping-cart"
                 wire:click="$dispatch('open-modal', {id: 'my-cart'})"
                 outlined
+                size="xl"
+                color="gray"
             />
         </div>
         @if ($highlights->count())

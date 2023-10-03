@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 10.24.0.
+ * Generated for Laravel 10.25.2.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -21949,6 +21949,50 @@ namespace Intervention\Image\Facades {
 
 }
 
+namespace Linkeys\UrlSigner\Facade {
+
+    class UrlSigner
+    {
+        /**
+         * Create a new link
+         *
+         * @param  string  $url
+         * @param  array|null  $data
+         * @param  \DateTime|int|string|null  $expiry
+         * @param  null  $clickLimit
+         * @return \Linkeys\UrlSigner\Models\Link
+         *
+         * @throws \Exception
+         *
+         * @static
+         */
+        public static function generate($url, $data = [], $expiry = null, $clickLimit = null)
+        {
+            /** @var \Linkeys\UrlSigner\UrlSigner $instance */
+            return $instance->generate($url, $data, $expiry, $clickLimit);
+        }
+
+        /**
+         * @static
+         */
+        public static function sign($url, $data = [], $expiry = null, $clickLimit = null)
+        {
+            /** @var \Linkeys\UrlSigner\UrlSigner $instance */
+            return $instance->sign($url, $data, $expiry, $clickLimit);
+        }
+
+        /**
+         * @static
+         */
+        public static function group($callback, $expiry = null, $clickLimit = null)
+        {
+            /** @var \Linkeys\UrlSigner\UrlSigner $instance */
+            return $instance->group($callback, $expiry, $clickLimit);
+        }
+    }
+
+}
+
 namespace Livewire {
     /**
      * @method static void setUpdateUri()
@@ -30043,6 +30087,9 @@ namespace {
     {
     }
     class Image extends \Intervention\Image\Facades\Image
+    {
+    }
+    class UrlSigner extends \Linkeys\UrlSigner\Facade\UrlSigner
     {
     }
     class Livewire extends \Livewire\Livewire
