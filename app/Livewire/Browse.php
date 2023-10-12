@@ -3,10 +3,13 @@
 namespace App\Livewire;
 
 use App\Models\Product;
+use App\Models\Scan;
 use App\Models\Table;
 use Detection\MobileDetect;
 use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
@@ -22,6 +25,8 @@ class Browse extends Component
 
     #[Url]
     public ?string $tab = null;
+
+    public Scan $scan;
 
     public Table $table;
 
@@ -70,15 +75,18 @@ class Browse extends Component
         $this->dispatch('open-modal', id: 'my-cart');
     }
 
-    public function mount(Table $table): void
+    public function mount(string $scanId, Request $request): void
     {
+        abort_if(blank($request->u), 404);
+
+        $this->scan = Scan::query()->findOrFail(
+            Arr::first((new Hashids($request->u, 5))->decode($scanId))
+        );
+
+        abort_if($this->scan->finished, 403, 'Please rescan the QRCode');
+
         $this->cart = collect([]);
-        $this->table = $table->load([
-            'merchant' => [
-                'products' => ['media'],
-                'categories',
-            ],
-        ]);
+        $this->table = $this->scan->table;
     }
 
     public function render()

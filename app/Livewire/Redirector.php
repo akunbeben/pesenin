@@ -3,17 +3,33 @@
 namespace App\Livewire;
 
 use App\Models\Table;
+use Hashids\Hashids;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Redirector extends Component
 {
     private string $url;
 
+    protected Table $table;
+
     public function mount(Request $request): void
     {
+        $this->table = Table::query()->with(['scans' => function ($query) {
+            $query->latest();
+        }])->where('uuid', $request->uid)->firstOrFail();
+
+        /** @var \App\Models\Scan $scan */
+        $scan = $this->table->scans()->create([
+            'agent' => $request->userAgent(),
+            'ip' => $request->ip(),
+            'fingerprint' => $request->fingerprint(),
+        ]);
+
         $this->url = route('browse', [
-            'table' => Table::query()->where('uuid', $request->uid)->firstOrFail(),
+            'u' => $salt = Str::random(16),
+            'scanId' => (new Hashids($salt, 5))->encode($scan->getKey()),
         ]);
     }
 

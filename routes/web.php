@@ -20,4 +20,5 @@ Route::get('/', function () {
 });
 
 Route::get('/redirector', Redirector::class)->name('redirector');
-Route::get('/{table:uuid}', Browse::class)->name('browse');
+Route::get('/{scanId}/summary', Browse::class)->name('summary');
+Route::get('/{scanId}', Browse::class)->name('browse');

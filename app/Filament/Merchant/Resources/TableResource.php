@@ -51,6 +51,8 @@ class TableResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated(false)
+            ->poll('10s')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Table')),

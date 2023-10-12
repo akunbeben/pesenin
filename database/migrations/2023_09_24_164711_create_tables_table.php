@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('suffix')->nullable();
             $table->integer('seats');
             $table->tinyInteger('qr_status')->default(0);
+            $table->boolean('active')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

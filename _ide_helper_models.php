@@ -140,8 +140,10 @@ namespace App\Models{
      *
      * @property int $id
      * @property int $table_id
-     * @property string $salt
-     * @property string $encoded
+     * @property string $agent
+     * @property string $ip
+     * @property string $fingerprint
+     * @property bool $finished
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property-read \App\Models\Table $table
@@ -149,10 +151,12 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder|Scan newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Scan newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Scan query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereAgent($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Scan whereCreatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereEncoded($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereFingerprint($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereFinished($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Scan whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereSalt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Scan whereIp($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Scan whereTableId($value)
      * @method static \Illuminate\Database\Eloquent\Builder|Scan whereUpdatedAt($value)
      */
@@ -203,6 +207,8 @@ namespace App\Models{
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $deleted_at
      * @property-read \App\Models\Merchant $merchant
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
+     * @property-read int|null $scans_count
      *
      * @method static \Illuminate\Database\Eloquent\Builder|Table newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder|Table newQuery()

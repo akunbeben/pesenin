@@ -6,6 +6,7 @@ use Filament\Facades\Filament;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel\Concerns\HasAvatars;
 use Filament\Support\Facades\FilamentColor;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -75,6 +76,13 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
     public function setting(): HasOne
     {
         return $this->hasOne(Setting::class);
+    }
+
+    public function fullAddress(): Attribute
+    {
+        return Attribute::get(function () {
+            return "{$this->address}, {$this->city}, {$this->country}, {$this->zip}";
+        });
     }
 
     public function getFilamentAvatarUrl(): ?string

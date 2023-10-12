@@ -30,6 +30,7 @@ class CentralPanelProvider extends PanelProvider
                 app()->isProduction() => 'vorfreude',
             })
             ->login(Login::class)
+            ->favicon(asset('favicon.ico'))
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,

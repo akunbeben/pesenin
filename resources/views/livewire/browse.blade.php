@@ -1,56 +1,5 @@
-<div class="max-h-screen px-2 mx-auto overflow-auto sm:max-w-sm md:max-w-3xl" x-data>
+<div class="max-h-screen px-2 mx-auto overflow-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl" x-data>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-y-3.5 gap-x-2.5 py-2">
-        <div class="flex items-center justify-between col-span-2 md:col-span-4">
-            @if (! $this->table->merchant->setting->ikiosk_mode)
-            <span class="text-lg font-semibold">{{ $table->name }}</span>
-            @endif
-            <x-filament::icon-button
-                icon="heroicon-m-shopping-cart"
-                wire:click="$dispatch('open-modal', {id: 'my-cart'})"
-                outlined
-                size="xl"
-                color="gray"
-            />
-        </div>
-        {{-- @if ($highlights->count())
-        <span class="col-span-2 text-lg font-semibold md:col-span-4">Recommended products</span>
-        <div class="col-span-2 md:col-span-4" x-data="{ slides: null }" x-transition wire:key="{{ rand() }}">
-            <div
-                x-transition
-                x-data="() => {
-                    return {
-                        active: 0,
-                        total: parseInt('{{ $highlights->count() }}'),
-                        init() {
-                            if (this.total > 1) {
-                                slides = new Flickity(this.$refs.highlight, {
-                                    wrapAround: true,
-                                    autoPlay: 2000,
-                                    cellAlign: 'left',
-                                });
-
-                                slides.on('change', i => this.active = i);
-                            }
-                        }
-                    }
-                }"
-                x-ref="highlight"
-            >
-                @foreach ($highlights as $index => $product)
-                <div class="flex justify-between p-2.5 gap-x-2.5 {{ $highlights->count() > 1 ? 'mx-1 w-4/5' : null }} bg-gradient-to-b from-sky-100 via-sky-200 to-sky-300 rounded-xl">
-                    <div class="flex flex-col text-gray-700 grow">
-                        <span class="font-semibold text-gray-700">{{ $product->name }}</span>
-                        <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                        <x-filament::button x-on:click="$dispatch('view-cart')" class="mt-auto">
-                            Add to cart
-                        </x-filament::button>
-                    </div>
-                    <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-20 h-20 border-b sm:w-28 sm:h-28 rounded-xl">
-                </div>
-                @endforeach
-            </div>
-        </div>
-        @endif --}}
         <div class="col-span-2 md:col-span-4">
             <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
                 <x-filament::input
@@ -81,20 +30,22 @@
         </div>
 
         @forelse ($products as $product)
-        <div class="relative flex flex-col cursor-pointer gap-y-2" wire:click="$dispatch('show-product', { product: {{ $product->id }} })">
-            @if ($product->recommended)
-            <span class="absolute px-2 py-1 text-xs rounded-xl left-1.5 top-1.5 bg-primary-500 text-white">Recommended</span>
-            @endif
-            <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-full border-b sm:h-32 h-28 rounded-xl">
-            <div class="flex items-center gap-1">
-                @if ($this->cart->contains($product))
-                <span class="relative inline-flex w-2 h-2 rounded-full bg-primary-500"></span>
+        <div class="relative flex flex-col gap-y-2">
+            <div wire:click="$dispatch('show-product', { product: {{ $product->id }} })" class="relative flex flex-col cursor-pointer gap-y-2">
+                @if ($product->recommended)
+                <span class="absolute px-2 py-1 text-xs rounded-xl left-1.5 top-1.5 bg-primary-500 text-white">Recommended</span>
                 @endif
-                <span class="text-xs font-semibold">{{ $product->name }}</span>
+                <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-full border-b sm:h-32 h-28 rounded-xl">
+                <div class="flex items-center gap-1">
+                    @if ($this->cart->contains($product))
+                    <span class="relative inline-flex w-2 h-2 rounded-full bg-primary-500"></span>
+                    @endif
+                    <span class="text-xs font-semibold">{{ $product->name }}</span>
+                </div>
+                <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             </div>
-            <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             <x-filament::button outlined size="xs">
-                Add to cart
+                {{ __('Add') }}
             </x-filament::button>
         </div>
         @empty
@@ -104,7 +55,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </div>
-            <span class="text-base font-semibold">Not found</span>
+            <span class="text-base font-semibold">{{ __('Not found') }}</span>
         </div>
         @endforelse
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Table;
+use App\Models\Scan;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,13 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('scans', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Table::class)->constrained()->cascadeOnDelete();
-            $table->longText('agent');
-            $table->string('ip');
-            $table->string('fingerprint');
-            $table->boolean('finished')->default(false);
+            $table->foreignIdFor(Scan::class);
+            $table->string('number')->unique();
+            $table->decimal('total', 10, 0);
+            $table->tinyInteger('status');
+            $table->boolean('approved')->default(false);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('scans');
+        Schema::dropIfExists('orders');
     }
 };

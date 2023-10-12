@@ -35,6 +35,7 @@ class MerchantPanelProvider extends PanelProvider
             ->tenant(Merchant::class, 'uuid')
             ->tenantRegistration(MerchantRegistration::class)
             ->tenantProfile(MerchantProfile::class)
+            ->favicon(asset('favicon.ico'))
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
