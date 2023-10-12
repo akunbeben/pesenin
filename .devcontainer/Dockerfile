@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libicu-dev \
-    libexif-dev \
-    libbcmath-dev
+    libexif-dev
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
