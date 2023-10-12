@@ -9,11 +9,12 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libicu-dev \
-    libexif-dev
+    libexif-dev \
+    libbcmath-dev
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd pdo pdo_mysql intl exif   # Add intl and exif extensions
+RUN docker-php-ext-install gd pdo pdo_mysql intl exif bcmath
 
 # Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
