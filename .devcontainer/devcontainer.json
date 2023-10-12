@@ -1,11 +1,12 @@
-// https://aka.ms/devcontainer.json
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-	"name": "Existing Docker Compose (Extend)",
+	"name": "codespaces-laravel",
 	"dockerComposeFile": [
-		"../docker-compose.yml"
+		"docker-compose.yml"
 	],
-	"service": "laravel.test",
-	"workspaceFolder": "/var/www/html",
+	"workspaceFolder": "/workspace",
+	"service": "app",
+	"shutdownAction": "stopCompose",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -30,12 +31,20 @@
 				"shufo.vscode-blade-formatter",
 				"Zignd.html-css-class-completion"
 			],
-			"settings": {}
+			"settings": {
+				"#terminal.integrated.shell.linux": "/bin/bash"
+			}
 		}
 	},
-	"remoteUser": "sail",
-	"postCreateCommand": "chown -R 1000:1000 /var/www/html",
-	// "forwardPorts": [],
-	// "runServices": [],
-	"shutdownAction": "stopCompose"
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [
+		80
+	],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "cp .env.example .env && composer install && php artisan key:generate && npm install && npm run dev",
+	"portsAttributes": {
+		"80": {
+			"label": "HTTP"
+		}
+	}
 }
