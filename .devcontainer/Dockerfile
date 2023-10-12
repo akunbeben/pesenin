@@ -1,8 +1,10 @@
 # Use the official PHP image for PHP 8.2
 FROM php:8.2-fpm
+FROM node:18-alpine
 
 # Install required dependencies
 RUN apt-get update && apt-get install -y \
+    npm \
     git \
     unzip \
     libpng-dev \
@@ -22,4 +24,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 WORKDIR /workspace
 
 # Expose port 8000
-EXPOSE 8000
+EXPOSE 8000 5173
