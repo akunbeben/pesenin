@@ -38,6 +38,22 @@ namespace App\Models{
 
 namespace App\Models{
     /**
+     * App\Models\Item
+     *
+     * @property-read \App\Models\Order|null $order
+     * @property-read \App\Models\Product|null $product
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder|Item newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Item newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Item query()
+     */
+    class Item extends \Eloquent
+    {
+    }
+}
+
+namespace App\Models{
+    /**
      * App\Models\Merchant
      *
      * @property int $id
@@ -83,6 +99,21 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereZip($value)
      */
     class Merchant extends \Eloquent implements \Filament\Models\Contracts\HasAvatar, \OwenIt\Auditing\Contracts\Auditable
+    {
+    }
+}
+
+namespace App\Models{
+    /**
+     * App\Models\Order
+     *
+     * @property-read \App\Models\Scan|null $scan
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Order query()
+     */
+    class Order extends \Eloquent
     {
     }
 }
@@ -146,6 +177,7 @@ namespace App\Models{
      * @property bool $finished
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property-read \App\Models\Order|null $order
      * @property-read \App\Models\Table $table
      *
      * @method static \Illuminate\Database\Eloquent\Builder|Scan newModelQuery()

@@ -1,42 +1,41 @@
+// https://aka.ms/devcontainer.json
 {
-    "name": "codespaces-laravel",
-    "dockerComposeFile": ["docker-compose.yml"],
-    "workspaceFolder": "/workspace",
-    "service": "app",
-    "shutdownAction": "stopCompose",
-    "extensions": [
-		"albert.TabOut",
-        "amiralizadeh9480.laravel-extra-intellisense",
-        "austenc.laravel-blade-spacer",
-        "bmewburn.vscode-intelephense-client",
-        "bradlc.vscode-tailwindcss",
-        "cierra.livewire-vscode",
-        "codingyu.laravel-goto-view",
-        "esbenp.prettier-vscode",
-        "formulahendry.auto-rename-tag",
-        "heybourn.headwind",
-        "maptz.camelcasenavigation",
-        "MehediDracula.php-namespace-resolver",
-        "MrChetan.goto-laravel-components",
-        "MrChetan.laravel-goto-config",
-        "MrChetan.phpstorm-parameter-hints-in-vscode",
-        "onecentlin.laravel-blade",
-        "pcbowers.alpine-intellisense",
-        "pveyes.aperture",
-        "shufo.vscode-blade-formatter",
-        "Zignd.html-css-class-completion"
+	"name": "Existing Docker Compose (Extend)",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
 	],
-    "settings": {
-        "#terminal.integrated.shell.linux": "/bin/bash"
-    },
-    "forwardPorts": [8000,80,5173],
-	"postCreateCommand": "cp .env.example .env && composer install && php artisan key:generate && docker compose exec php php artisan storage:link && docker compose exec php chmod -R 777 storage bootstrap/cache && npm install && npm run dev",
-	"portsAttributes": {
-		"80": {
-			"label": "HTTP"
-		},
-		"8000": {
-			"label": "HTTP"
+	"service": "laravel.test",
+	"workspaceFolder": "/var/www/html",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"albert.TabOut",
+				"amiralizadeh9480.laravel-extra-intellisense",
+				"austenc.laravel-blade-spacer",
+				"bmewburn.vscode-intelephense-client",
+				"bradlc.vscode-tailwindcss",
+				"cierra.livewire-vscode",
+				"codingyu.laravel-goto-view",
+				"esbenp.prettier-vscode",
+				"formulahendry.auto-rename-tag",
+				"heybourn.headwind",
+				"maptz.camelcasenavigation",
+				"MehediDracula.php-namespace-resolver",
+				"MrChetan.goto-laravel-components",
+				"MrChetan.laravel-goto-config",
+				"MrChetan.phpstorm-parameter-hints-in-vscode",
+				"onecentlin.laravel-blade",
+				"pcbowers.alpine-intellisense",
+				"pveyes.aperture",
+				"shufo.vscode-blade-formatter",
+				"Zignd.html-css-class-completion"
+			],
+			"settings": {}
 		}
-	}
+	},
+	"remoteUser": "sail",
+	"postCreateCommand": "chown -R 1000:1000 /var/www/html",
+	// "forwardPorts": [],
+	// "runServices": [],
+	"shutdownAction": "stopCompose"
 }
