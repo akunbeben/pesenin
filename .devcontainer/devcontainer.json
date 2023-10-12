@@ -1,7 +1,6 @@
 {
     "name": "codespaces-laravel",
     "dockerComposeFile": ["docker-compose.yml"],
-    "dockerFile": "Dockerfile",
     "workspaceFolder": "/workspace",
     "service": "app",
     "shutdownAction": "stopCompose",
