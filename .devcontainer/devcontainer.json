@@ -29,10 +29,13 @@
     "settings": {
         "#terminal.integrated.shell.linux": "/bin/bash"
     },
-    "forwardPorts": [80,5173],
+    "forwardPorts": [8000,80,5173],
 	"postCreateCommand": "cp .env.example .env && composer install && php artisan key:generate && npm install && npm run dev",
 	"portsAttributes": {
 		"80": {
+			"label": "HTTP"
+		},
+		"8000": {
 			"label": "HTTP"
 		}
 	}
