@@ -30,7 +30,7 @@
         "#terminal.integrated.shell.linux": "/bin/bash"
     },
     "forwardPorts": [8000,80,5173],
-	"postCreateCommand": "cp .env.example .env && composer install && php artisan key:generate && npm install && npm run dev",
+	"postCreateCommand": "cp .env.example .env && composer install && php artisan key:generate && docker compose exec php php artisan storage:link && docker compose exec php chmod -R 777 storage bootstrap/cache && npm install && npm run dev",
 	"portsAttributes": {
 		"80": {
 			"label": "HTTP"
