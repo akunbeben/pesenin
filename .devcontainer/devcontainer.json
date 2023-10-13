@@ -38,10 +38,12 @@
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
-		80
+		80,
+		8000,
+		3306
 	],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cp .env.example .env && composer install && php artisan key:generate && npm install && npm run dev",
+	"postCreateCommand": "cp .env.example .env && composer install && php artisan key:generate && npm install",
 	"portsAttributes": {
 		"80": {
 			"label": "HTTP"
