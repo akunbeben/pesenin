@@ -20,8 +20,8 @@
                 </x-filament::tabs.item>
                 @foreach ($categories as $category)
                 <x-filament::tabs.item
-                    wire:click="$set('tab', '{{ $category->hashed }}')"
-                    :active="$category->reverse($this->tab)"
+                    wire:click="$set('tab', '{{ $category->hash($this->u) }}')"
+                    :active="$category->reverse($this->tab, $this->u)"
                 >
                     {{ $category->name }}
                 </x-filament::tabs.item>
@@ -40,13 +40,27 @@
                     @if ($this->cart->contains($product))
                     <span class="relative inline-flex w-2 h-2 rounded-full bg-primary-500"></span>
                     @endif
-                    <span class="text-xs font-semibold">{{ $product->name }}</span>
+                    <span class="text-xs font-semibold text-gray-700">{{ $product->name }}</span>
                 </div>
-                <span class="text-xs">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                <span class="text-xs text-gray-700">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             </div>
-            <x-filament::button outlined size="xs">
+            @if (! $this->cart->contains($product->getKey()))
+            <x-filament::button 
+                outlined 
+                size="xs" 
+                x-on:click="() => {
+                    if ({{ count($product->variants ?? []) }} == true) {
+                        $dispatch('show-product', { product: {{ $product->getKey() }} })
+                    } else {
+                        $dispatch('add-to-cart', { product: {{ $product->getKey() }} })
+                    }
+                }"
+            >
                 {{ __('Add') }}
             </x-filament::button>
+            @else
+            <span>test</span>
+            @endif
         </div>
         @empty
         <div class="flex flex-col items-center justify-center w-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4 h-80">
@@ -81,7 +95,7 @@
 
         <div class="flex flex-col p-2 grow">
             @foreach ($cart as $item)
-                {{ $item->name }}
+                {{ $item['snapshot']->name }}
             @endforeach
 
             <div class="flex w-full mt-auto bottom-5">
@@ -157,9 +171,13 @@
             <div class="grid gap-2.5 {{ 'grid-cols-' . count($showed?->variants ?? []) }}">
                 @forelse ($showed?->variants ?? [] as $variant)
                 <button
-                    class="p-2.5 text-sm flex justify-center border border-gray-500 text-gray-500 rounded-xl"
+                    class="relative p-2.5 text-sm flex gap-2.5 justify-center border {{ $showed?->variant === $variant ? 'border-primary-500 text-primary-500' : 'border-gray-500 text-gray-500' }} rounded-xl"
                     type="button"
+                    wire:click="$dispatch('select-variant', {variant: '{{ $variant }}'})"
                 >
+                    @if ($showed?->variant === $variant)
+                        <span class="absolute flex h-2 w-2 absolute top-2 left-2 rounded-full h-1 w-1 bg-sky-500"></span>    
+                    @endif
                     {{ $variant }}
                 </button>
                 @empty

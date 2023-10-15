@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Scan;
 use App\Models\Table;
@@ -28,6 +29,10 @@ class Browse extends Component
 
     public Scan $scan;
 
+    public string $scanId;
+
+    public string $u;
+
     public Table $table;
 
     public ?Product $showed;
@@ -38,11 +43,21 @@ class Browse extends Component
     {
         $this->resetPage();
 
-        if ($this->table->merchant->categories->contains('hashed', $this->tab)) {
+        if (
+            $this->table->merchant->categories->filter(
+                fn (Category $category) => $category->reverse($this->tab, $this->u)
+            )->isNotEmpty()
+        ) {
             return;
         }
 
         $this->tab = null;
+    }
+
+    #[On('select-variant')]
+    public function selectVariant(string $variant): void
+    {
+        $this->showed->variant = $variant;
     }
 
     #[On('show-product')]
@@ -60,13 +75,15 @@ class Browse extends Component
     }
 
     #[On('add-to-cart')]
-    public function addToCart(Product $product): void
+    public function addToCart(Product $product, ?string $variant = null): void
     {
-        if (! $this->cart->contains($product)) {
-            $this->cart->push($product);
+        if (! $this->cart->contains($product->getKey())) {
+            $this->cart->push([
+                'product_id' => $product,
+                'snapshot' => $product,
+                'variant' => $variant,
+            ]);
         }
-
-        $this->dispatch('close-modal', id: 'product-detail');
     }
 
     #[On('view-cart')]
@@ -80,7 +97,7 @@ class Browse extends Component
         abort_if(blank($request->u), 404);
 
         $this->scan = Scan::query()->findOrFail(
-            Arr::first((new Hashids($request->u, 5))->decode($scanId))
+            Arr::first((new Hashids($this->u = $request->u, 5))->decode($this->scanId = $scanId))
         );
 
         abort_if($this->scan->finished, 403, 'Please rescan the QRCode');
@@ -93,13 +110,17 @@ class Browse extends Component
     {
         return view('livewire.browse', [
             'products' => $this->table->merchant->products()->available()->when($this->tab, function (Builder $query) {
-                if (! $this->table->merchant->categories->contains('hashed', $this->tab)) {
-                    $this->tab = '';
+                if (
+                    $this->table->merchant->categories->filter(
+                        fn (Category $category) => $category->reverse($this->tab, $this->u)
+                    )->isEmpty()
+                ) {
+                    $this->tab = null;
 
                     return;
                 }
 
-                $id = (new Hashids(config('app.key'), 3))->decode($this->tab)[0];
+                $id = Arr::first((new Hashids($this->u, 5))->decode($this->tab));
 
                 $query->where('category_id', $id);
             })->search($this->search)

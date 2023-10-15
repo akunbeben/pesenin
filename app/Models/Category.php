@@ -36,12 +36,17 @@ class Category extends Model
         return Attribute::get(fn () => $hasher->encode($this->getKey()));
     }
 
-    public function reverse(?string $hashed): bool
+    public function hash(string $salt): string
+    {
+        return (new Hashids($salt, 5))->encode($this->id);
+    }
+
+    public function reverse(?string $hashed, ?string $salt): bool
     {
         if (! $hashed) {
             return false;
         }
 
-        return $this->getKey() === Arr::first((new Hashids(config('app.key'), 3))->decode($hashed));
+        return $this->getKey() === Arr::first((new Hashids($salt ?? config('app.key'), 5))->decode($hashed));
     }
 }
