@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Table;
 
 class ProductResource extends Resource
@@ -84,25 +85,31 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->description(fn (Product $record) => str($record->description)->words(10))
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->searchable()
-                    ->sortable(),
+                Grid::make()->columns(1)->schema([
+                    Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')
+                        ->collection('banner')
+                        ->extraImgAttributes(['class' => 'w-full !sm:h-60 !h-60 rounded-xl'])
+                        ->extraAttributes(['class' => '!w-full'])
+                        ->height('auto'),
+                    Tables\Columns\TextColumn::make('name')
+                        ->description(fn (Product $record) => str($record->description)->words(10))
+                        ->searchable()
+                        ->sortable(),
+                    Tables\Columns\TextColumn::make('price')
+                        ->searchable()
+                        ->sortable()
+                        ->formatStateUsing(fn (Product $record) => 'Rp ' . number_format($record->price, 0, ',', '.')),
+                ]),
             ])
+            ->contentGrid(['md' => 3, 'xl' => 4])
+            ->defaultSort('id', 'desc')
+            ->paginationPageOptions([8, 16, 24])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

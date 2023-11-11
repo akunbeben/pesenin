@@ -38,7 +38,6 @@ class MerchantPanelProvider extends PanelProvider
             ->favicon(asset('favicon.ico'))
             ->colors([
                 'danger' => Color::Rose,
-                'gray' => Color::Gray,
                 'info' => Color::Blue,
                 'primary' => Color::Sky,
                 'success' => Color::Emerald,

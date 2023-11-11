@@ -1,0 +1,2 @@
+-   Complete order process
+-   Add "Thank you" page after order complete.
