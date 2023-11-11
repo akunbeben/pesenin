@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Run the PHP code style fixer
+./vendor/bin/pint
+
+# If pint fixes any code style issues, we should add those files to the commit
+git add .
+
+# If pint exits with a non-zero status, the commit will be aborted
+exit 0

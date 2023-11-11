@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.8",
         "lemonsqueezy/laravel": "^1.1",
         "linkeys/signed-url": "^6.0",
+        "midtrans/midtrans-php": "^2.5",
         "mobiledetect/mobiledetectlib": "^3.74",
         "owen-it/laravel-auditing": "^13.5",
         "simplesoftwareio/simple-qrcode": "^4.2",
@@ -52,7 +53,8 @@
             "@php artisan package:discover --ansi",
             "@php artisan filament:upgrade",
             "@php artisan ide-helper:generate",
-            "@php artisan ide-helper:model -n"
+            "@php artisan ide-helper:model -n",
+            "git config core.hooksPath hooks"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
