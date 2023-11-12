@@ -26,9 +26,9 @@ use Livewire\WithPagination;
 
 class Browse extends Component implements HasForms, HasInfolists
 {
-    use WithPagination;
-    use InteractsWithInfolists;
     use InteractsWithForms;
+    use InteractsWithInfolists;
+    use WithPagination;
 
     #[Url]
     public ?string $search = null;
@@ -108,7 +108,7 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('add-to-cart')]
     public function addToCart(Product $product): void
     {
-        if (!$this->cart->contains('product_id', $product->getKey())) {
+        if (! $this->cart->contains('product_id', $product->getKey())) {
             $this->cart->push([
                 'product_id' => $product->getKey(),
                 'snapshot' => $product->toArray(),
