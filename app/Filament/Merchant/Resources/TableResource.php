@@ -55,7 +55,8 @@ class TableResource extends Resource
             ->poll('10s')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Table')),
+                    ->label(__('Table'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('url')
                     ->default('Open URL')
                     ->badge()
@@ -74,9 +75,14 @@ class TableResource extends Resource
                     ->icon(fn (Model $record) => $record->qr_status->icon())
                     ->label(__('QR Code')),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Time'))
-                    ->description(fn (Model $record) => $record->updated_at->format('M j, Y H:i:s'))
+                    ->translateLabel()
                     ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->dateTime(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->translateLabel()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
                     ->dateTime(),
             ])
             ->filters([
@@ -117,7 +123,7 @@ class TableResource extends Resource
                         ->hidden(function (HasTable $livewire): bool {
                             $trashedFilterState = $livewire->getTableFilterState(TrashedFilter::class) ?? [];
 
-                            if (! array_key_exists('value', $trashedFilterState)) {
+                            if (!array_key_exists('value', $trashedFilterState)) {
                                 return false;
                             }
 

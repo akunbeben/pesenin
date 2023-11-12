@@ -7,6 +7,13 @@ use App\Models\Product;
 use App\Models\Scan;
 use App\Models\Table;
 use Detection\MobileDetect;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
 use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -17,9 +24,11 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Browse extends Component
+class Browse extends Component implements HasForms, HasInfolists
 {
     use WithPagination;
+    use InteractsWithInfolists;
+    use InteractsWithForms;
 
     #[Url]
     public ?string $search = null;
@@ -39,6 +48,27 @@ class Browse extends Component
 
     public Collection $cart;
 
+    public ?string $variant = null;
+
+    public function tableInfolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->record($this->table)
+            ->schema([
+                Section::make(__('Your table'))
+                    ->description(__('Tap to see more details'))
+                    ->columns(['default' => 2])
+                    ->collapsible()
+                    ->collapsed()
+                    ->schema([
+                        TextEntry::make('name')->label(__('Table'))->columnSpan(1),
+                        TextEntry::make('seats')->translateLabel()->columnSpan(1),
+                        TextEntry::make('merchant.name')->translateLabel(),
+                        TextEntry::make('merchant.city')->translateLabel(),
+                    ]),
+            ]);
+    }
+
     public function updatedTab(): void
     {
         $this->resetPage();
@@ -57,7 +87,7 @@ class Browse extends Component
     #[On('select-variant')]
     public function selectVariant(string $variant): void
     {
-        $this->showed->variant = $variant;
+        $this->variant = $variant;
     }
 
     #[On('show-product')]
@@ -72,18 +102,26 @@ class Browse extends Component
     public function closeProduct(): void
     {
         $this->showed = null;
+        $this->variant = null;
     }
 
     #[On('add-to-cart')]
-    public function addToCart(Product $product, ?string $variant = null): void
+    public function addToCart(Product $product): void
     {
-        if (! $this->cart->contains($product->getKey())) {
+        if (!$this->cart->contains('product_id', $product->getKey())) {
             $this->cart->push([
-                'product_id' => $product,
-                'snapshot' => $product,
-                'variant' => $variant,
+                'product_id' => $product->getKey(),
+                'snapshot' => $product->toArray(),
+                'variant' => $this->variant,
+                'amount' => 1,
             ]);
         }
+
+        $this->dispatch('close-modal', id: 'product-detail');
+
+        $this->js(<<<'JS'
+            console.log($wire.cart)
+        JS);
     }
 
     #[On('view-cart')]

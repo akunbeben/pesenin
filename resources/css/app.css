@@ -17,10 +17,6 @@
     border: transparent;
 }
 
-.fi-section-content {
-    @apply !p-2;
-}
-
 .fi-modal-content {
     @apply !p-0 gap-y-0;
 }

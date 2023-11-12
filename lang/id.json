@@ -1,0 +1,11 @@
+{
+    "Name": "Nama",
+    "Phone": "No. Telepon",
+    "Example: :label": "Contoh: :label",
+    "Address": "Alamat",
+    "City": "Kota",
+    "Zip Code": "Kode pos",
+    "Country": "Negara",
+    "Owner": "Pemilik",
+    "Time": "Waktu"
+}

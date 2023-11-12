@@ -1,6 +1,10 @@
 <div class="max-h-screen px-2 mx-auto overflow-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl" x-data>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-y-3.5 gap-x-2.5 py-2">
         <div class="col-span-2 md:col-span-4">
+            {{ $this->tableInfolist }}
+        </div>
+
+        <div class="col-span-2 md:col-span-4">
             <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
                 <x-filament::input
                     placeholder="Find your favorite menu ..."
@@ -45,11 +49,11 @@
                 <span class="text-xs text-gray-700">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             </div>
             @if (! $this->cart->contains($product->getKey()))
-            <x-filament::button 
-                outlined 
-                size="xs" 
+            <x-filament::button
+                outlined
+                size="xs"
                 x-on:click="() => {
-                    if ({{ count($product->variants ?? []) }} == true) {
+                    if (!!{{ count($product->variants ?? []) }} == true) {
                         $dispatch('show-product', { product: {{ $product->getKey() }} })
                     } else {
                         $dispatch('add-to-cart', { product: {{ $product->getKey() }} })
@@ -95,7 +99,7 @@
 
         <div class="flex flex-col p-2 grow">
             @foreach ($cart as $item)
-                {{ $item['snapshot']->name }}
+                {{ $item['snapshot']['name'] }}
             @endforeach
 
             <div class="flex w-full mt-auto bottom-5">
@@ -171,12 +175,12 @@
             <div class="grid gap-2.5 {{ 'grid-cols-' . count($showed?->variants ?? []) }}">
                 @forelse ($showed?->variants ?? [] as $variant)
                 <button
-                    class="relative p-2.5 text-sm flex gap-2.5 justify-center border {{ $showed?->variant === $variant ? 'border-primary-500 text-primary-500' : 'border-gray-500 text-gray-500' }} rounded-xl"
+                    class="relative p-2.5 text-sm flex gap-2.5 justify-center border {{ $this->variant === $variant ? 'border-primary-500 text-primary-500' : 'border-gray-500 text-gray-500' }} rounded-xl"
                     type="button"
                     wire:click="$dispatch('select-variant', {variant: '{{ $variant }}'})"
                 >
-                    @if ($showed?->variant === $variant)
-                        <span class="absolute flex h-2 w-2 absolute top-2 left-2 rounded-full h-1 w-1 bg-sky-500"></span>    
+                    @if ($this->variant === $variant)
+                        <span class="absolute flex w-2 h-2 rounded-full top-2 left-2 bg-sky-500"></span>
                     @endif
                     {{ $variant }}
                 </button>
