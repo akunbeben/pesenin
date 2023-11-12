@@ -55,7 +55,7 @@ class Browse extends Component implements HasForms, HasInfolists
         return $infolist
             ->record($this->table)
             ->schema([
-                Section::make(__('Your table'))
+                Section::make(fn (Table $record) => $record->merchant->name)
                     ->description(__('Tap to see more details'))
                     ->columns(['default' => 2])
                     ->collapsible()
@@ -64,7 +64,7 @@ class Browse extends Component implements HasForms, HasInfolists
                         TextEntry::make('name')->label(__('Table'))->columnSpan(1),
                         TextEntry::make('seats')->translateLabel()->columnSpan(1),
                         TextEntry::make('merchant.name')->translateLabel(),
-                        TextEntry::make('merchant.city')->translateLabel(),
+                        TextEntry::make('merchant.city')->label(__('City')),
                     ]),
             ]);
     }
@@ -118,6 +118,22 @@ class Browse extends Component implements HasForms, HasInfolists
         }
 
         $this->dispatch('close-modal', id: 'product-detail');
+
+        $this->js(<<<'JS'
+            console.log($wire.cart)
+        JS);
+    }
+
+    #[On('increase-item')]
+    public function increase(Product $product): void
+    {
+        $key = $this->cart->search('product_id', $product->getKey());
+
+        $inCart = $this->cart->pull($key);
+
+        $inCart['amount'] += 1;
+
+        $this->cart->push($inCart)->values();
 
         $this->js(<<<'JS'
             console.log($wire.cart)

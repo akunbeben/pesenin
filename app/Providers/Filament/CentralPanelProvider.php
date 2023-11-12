@@ -30,7 +30,7 @@ class CentralPanelProvider extends PanelProvider
                 app()->isProduction() => 'vorfreude',
             })
             ->login(Login::class)
-            ->favicon(asset('favicon.ico'))
+            ->favicon(asset('apple-touch-icon.png'))
             ->colors([
                 'danger' => Color::Rose,
                 'info' => Color::Blue,

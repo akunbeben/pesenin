@@ -1,5 +1,35 @@
-<div class="max-h-screen px-2 mx-auto overflow-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl" x-data>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-3.5 gap-x-2.5 py-2">
+<div class="max-h-screen px-2 mx-auto overflow-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl" x-data="{ scrolling: false }" x-init="() => {
+    $refs.root.addEventListener('scroll', () => {
+        scrolling = true;
+        setTimeout(() => {
+            scrolling = false;
+        }, 1000);
+    });
+}" x-ref="root">
+    @if ($this->cart->isNotEmpty())
+    <div class="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center w-full px-2 mx-auto sm:max-w-sm md:max-w-3xl">
+        <x-filament::button
+            wire:click="$dispatch('open-modal', {id: 'my-cart'})"
+            class="w-full my-2.5 !rounded-full"
+            badgeColor="danger"
+            x-show="!scrolling"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-90"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-90"
+        >
+            {{ __('View your order') }}
+
+            <x-slot name="badge">
+                {{ $this->cart->sum('amount') }}
+            </x-slot>
+        </x-filament::button>
+    </div>
+    @endif
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-3.5 gap-x-2.5 py-2" id="grid">
         <div class="col-span-2 md:col-span-4">
             {{ $this->tableInfolist }}
         </div>
@@ -48,7 +78,7 @@
                 </div>
                 <span class="text-xs text-gray-700">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             </div>
-            @if (! $this->cart->contains($product->getKey()))
+            @if (! $this->cart->contains('product_id', $product->getKey()))
             <x-filament::button
                 outlined
                 size="xs"
@@ -63,7 +93,29 @@
                 {{ __('Add') }}
             </x-filament::button>
             @else
-            <span>test</span>
+            <div class="flex items-center justify-between">
+                <x-filament::button
+                    size="xs"
+                    outlined
+                    wire:click="$dispatch('decrease-item', {product: {{ $product->getKey() }}})"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+                    </svg>
+                </x-filament::button>
+
+                <span class="text-sm">{{ $this->cart->firstWhere('product_id', $product->getKey())['amount'] }}</span>
+
+                <x-filament::button
+                    size="xs"
+                    outlined
+                    wire:click="$dispatch('increase-item', {product: {{ $product->getKey() }}})"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                    </svg>
+                </x-filament::button>
+            </div>
             @endif
         </div>
         @empty

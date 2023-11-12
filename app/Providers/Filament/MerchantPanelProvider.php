@@ -35,7 +35,7 @@ class MerchantPanelProvider extends PanelProvider
             ->tenant(Merchant::class, 'uuid')
             ->tenantRegistration(MerchantRegistration::class)
             ->tenantProfile(MerchantProfile::class)
-            ->favicon(asset('favicon.ico'))
+            ->favicon(asset('apple-touch-icon.png'))
             ->colors([
                 'danger' => Color::Rose,
                 'info' => Color::Blue,
