@@ -3,10 +3,11 @@
 namespace App\Livewire;
 
 use App\Models\Table;
-use Hashids\Hashids;
+use App\Support\Encoder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
+use Sqids\Sqids;
 
 class Redirector extends Component
 {
@@ -28,8 +29,8 @@ class Redirector extends Component
         ]);
 
         $this->url = route('browse', [
-            'u' => $salt = Str::random(16),
-            'scanId' => (new Hashids($salt, 5))->encode($scan->getKey()),
+            'u' => $salt = Encoder::shuffle(Crypt::encrypt(now()->timestamp), 10),
+            'scanId' => (new Sqids($salt, 5))->encode([$scan->getKey()]),
         ]);
     }
 

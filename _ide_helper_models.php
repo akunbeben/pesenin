@@ -253,6 +253,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \App\Models\Merchant $merchant
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
  * @property-read int|null $scans_count
@@ -275,7 +277,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Table withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Table withoutTrashed()
  */
-	class Table extends \Eloquent {}
+	class Table extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{

@@ -1,11 +1,17 @@
-<div class="max-h-screen px-2 mx-auto overflow-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl" x-data="{ scrolling: false }" x-init="() => {
-    $refs.root.addEventListener('scroll', () => {
-        scrolling = true;
-        setTimeout(() => {
-            scrolling = false;
-        }, 1000);
-    });
-}" x-ref="root">
+<div
+    class="max-h-screen px-2 mx-auto overflow-y-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl"
+    style="scrollbar-gutter: stable;"
+    x-data="{ scrolling: false }"
+    x-init="() => {
+        $refs.root.addEventListener('scroll', () => {
+            scrolling = true;
+            setTimeout(() => {
+                scrolling = false;
+            }, 1000);
+        });
+    }"
+    x-ref="root"
+>
     @if ($this->cart->isNotEmpty())
     <div class="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center w-full px-2 mx-auto sm:max-w-sm md:max-w-3xl">
         <x-filament::button
@@ -29,7 +35,13 @@
     </div>
     @endif
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-3.5 gap-x-2.5 py-2" id="grid">
+    <div
+        id="grid"
+        @class([
+            'grid grid-cols-2 md:grid-cols-4 gap-y-3.5 gap-x-2.5 py-2',
+            'mb-5' => $this->cart->isNotEmpty(),
+        ])
+    >
         <div class="col-span-2 md:col-span-4">
             {{ $this->tableInfolist }}
         </div>
@@ -37,8 +49,8 @@
         <div class="col-span-2 md:col-span-4">
             <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
                 <x-filament::input
-                    placeholder="Find your favorite menu ..."
-                    type="text"
+                    placeholder="{{ __('Find your favorite menu ...') }}"
+                    type="search"
                     wire:model.live.debounce.250ms="search"
                     class="py-3.5"
                 />
@@ -50,7 +62,7 @@
                     wire:click="$set('tab', '')"
                     :active="blank($this->tab)"
                 >
-                    All
+                    {{ __('All') }}
                 </x-filament::tabs.item>
                 @foreach ($categories as $category)
                 <x-filament::tabs.item

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Scan;
 use App\Models\Table;
+use App\Support\Encoder;
 use Detection\MobileDetect;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -14,7 +15,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
-use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -23,6 +23,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Sqids\Sqids;
 
 class Browse extends Component implements HasForms, HasInfolists
 {
@@ -118,10 +119,6 @@ class Browse extends Component implements HasForms, HasInfolists
         }
 
         $this->dispatch('close-modal', id: 'product-detail');
-
-        $this->js(<<<'JS'
-            console.log($wire.cart)
-        JS);
     }
 
     #[On('increase-item')]
@@ -133,11 +130,25 @@ class Browse extends Component implements HasForms, HasInfolists
 
         $inCart['amount'] += 1;
 
-        $this->cart->push($inCart)->values();
+        $this->cart = $this->cart->push($inCart)->values();
+    }
 
-        $this->js(<<<'JS'
-            console.log($wire.cart)
-        JS);
+    #[On('decrease-item')]
+    public function decrease(Product $product): void
+    {
+        $key = $this->cart->search('product_id', $product->getKey());
+
+        $inCart = $this->cart->pull($key);
+
+        if ($inCart['amount'] - 1 === 0) {
+            $this->cart = $this->cart->values();
+
+            return;
+        }
+
+        $inCart['amount'] -= 1;
+
+        $this->cart = $this->cart->push($inCart)->values();
     }
 
     #[On('view-cart')]
@@ -150,9 +161,10 @@ class Browse extends Component implements HasForms, HasInfolists
     {
         abort_if(blank($request->u), 404);
 
-        $this->scan = Scan::query()->findOrFail(
-            Arr::first((new Hashids($this->u = $request->u, 5))->decode($this->scanId = $scanId))
-        );
+        $this->scan = Scan::query()->findOrFail(Encoder::decode(
+            $this->u = $request->u,
+            $this->scanId = $scanId,
+        ));
 
         abort_if($this->scan->finished, 403, 'Please rescan the QRCode');
 
@@ -174,7 +186,7 @@ class Browse extends Component implements HasForms, HasInfolists
                     return;
                 }
 
-                $id = Arr::first((new Hashids($this->u, 5))->decode($this->tab));
+                $id = Arr::first((new Sqids($this->u, 5))->decode($this->tab));
 
                 $query->where('category_id', $id);
             })->search($this->search)

@@ -20,9 +20,9 @@ enum QRStatus: int
     public function label(): string
     {
         return match ($this) {
-            self::None => 'None',
-            self::Generating => 'Generating',
-            self::Generated => 'Ready to download',
+            self::None => __('None'),
+            self::Generating => __('Generating'),
+            self::Generated => __('Ready to download'),
         };
     }
 

@@ -19,6 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/redirector', Redirector::class)->name('redirector');
-Route::get('/{scanId}/summary', Browse::class)->name('summary');
-Route::get('/{scanId}', Browse::class)->name('browse');
+Route::get('redirector', Redirector::class)->name('redirector');
+Route::get('scan/{encrypted}', fn (string $encrypted) => $encrypted);
+Route::get('{scanId}/summary', Browse::class)->name('summary');
+Route::get('{scanId}', Browse::class)->name('browse');

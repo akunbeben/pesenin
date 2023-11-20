@@ -4,10 +4,14 @@ import laravel, { refreshPaths } from 'laravel-vite-plugin'
 import { homedir } from 'os'
 import { resolve } from 'path'
 
-let host = 'pesenin.test';
+let host = 'doll-atomic-supporters-graphs.trycloudflare.com';
 
 export default defineConfig({
-    server: detectServerConfig(host),
+    // server: detectServerConfig(host),
+    server: {
+        host: '127.0.0.1',
+        // https: true,
+    },
     plugins: [
         laravel({
             input: [

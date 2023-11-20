@@ -8,12 +8,11 @@ use App\Services\Tables\QRGenerator;
 use App\Traits\Tables\QRStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Hashids\Hashids;
-use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class TableResource extends Resource
@@ -48,6 +47,41 @@ class TableResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Infolists\Components\Grid::make(4)->schema([
+                Infolists\Components\Section::make()->columns(4)->schema([
+                    Infolists\Components\TextEntry::make('name')
+                        ->translateLabel(),
+                    Infolists\Components\TextEntry::make('number')
+                        ->translateLabel(),
+                    Infolists\Components\TextEntry::make('seats')
+                        ->label(__('Capacity'))
+                        ->translateLabel()
+                        ->suffix(__(' Person')),
+                    Infolists\Components\TextEntry::make('qr_status')
+                        ->badge()
+                        ->formatStateUsing(fn (Model $record) => $record->qr_status->label())
+                        ->color(fn (Model $record) => $record->qr_status->color())
+                        ->icon(fn (Model $record) => $record->qr_status->icon())
+                        ->label(__('QR Code')),
+                ])->columnSpan(3),
+                Infolists\Components\Section::make(__('QR Code'))
+                    ->description(__('Tap to see more details'))
+                    ->collapsible()
+                    ->collapsed()
+                    ->schema([
+                        Infolists\Components\ImageEntry::make('url')
+                            ->getStateUsing(fn (Model $record) => $record->getFirstMediaUrl('qr'))
+                            ->hiddenLabel()
+                            ->height('auto')
+                            ->extraImgAttributes(['class' => 'w-full rounded-xl']),
+                    ])->columnSpan(1),
+            ]),
+        ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -57,17 +91,6 @@ class TableResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Table'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('url')
-                    ->default('Open URL')
-                    ->badge()
-                    ->icon('heroicon-m-arrow-up-right')
-                    ->url(fn (Model $record) => route(
-                        'redirector',
-                        [
-                            'uid' => $record->uuid,
-                            'k' => (new Hashids(config('app.key'), 10))->encode($record->created_at->timestamp),
-                        ],
-                    ), true),
                 Tables\Columns\TextColumn::make('qr_status')
                     ->badge()
                     ->formatStateUsing(fn (Model $record) => $record->qr_status->label())
@@ -95,44 +118,45 @@ class TableResource extends Resource
                     ->color(fn (Model $record) => $record->qr_status->color())
                     ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None)
                     ->action(function (Component $livewire, Model $record, QRGenerator $service) {
-                        $service->handle($livewire, $record);
+                        /** @var \App\Models\Table $table */
+                        $table = $record;
+
+                        if (! $table->getFirstMedia('qr')) {
+                            /** @var \SimpleSoftwareIO\QrCode\Generator $service */
+                            $service = app(\SimpleSoftwareIO\QrCode\Generator::class);
+
+                            $table->addMediaFromBase64(base64_encode(
+                                $service->format('png')
+                                    ->margin(2)
+                                    ->size(1000)
+                                    ->generate($table->url)
+                            ))->toMediaCollection('qr');
+
+                            $table->update(['qr_status' => QRStatus::Generated]);
+                        }
                     }),
+                Tables\Actions\Action::make('open_url')
+                    ->label(__('Open URL'))
+                    ->icon('heroicon-m-arrow-up-right')
+                    ->url(fn (Model $record) => $record->url, true),
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-cloud-arrow-down')
                     ->color(fn (Model $record) => $record->qr_status->color())
                     ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::Generated)
-                    ->action(function (Component $livewire, Model $record) {
-                        dd($livewire, $record);
+                    ->action(function (Model $record) {
+                        return response()->download($record->getFirstMediaPath('qr'), "{$record->uuid}.png");
                     }),
-                Tables\Actions\EditAction::make()
-                    ->modalWidth('xl')
-                    ->hidden($deleted = fn (Model $record): bool => (bool) $record->deleted_at),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make()->visible($deleted),
-                Tables\Actions\ForceDeleteAction::make()->visible($deleted),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->modalWidth('xl')
+                        ->hidden($deleted = fn (Model $record): bool => (bool) $record->deleted_at),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make()->visible($deleted),
+                    Tables\Actions\ForceDeleteAction::make()->visible($deleted),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\BulkAction::make('download_all')
-                        ->label(__('Download available QR'))
-                        ->icon('heroicon-o-cloud-arrow-down')
-                        ->color('primary')
-                        ->action(function (Component $livewire, Collection $records, QRGenerator $service) {
-                            $service->handle($livewire, $records);
-                        })
-                        ->hidden(function (HasTable $livewire): bool {
-                            $trashedFilterState = $livewire->getTableFilterState(TrashedFilter::class) ?? [];
-
-                            if (! array_key_exists('value', $trashedFilterState)) {
-                                return false;
-                            }
-
-                            if ($trashedFilterState['value']) {
-                                return false;
-                            }
-
-                            return filled($trashedFilterState['value']);
-                        }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
@@ -142,6 +166,7 @@ class TableResource extends Resource
     {
         return [
             'index' => Pages\ManageTables::route('/'),
+            'view' => Pages\ViewTable::route('/{record}'),
         ];
     }
 }

@@ -126,6 +126,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'scheme' => env('APP_SCHEME', 'http'),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
