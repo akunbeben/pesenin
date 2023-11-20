@@ -1,7 +1,7 @@
 {
     "preset": "laravel",
     "rules": {
-        "blank_line_before_statement": true,
+        "blank_line_before_statement": false,
         "concat_space": {
             "spacing": "one"
         },

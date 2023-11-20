@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Run the PHP code style fixer
-./vendor/bin/pint
+staged_files=$(git diff --cached --name-only)
 
-# If pint fixes any code style issues, we should add those files to the commit
-git add .
+if [ -n "$staged_files" ]; then
+    ./vendor/bin/pint
+    git add $staged_files
+fi
 
-# If pint exits with a non-zero status, the commit will be aborted
 exit 0
