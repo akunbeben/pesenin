@@ -147,7 +147,7 @@
     </div>
 
     <x-filament::modal slide-over id="my-cart">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between p-5">
             <button type="button" class="z-10 p-1 rounded-full top-5 left-5 bg-gray-100/50 md:hidden" x-on:click="$dispatch('close-modal', { id: 'my-cart' })">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />

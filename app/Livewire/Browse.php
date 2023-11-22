@@ -109,7 +109,7 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('add-to-cart')]
     public function addToCart(Product $product): void
     {
-        if (! $this->cart->contains('product_id', $product->getKey())) {
+        if ($this->cart->where('product_id', $product->getKey())->isEmpty()) {
             $this->cart->push([
                 'product_id' => $product->getKey(),
                 'snapshot' => $product->toArray(),
@@ -124,36 +124,42 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('increase-item')]
     public function increase(Product $product): void
     {
-        $key = $this->cart->search('product_id', $product->getKey());
+        $this->cart = $this->cart->transform(function ($item) use ($product) {
+            if ($item['product_id'] !== $product->getKey()) {
+                return $item;
+            }
 
-        $inCart = $this->cart->pull($key);
+            $item['amount'] += 1;
 
-        $inCart['amount'] += 1;
-
-        $this->cart = $this->cart->push($inCart)->values();
+            return $item;
+        })->filter();
     }
 
     #[On('decrease-item')]
     public function decrease(Product $product): void
     {
-        $key = $this->cart->search('product_id', $product->getKey());
+        $this->cart = $this->cart->transform(function ($item) use ($product) {
+            if ($item['product_id'] !== $product->getKey()) {
+                return $item;
+            }
 
-        $inCart = $this->cart->pull($key);
+            if ($item['amount'] <= 1) {
+                return null;
+            }
 
-        if ($inCart['amount'] - 1 === 0) {
-            $this->cart = $this->cart->values();
+            $item['amount'] -= 1;
 
-            return;
-        }
-
-        $inCart['amount'] -= 1;
-
-        $this->cart = $this->cart->push($inCart)->values();
+            return $item;
+        })->filter();
     }
 
     #[On('view-cart')]
     public function viewCart(): void
     {
+        $this->js(<<<'JS'
+            console.log($wire.cart)
+        JS);
+
         $this->dispatch('open-modal', id: 'my-cart');
     }
 
