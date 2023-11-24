@@ -37,7 +37,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 15000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://majalah.ottenstatic.com/uploads/2016/09/espresso-013-1024x681.jpg',
             ],
             [
@@ -46,7 +46,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 18000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://id.jura.com/-/media/global/images/coffee-recipes/images-redesign-2020/cappuccino_2000x1400px.jpg',
             ],
             [
@@ -55,7 +55,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 17000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://www.foodandwine.com/thmb/CCe2JUHfjCQ44L0YTbCu97ukUzA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Partners-Latte-FT-BLOG0523-09569880de524fe487831d95184495cc.jpg',
             ],
             [
@@ -64,7 +64,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 20000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://images.immediate.co.uk/production/volatile/sites/2/2021/11/Mocha-1fc71f7.png?quality=90&resize=556,505',
             ],
             [
@@ -73,7 +73,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 14000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://kopibandung.com/wp-content/uploads/2022/04/kopi-macchiato-espresso-susu.jpg',
             ],
             [
@@ -82,7 +82,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 16000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://cafe1820.com/wp-content/uploads/2022/03/Cafe-ristretto-1.jpg',
             ],
             [
@@ -91,7 +91,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 13000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://dcostseafood.id/wp-content/uploads/2022/03/Kopi-Tubruk.jpg',
             ],
             [
@@ -100,7 +100,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 14000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://asset.kompas.com/crops/abzfBx7I1v0rsldNAm3UjFoH63I=/0x0:1000x667/750x500/data/photo/2020/07/26/5f1d9e3132c94.jpg',
             ],
             [
@@ -109,7 +109,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 22000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://journal.momotrip.co.id/wp-content/uploads/2017/02/Kopi-Aceh.jpg',
             ],
             [
@@ -118,7 +118,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 23000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://www.nescafe.com/id/sites/default/files/Kopi%20Kintamani%20Kopi%20Arabika%20dengan%20Cita%20Rasa%20yang%20Unik.jpg',
             ],
             [
@@ -127,7 +127,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 21000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://buahberdikari.com/storage/2021/03/sensecuadorcom.jpg',
             ],
             [
@@ -136,7 +136,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 24000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://awsimages.detik.net.id/community/media/visual/2023/01/18/fakta-biji-kopi-toraja-1.jpeg?w=1200',
             ],
             [
@@ -145,7 +145,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 20000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://asset-2.tstatic.net/style/foto/bank/images/kopi_20170822_171550.jpg',
             ],
             [
@@ -154,7 +154,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 23000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://miro.medium.com/v2/resize:fit:1358/1*u8bOWB9aRLVT9G6Fko0EaQ.jpeg',
             ],
             [
@@ -163,7 +163,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 17000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://assets.pikiran-rakyat.com/crop/0x0:0x0/x/photo/2020/11/27/4278595172.jpg',
             ],
             [
@@ -172,7 +172,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 16000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://img-global.cpcdn.com/recipes/9466ed9bb1eef620/1200x630cq70/photo.jpg',
             ],
             [
@@ -181,7 +181,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 19000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://www.taslabnews.com/wp-content/uploads/2019/09/bisnis-es-kopi-1.jpg',
             ],
             [
@@ -190,7 +190,7 @@ class DevelopmentSeeder extends Seeder
                 'price' => 18000,
                 'availability' => true,
                 'recommended' => rand(0, 1),
-                'variants' => ['Regular', 'Large'],
+                'variants' => $this->variants(),
                 'image' => 'https://www.jagel.id/api/listimage/v/Pandan-Coffee-Ice-0-7845f300ffed0164.jpg',
             ],
         ])->each(function ($product) use ($categories, $merchant) {
@@ -206,5 +206,12 @@ class DevelopmentSeeder extends Seeder
         });
 
         $merchant->tables()->create(['number' => 1, 'seats' => 4]);
+    }
+
+    private function variants(): ?array
+    {
+        $options = ['Regular', 'Large'];
+
+        return (bool) rand(0, 1) ? $options : null;
     }
 }

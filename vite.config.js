@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
+import fs from 'fs'
 import laravel, { refreshPaths } from 'laravel-vite-plugin'
+import { homedir } from 'os'
+import { resolve } from 'path'
+
+let host = 'pesenin.test'
 
 export default defineConfig({
-    server: {
-        host: 'pesenin.fly.dev',
-        https: true,
-    },
+    server: detectServerConfig(host),
     plugins: [
         laravel({
             input: [
@@ -17,4 +19,27 @@ export default defineConfig({
             refresh: [...refreshPaths, 'app/Filament/**', 'app/Providers/Filament/**', 'app/Livewire/**'],
         }),
     ],
-});
+})
+
+function detectServerConfig(host) {
+    let keyPath = resolve(homedir(), `.valet/Certificates/${host}.key`)
+    let certificatePath = resolve(homedir(), `.valet/Certificates/${host}.crt`)
+
+    if (!fs.existsSync(keyPath)) {
+        return {}
+    }
+
+    if (!fs.existsSync(certificatePath)) {
+        return {}
+    }
+
+    return {
+        hmr: { host },
+        host,
+        https: {
+            key: fs.readFileSync(keyPath),
+            cert: fs.readFileSync(certificatePath),
+        },
+    }
+}
+

@@ -88,7 +88,7 @@ class ProductResource extends Resource
                 Grid::make()->columns(1)->schema([
                     Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')
                         ->collection('banner')
-                        ->extraImgAttributes(['class' => 'w-full !sm:h-60 !h-60 rounded-xl'])
+                        ->extraImgAttributes(['class' => 'w-full !aspect-square rounded-xl'])
                         ->extraAttributes(['class' => '!w-full'])
                         ->height('auto'),
                     Tables\Columns\TextColumn::make('name')
