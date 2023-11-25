@@ -4,6 +4,7 @@ const colors = require('tailwindcss/colors');
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 export default {
+    darkMode: 'media',
     presets: [preset],
     content: [
         './app/Filament/**/*.php',
@@ -33,7 +34,6 @@ export default {
             colors: {
                 custom: colors.sky,
                 danger: colors.rose,
-                gray: colors.gray,
                 info: colors.blue,
                 primary: colors.sky,
                 success: colors.emerald,

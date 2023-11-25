@@ -78,19 +78,16 @@ namespace App\Models{
  * @property string $country
  * @property string $zip
  * @property string $phone
- * @property string|null $lmsqueezy_id
+ * @property string|null $business_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
  * @property-read int|null $categories_count
- * @property-read \LemonSqueezy\Laravel\Customer|null $customer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
  * @property-read \App\Models\Setting|null $setting
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \LemonSqueezy\Laravel\Subscription> $subscriptions
- * @property-read int|null $subscriptions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Table> $tables
  * @property-read int|null $tables_count
  * @property-read \App\Models\User $user
@@ -98,11 +95,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant query()
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereBusinessId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereLmsqueezyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUpdatedAt($value)

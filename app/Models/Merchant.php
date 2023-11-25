@@ -13,14 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
-use LemonSqueezy\Laravel\Billable;
 use OwenIt\Auditing\Auditable;
 use Spatie\Color\Rgb;
 
 class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, HasAvatar
 {
     use Auditable;
-    use Billable;
     use HasAvatars;
     use HasFactory;
 

@@ -41,6 +41,8 @@ class CentralPanelProvider extends PanelProvider
             ->font('Be Vietnam Pro', 'https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700')
             ->topNavigation()
             ->maxContentWidth('full')
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('250px')
             ->viteTheme('resources/css/filament/central/theme.css')
             ->discoverResources(in: app_path('Filament/Central/Resources'), for: 'App\\Filament\\Central\\Resources')
             ->discoverPages(in: app_path('Filament/Central/Pages'), for: 'App\\Filament\\Central\\Pages')

@@ -17,14 +17,14 @@
         "laravel/octane": "^2.1",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "lemonsqueezy/laravel": "^1.1",
         "linkeys/signed-url": "^6.0",
-        "midtrans/midtrans-php": "^2.5",
         "mobiledetect/mobiledetectlib": "^3.74",
         "owen-it/laravel-auditing": "^13.5",
         "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/laravel-export": "^0.3.11",
         "sqids/sqids": "^0.4.1",
-        "tapp/filament-auditing": "^3.0"
+        "tapp/filament-auditing": "^3.0",
+        "xendit/xendit-php": "^3.6"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.9",

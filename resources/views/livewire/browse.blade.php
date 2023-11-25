@@ -81,14 +81,14 @@
                 @if ($product->recommended)
                 <span class="absolute px-2 py-1 text-xs rounded-xl left-1.5 top-1.5 bg-primary-500 text-white">Recommended</span>
                 @endif
-                <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center w-full border-b sm:h-32 h-28 rounded-xl">
+                <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center aspect-square rounded-xl">
                 <div class="flex items-center gap-1">
                     @if ($this->cart->contains($product))
                     <span class="relative inline-flex w-2 h-2 rounded-full bg-primary-500"></span>
                     @endif
-                    <span class="text-xs font-semibold text-gray-700">{{ $product->name }}</span>
+                    <span class="text-xs font-semibold text-gray-950 dark:text-white">{{ $product->name }}</span>
                 </div>
-                <span class="text-xs text-gray-700">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                <span class="text-xs text-gray-950 dark:text-white">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             </div>
             @if (! $this->cart->contains('product_id', $product->getKey()))
             <x-filament::button
@@ -116,7 +116,7 @@
                     </svg>
                 </x-filament::button>
 
-                <span class="text-sm">{{ $this->cart->firstWhere('product_id', $product->getKey())['amount'] }}</span>
+                <span class="text-sm text-gray-950 dark:text-white">{{ $this->cart->firstWhere('product_id', $product->getKey())['amount'] }}</span>
 
                 <x-filament::button
                     size="xs"
@@ -234,12 +234,12 @@
         </div>
 
         <div class="flex flex-col p-3 grow gap-y-5">
-            <span class="text-lg font-semibold">{{ $showed?->name }}</span>
-            <p class="text-sm font-normal text-gray-600 line-clamp-5">{{ $showed?->description }}</p>
+            <span class="text-lg font-semibold text-gray-950 dark:text-white">{{ $showed?->name }}</span>
+            <p class="text-sm font-normal text-gray-950 dark:text-white line-clamp-5">{{ $showed?->description }}</p>
             <div class="grid gap-2.5 {{ 'grid-cols-' . count($showed?->variants ?? []) }}">
                 @forelse ($showed?->variants ?? [] as $variant)
                 <button
-                    class="relative p-2.5 text-sm flex gap-2.5 justify-center border {{ $this->variant === $variant ? 'border-primary-500 text-primary-500' : 'border-gray-500 text-gray-500' }} rounded-xl"
+                    class="relative p-2.5 text-sm flex gap-2.5 justify-center border {{ $this->variant === $variant ? 'border-primary-500 text-primary-500' : 'border-gray-500 text-gray-950 dark:text-white' }} rounded-xl"
                     type="button"
                     wire:click="$dispatch('select-variant', {variant: '{{ $variant }}'})"
                 >
