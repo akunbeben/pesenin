@@ -4,6 +4,7 @@ namespace App\Filament\Central\Resources;
 
 use App\Filament\Central\Resources\UserResource\Pages;
 use App\Filament\Central\Resources\UserResource\RelationManagers;
+use App\Jobs\RegisterDestinationAddress;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 class UserResource extends Resource
@@ -109,6 +111,10 @@ class UserResource extends Resource
                             'email_verified_at' => now()->toDateTimeString(),
                             'require_reset' => true,
                         ];
+                    })
+                    ->after(function (User $record) {
+                        $record->sendPasswordResetNotification(Password::getRepository()->create($record));
+                        RegisterDestinationAddress::dispatch($record);
                     })
                     ->createAnother(false)
                     ->icon('heroicon-m-plus')

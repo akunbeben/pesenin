@@ -31,4 +31,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'xendit' => [
+        'secret_key' => env('XENDIT_SECRET_KEY'),
+        'public_key' => env('XENDIT_PUBLIC_KEY'),
+    ],
+
+    'cloudflare' => [
+        'key' => env('CLOUDFLARE_API_KEY'),
+        'zone' => env('CLOUDFLARE_ZONE'),
+        'account' => env('CLOUDFLARE_ACCOUNT'),
+    ],
 ];

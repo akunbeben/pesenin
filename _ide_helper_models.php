@@ -72,6 +72,7 @@ namespace App\Models{
  * @property int $id
  * @property int $user_id
  * @property string $uuid
+ * @property string|null $cloudflare_email
  * @property string $name
  * @property string $address
  * @property string $city
@@ -97,6 +98,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereBusinessId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCloudflareEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereId($value)
@@ -279,6 +281,17 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Transaction
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction query()
+ */
+	class Transaction extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\User
  *
  * @property int $id
@@ -312,6 +325,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUuid($value)
  */
-	class User extends \Eloquent implements \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasTenants {}
+	class User extends \Eloquent implements \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasTenants, \Filament\Models\Contracts\FilamentUser {}
 }
 

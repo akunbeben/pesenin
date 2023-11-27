@@ -4,7 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Filament\Facades\Filament;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
@@ -20,7 +22,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Color\Rgb;
 
-class User extends Authenticatable implements HasAvatar, HasTenants
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenants
 {
     use HasApiTokens;
     use HasAvatars;
@@ -96,8 +98,28 @@ class User extends Authenticatable implements HasAvatar, HasTenants
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
             ->join(' ');
 
-        $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][950] . ')')->toHex();
+        $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][800] . ')')->toHex();
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() !== 'central') {
+            return true;
+        }
+
+        return in_array($this->email, explode(',', config('app.central')));
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

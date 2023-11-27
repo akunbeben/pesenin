@@ -128,6 +128,8 @@ return [
 
     'scheme' => env('APP_SCHEME', 'http'),
 
+    'central' => env('APP_CENTRAL_USER'),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

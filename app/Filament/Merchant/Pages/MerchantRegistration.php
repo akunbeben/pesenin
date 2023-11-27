@@ -2,10 +2,13 @@
 
 namespace App\Filament\Merchant\Pages;
 
+use App\Jobs\ForwardingEmail;
+use App\Models\Merchant;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\Tenancy\RegisterTenant as Page;
+use Illuminate\Database\Eloquent\Model;
 
 class MerchantRegistration extends Page
 {
@@ -50,5 +53,14 @@ class MerchantRegistration extends Page
         $data['user_id'] = Filament::auth()->id();
 
         return $data;
+    }
+
+    protected function handleRegistration(array $data): Model
+    {
+        $merchant = Merchant::query()->create($data);
+
+        ForwardingEmail::dispatch($merchant->user, $merchant);
+
+        return $merchant;
     }
 }

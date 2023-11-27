@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
             $table->uuid();
+            $table->string('cloudflare_email')->nullable();
             $table->string('name');
             $table->text('address');
             $table->string('city');

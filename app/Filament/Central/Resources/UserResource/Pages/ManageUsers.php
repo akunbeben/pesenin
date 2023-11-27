@@ -3,8 +3,11 @@
 namespace App\Filament\Central\Resources\UserResource\Pages;
 
 use App\Filament\Central\Resources\UserResource;
+use App\Jobs\RegisterDestinationAddress;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 class ManageUsers extends ManageRecords
@@ -22,6 +25,10 @@ class ManageUsers extends ManageRecords
                         'email_verified_at' => now()->toDateTimeString(),
                         'require_reset' => true,
                     ];
+                })
+                ->after(function (User $record) {
+                    $record->sendPasswordResetNotification(Password::getRepository()->create($record));
+                    RegisterDestinationAddress::dispatch($record);
                 })
                 ->createAnother(false)
                 ->icon('heroicon-m-plus')

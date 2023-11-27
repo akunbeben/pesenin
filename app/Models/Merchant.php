@@ -25,9 +25,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
     protected $fillable = [
         'user_id',
         'uuid',
+        'cloudflare_email',
         'name',
         'address',
         'phone',
+        'business_id',
         'city',
         'country',
         'zip',
@@ -91,7 +93,7 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
             ->join(' ');
 
-        $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][950] . ')')->toHex();
+        $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][800] . ')')->toHex();
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
     }
