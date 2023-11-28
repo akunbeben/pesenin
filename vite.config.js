@@ -7,7 +7,10 @@ import { resolve } from 'path'
 let host = 'pesenin.test'
 
 export default defineConfig({
-    server: detectServerConfig(host),
+    // server: detectServerConfig(host),
+    server: {
+        hmr: '127.0.0.1',
+    },
     plugins: [
         laravel({
             input: [

@@ -26,12 +26,12 @@ class TableResource extends Resource
 
     public static function isDiscovered(): bool
     {
-        return ! Feature::active('ikiosk');
+        return ! Feature::for(Filament::getTenant())->active('ikiosk');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return ! Filament::getTenant()->setting->ikiosk_mode;
+        return ! Feature::for(Filament::getTenant())->active('ikiosk');
     }
 
     public static function form(Form $form): Form

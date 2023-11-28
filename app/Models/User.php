@@ -14,6 +14,7 @@ use Filament\Panel\Concerns\HasAvatars;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -40,6 +41,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
         'password',
         'require_reset',
         'email_verified_at',
+        'active_merchant',
     ];
 
     /**
@@ -88,6 +90,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
     public function merchants(): HasMany
     {
         return $this->hasMany(Merchant::class);
+    }
+
+    public function activeMerchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class, 'active_merchant');
     }
 
     public function getFilamentAvatarUrl(): ?string

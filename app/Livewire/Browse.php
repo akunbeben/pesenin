@@ -172,6 +172,7 @@ class Browse extends Component implements HasForms, HasInfolists
             $this->scanId = $scanId,
         ));
 
+        abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
         abort_if($this->scan->finished, 403, 'Please rescan the QRCode');
         abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
 

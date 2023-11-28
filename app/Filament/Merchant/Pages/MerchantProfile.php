@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Pages\Tenancy\EditTenantProfile as Page;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Laravel\Pennant\Feature;
 
 class MerchantProfile extends Page
 {
@@ -55,9 +56,11 @@ class MerchantProfile extends Page
                             ->statePath('setting')
                             ->schema([
                                 Forms\Components\Toggle::make('cash_mode')
-                                    ->helperText(__('You can activate it to receive cash payment from customers')),
+                                    ->label(__('Accept cash payment'))
+                                    ->helperText(__('You have the option to activate it, allowing you to seamlessly receive cash payments from customers.')),
                                 Forms\Components\Toggle::make('ikiosk_mode')
-                                    ->helperText(__('The default system uses the \'Multiple-tables QRCode ordering\' schema. If you have an iKiosk device, you can activate it, and it will switch to a single QRCode instance')),
+                                    ->label(__('iKiosk mode'))
+                                    ->helperText(__('The standard system employs the \'Multiple-tables QRCode ordering\' structure. If you possess an iKiosk device, activating it will cause a transition to a singular QRCode instance.')),
                             ]),
                     ]),
             ]);
@@ -71,7 +74,7 @@ class MerchantProfile extends Page
 
             $record->setting()->updateOrCreate([], $data['setting']);
 
-            if ($data['setting']['ikiosk_mode']) {
+            if ($active = (bool) $data['setting']['ikiosk_mode']) {
                 $record->tables()->getQuery()->forceDelete();
 
                 $record->tables()->create([
@@ -79,6 +82,8 @@ class MerchantProfile extends Page
                     'seats' => 0,
                 ]);
             }
+
+            Feature::for($record)->activate('ikiosk', $active);
 
             return $record;
         });

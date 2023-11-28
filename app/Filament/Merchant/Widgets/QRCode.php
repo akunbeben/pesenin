@@ -4,11 +4,20 @@ namespace App\Filament\Merchant\Widgets;
 
 use App\Models\Table;
 use App\Traits\Tables\QRStatus;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Widgets\Widget;
+use Laravel\Pennant\Feature;
 
-class QRCode extends Widget
+class QRCode extends Widget implements HasActions, HasForms
 {
+    use InteractsWithActions;
+    use InteractsWithForms;
+
     protected static string $view = 'filament.merchant.widgets.q-r-code';
 
     protected static ?int $sort = 3;
@@ -16,6 +25,38 @@ class QRCode extends Widget
     protected int | string | array $columnSpan = 2;
 
     public Table $table;
+
+    public static function isDiscovered(): bool
+    {
+        return Feature::for(Filament::getTenant())->active('ikiosk');
+    }
+
+    public function visitAction(): Action
+    {
+        return Action::make('open_url')
+            ->icon('heroicon-o-arrow-top-right-on-square')
+            ->extraAttributes(['class' => 'w-full'])
+            ->outlined()
+            ->url($this->table->url, true);
+    }
+
+    public function downloadAction(): Action
+    {
+        $media = $this->table->getFirstMedia('qr');
+
+        return Action::make('download')
+            ->icon('heroicon-o-arrow-down-on-square')
+            ->extraAttributes(['class' => 'w-full'])
+            ->outlined()
+            ->action(fn () => response()->download(
+                $media->getPath(),
+                str($this->table->merchant->name)->slug(),
+                [
+                    'Content-Type' => 'image/png',
+                    'Content-Length' => $media->size,
+                ]
+            ));
+    }
 
     public function mount(): void
     {
