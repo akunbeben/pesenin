@@ -1,4 +1,7 @@
 {
+    "category": "kategori",
+    "Category": "Kategori",
+    "Categories": "Kategori",
     "Dashboard": "Dashboard",
     "Find your favorite menu ...": "Temukan menu favorit anda ...",
     "Tap to see more details": "Tap untuk melihat rincian",
@@ -21,5 +24,9 @@
     "Zip Code": "Kode pos",
     "Country": "Negara",
     "Owner": "Pemilik",
-    "Time": "Waktu"
+    "Time": "Waktu",
+    "Delete :label": "Hapus :label",
+    "Edit :label": "Ubah :label",
+    "Create :label": "Buat :label",
+    "Add :label": "Tambah :label"
 }

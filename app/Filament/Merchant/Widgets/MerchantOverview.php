@@ -21,13 +21,13 @@ class MerchantOverview extends BaseWidget
 
     public function mount(): void
     {
-        $this->balance = Cache::remember(Filament::getTenant()->getKey() . 'balance-cash', now()->addSeconds(86400), function () {
+        $this->balance = Cache::remember(Filament::getTenant()->getKey() . 'balance-cash', now()->addHour(), function () {
             \Xendit\Configuration::setXenditKey(config('services.xendit.secret_key'));
 
             return (new BalanceApi())->getBalance(for_user_id: Filament::getTenant()->business_id)['balance'];
         });
 
-        $this->holding = Cache::remember(Filament::getTenant()->getKey() . 'balance-holding', now()->addSeconds(86400), function () {
+        $this->holding = Cache::remember(Filament::getTenant()->getKey() . 'balance-holding', now()->addHour(), function () {
             \Xendit\Configuration::setXenditKey(config('services.xendit.secret_key'));
 
             return (new BalanceApi())->getBalance('HOLDING', for_user_id: Filament::getTenant()->business_id)['balance'];
@@ -38,9 +38,11 @@ class MerchantOverview extends BaseWidget
     {
         return [
             Stat::make(__('Balance'), Number::currency($this->balance, 'IDR', 'id'))
-                ->icon('heroicon-m-banknotes'),
+                ->icon('heroicon-m-banknotes')
+                ->description(__('Data will refresh every hour')),
             Stat::make(__('On-Hold'), Number::currency($this->holding, 'IDR', 'id'))
-                ->icon('heroicon-m-hand-raised'),
+                ->icon('heroicon-m-hand-raised')
+                ->description(__('Data will refresh every hour')),
         ];
     }
 

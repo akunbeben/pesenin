@@ -7,7 +7,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
 
-class LastestTransactions extends BaseWidget
+class LatestTransactions extends BaseWidget
 {
     protected static ?int $sort = 2;
 
@@ -15,7 +15,12 @@ class LastestTransactions extends BaseWidget
 
     protected function getTableHeading(): string | Htmlable | null
     {
-        return __('Lastest transactions');
+        return __('Latest transactions');
+    }
+
+    protected function getTableDescription(): string | Htmlable | null
+    {
+        return __('Data will refresh every hour');
     }
 
     public function table(Table $table): Table

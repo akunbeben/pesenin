@@ -21,6 +21,8 @@ class TableResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-square-3-stack-3d';
 
+    protected static ?string $navigationGroup = 'Front of House';
+
     public static function form(Form $form): Form
     {
         return $form

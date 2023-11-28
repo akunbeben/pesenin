@@ -14,7 +14,24 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-squares-2x2';
+    protected static ?string $navigationIcon = 'heroicon-m-archive-box';
+
+    protected static ?string $navigationGroup = 'Front of House';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Category');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Category');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Category');
+    }
 
     public static function form(Form $form): Form
     {
@@ -36,8 +53,11 @@ class CategoryResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->modalWidth('lg'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->modalHeading(__('Edit :label', ['label' => __('category')]))
+                    ->modalWidth('lg'),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(__('Delete :label', ['label' => __('category')])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

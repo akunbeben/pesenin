@@ -4,18 +4,22 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\ProductResource\Pages;
 use App\Models\Product;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-m-squares-2x2';
+
+    protected static ?string $navigationGroup = 'Front of House';
 
     public static function form(Form $form): Form
     {
@@ -52,7 +56,7 @@ class ProductResource extends Resource
                             ->numeric()
                             ->columnSpanFull(),
                         Forms\Components\Select::make('category_id')
-                            ->relationship('category', 'name')
+                            ->relationship('category', 'name', fn (Builder $query) => $query->where('merchant_id', Filament::getTenant()->getKey()))
                             ->native(false)
                             ->label(__('Category'))
                             ->required()

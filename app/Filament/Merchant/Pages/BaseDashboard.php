@@ -9,6 +9,8 @@ class BaseDashboard extends Dashboard
 {
     protected static ?string $navigationIcon = 'heroicon-m-home';
 
+    protected static ?string $navigationGroup = 'Front of House';
+
     public static function getNavigationLabel(): string
     {
         return __('Dashboard');
