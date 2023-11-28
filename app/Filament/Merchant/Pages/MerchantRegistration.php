@@ -59,6 +59,8 @@ class MerchantRegistration extends Page
     {
         $merchant = Merchant::query()->create($data);
 
+        $merchant->setting()->create();
+
         ForwardingEmail::dispatch($merchant->user, $merchant);
 
         return $merchant;

@@ -21,6 +21,21 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Front of House';
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Products');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Product');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Product');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -94,6 +109,7 @@ class ProductResource extends Resource
                         ->collection('banner')
                         ->extraImgAttributes(['class' => 'w-full !aspect-square rounded-xl'])
                         ->extraAttributes(['class' => '!w-full'])
+                        ->limit(1)
                         ->height('auto'),
                     Tables\Columns\TextColumn::make('name')
                         ->description(fn (Product $record) => str($record->description)->words(10))

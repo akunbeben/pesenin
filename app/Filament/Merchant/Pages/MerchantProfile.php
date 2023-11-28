@@ -71,6 +71,15 @@ class MerchantProfile extends Page
 
             $record->setting()->updateOrCreate([], $data['setting']);
 
+            if ($data['setting']['ikiosk_mode']) {
+                $record->tables()->getQuery()->forceDelete();
+
+                $record->tables()->create([
+                    'number' => 1,
+                    'seats' => 0,
+                ]);
+            }
+
             return $record;
         });
     }

@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Merchant;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Pennant\Feature;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         URL::forceScheme(config('app.scheme'));
+
+        Feature::define('ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);
     }
 }

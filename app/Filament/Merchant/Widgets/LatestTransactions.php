@@ -11,7 +11,7 @@ class LatestTransactions extends BaseWidget
 {
     protected static ?int $sort = 2;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 4;
 
     protected function getTableHeading(): string | Htmlable | null
     {
@@ -26,6 +26,7 @@ class LatestTransactions extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
+            ->paginated(false)
             ->query(
                 Transaction::query(),
             )

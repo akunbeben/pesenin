@@ -20,4 +20,9 @@ class BaseDashboard extends Dashboard
     {
         return __('Dashboard');
     }
+
+    public function getColumns(): int | string | array
+    {
+        return 6;
+    }
 }

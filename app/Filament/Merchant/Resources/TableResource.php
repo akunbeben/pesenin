@@ -6,6 +6,7 @@ use App\Filament\Merchant\Resources\TableResource\Pages;
 use App\Models\Table as Model;
 use App\Services\Tables\QRGenerator;
 use App\Traits\Tables\QRStatus;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -13,7 +14,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Livewire\Component;
+use Laravel\Pennant\Feature;
 
 class TableResource extends Resource
 {
@@ -22,6 +23,16 @@ class TableResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-square-3-stack-3d';
 
     protected static ?string $navigationGroup = 'Front of House';
+
+    public static function isDiscovered(): bool
+    {
+        return ! Feature::active('ikiosk');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return ! Filament::getTenant()->setting->ikiosk_mode;
+    }
 
     public static function form(Form $form): Form
     {
@@ -119,7 +130,7 @@ class TableResource extends Resource
                     ->icon('heroicon-o-arrow-path')
                     ->color(fn (Model $record) => $record->qr_status->color())
                     ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None)
-                    ->action(function (Component $livewire, Model $record, QRGenerator $service) {
+                    ->action(function (Model $record, QRGenerator $service) {
                         /** @var \App\Models\Table $table */
                         $table = $record;
 

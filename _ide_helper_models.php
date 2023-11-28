@@ -281,17 +281,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Transaction
- *
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction query()
- */
-	class Transaction extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
  * App\Models\User
  *
  * @property int $id
@@ -325,6 +314,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUuid($value)
  */
-	class User extends \Eloquent implements \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasTenants, \Filament\Models\Contracts\FilamentUser {}
+	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser, \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasTenants {}
 }
 
