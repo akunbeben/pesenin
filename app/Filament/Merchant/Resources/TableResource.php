@@ -41,12 +41,12 @@ class TableResource extends Resource
 
     public static function isDiscovered(): bool
     {
-        return !Feature::for(Filament::getTenant())->active('ikiosk');
+        return ! Feature::for(Filament::getTenant())->active('ikiosk');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return !Feature::for(Filament::getTenant())->active('ikiosk');
+        return ! Feature::for(Filament::getTenant())->active('ikiosk');
     }
 
     public static function form(Form $form): Form
@@ -149,7 +149,7 @@ class TableResource extends Resource
                         /** @var \App\Models\Table $table */
                         $table = $record;
 
-                        if (!$table->getFirstMedia('qr')) {
+                        if (! $table->getFirstMedia('qr')) {
                             /** @var \SimpleSoftwareIO\QrCode\Generator $service */
                             $service = app(\SimpleSoftwareIO\QrCode\Generator::class);
 

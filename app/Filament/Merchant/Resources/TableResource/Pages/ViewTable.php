@@ -27,14 +27,14 @@ class ViewTable extends ViewRecord
 
         $this->authorizeAccess();
 
-        if (!$this->hasInfolist()) {
+        if (! $this->hasInfolist()) {
             $this->fillForm();
         }
 
         /** @var \App\Models\Table $table */
         $table = $this->record;
 
-        if (!$table->getFirstMedia('qr')) {
+        if (! $table->getFirstMedia('qr')) {
             /** @var \SimpleSoftwareIO\QrCode\Generator $service */
             $service = app(\SimpleSoftwareIO\QrCode\Generator::class);
 

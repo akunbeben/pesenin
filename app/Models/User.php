@@ -24,7 +24,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Color\Rgb;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenants, HasDefaultTenant
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasTenants
 {
     use HasApiTokens;
     use HasAvatars;
