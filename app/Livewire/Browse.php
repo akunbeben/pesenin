@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Laravel\Pennant\Feature;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -62,9 +63,17 @@ class Browse extends Component implements HasForms, HasInfolists
                     ->collapsible()
                     ->collapsed()
                     ->schema([
-                        TextEntry::make('name')->label(__('Table'))->columnSpan(1),
-                        TextEntry::make('seats')->translateLabel()->columnSpan(1),
-                        TextEntry::make('merchant.name')->translateLabel()->columnSpan(2),
+                        TextEntry::make('name')
+                            ->label(__('Table'))
+                            ->hidden(Feature::for($this->table->merchant)->active('ikiosk'))
+                            ->columnSpan(Feature::for($this->table->merchant)->active('ikiosk') ? 2 : 1),
+                        TextEntry::make('seats')
+                            ->hidden(Feature::for($this->table->merchant)->active('ikiosk'))
+                            ->translateLabel()
+                            ->columnSpan(1),
+                        TextEntry::make('merchant.name')
+                            ->translateLabel()
+                            ->columnSpan(2),
                     ]),
             ]);
     }
@@ -111,7 +120,7 @@ class Browse extends Component implements HasForms, HasInfolists
         if ($this->cart->where('product_id', $product->getKey())->isEmpty()) {
             $this->cart->push([
                 'product_id' => $product->getKey(),
-                'snapshot' => $product->toArray(),
+                'snapshot' => array_merge($product->toArray(), ['image' => $product->getFirstMediaUrl('banner')]),
                 'variant' => $this->variant,
                 'amount' => 1,
             ]);
@@ -175,8 +184,18 @@ class Browse extends Component implements HasForms, HasInfolists
         abort_if($this->scan->finished, 403, 'Please rescan the QRCode');
         abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
 
-        $this->cart = collect([]);
         $this->table = $this->scan->table;
+
+        $this->cart = collect([])->when(! app()->isProduction(), function (Collection $cart) {
+            $product = $this->table->merchant->products->first();
+
+            $cart->push([
+                'product_id' => $product->getKey(),
+                'snapshot' => array_merge($product->toArray(), ['image' => $product->getFirstMediaUrl('banner')]),
+                'variant' => $this->variant,
+                'amount' => 1,
+            ]);
+        });
     }
 
     public function render()

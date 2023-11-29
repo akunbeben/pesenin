@@ -30,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         URL::forceScheme(config('app.scheme'));
 
         Feature::define('ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);
+        Feature::define('favorite-toggle', fn (Merchant $merchant) => false);
     }
 }
