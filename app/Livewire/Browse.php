@@ -64,8 +64,7 @@ class Browse extends Component implements HasForms, HasInfolists
                     ->schema([
                         TextEntry::make('name')->label(__('Table'))->columnSpan(1),
                         TextEntry::make('seats')->translateLabel()->columnSpan(1),
-                        TextEntry::make('merchant.name')->translateLabel(),
-                        TextEntry::make('merchant.city')->label(__('City')),
+                        TextEntry::make('merchant.name')->translateLabel()->columnSpan(2),
                     ]),
             ]);
     }
@@ -174,7 +173,7 @@ class Browse extends Component implements HasForms, HasInfolists
 
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
         abort_if($this->scan->finished, 403, 'Please rescan the QRCode');
-        abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
+        abort_if(!$this->scan->table, 403, 'Please rescan the QRCode');
 
         $this->cart = collect([]);
         $this->table = $this->scan->table;

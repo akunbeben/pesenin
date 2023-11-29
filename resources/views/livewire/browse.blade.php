@@ -137,7 +137,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </div>
-            <span class="text-base font-semibold">{{ __('Not found') }}</span>
+            <span class="px-10 text-base font-semibold text-center">{{ __('Kami tidak menemukan produk yang sesuai dengan kriteria pencarian Anda.') }}</span>
         </div>
         @endforelse
 

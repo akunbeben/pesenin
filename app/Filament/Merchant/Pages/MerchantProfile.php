@@ -52,7 +52,7 @@ class MerchantProfile extends Page
                                         ->required(),
                                 ]),
                             ]),
-                        Forms\Components\Tabs\Tab::make(__('Miscellaneous'))
+                        Forms\Components\Tabs\Tab::make(__('Feature settings'))
                             ->statePath('setting')
                             ->schema([
                                 Forms\Components\Toggle::make('cash_mode')

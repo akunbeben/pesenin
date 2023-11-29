@@ -1,4 +1,8 @@
 {
+    "Register merchant": "Daftarkan merchant",
+    "Merchant setting": "Pengaturan merchant",
+    "Feature settings": "Pengaturan fitur",
+    "Merchant detail": "Informasi merchant",
     "You have the option to activate it, allowing you to seamlessly receive cash payments from customers.": "Anda dapat mengaktifkannya untuk menerima pembayaran tunai dari pelanggan dengan mudah.",
     "Accept cash payment": "Terima pembayaran tunai",
     "iKiosk mode": "Mode iKiosk",
@@ -24,7 +28,9 @@
     "QR Code": "Kode QR",
     "All": "Semua",
     "Merchant": "Outlet",
+    "table": "meja",
     "Table": "Meja",
+    "Tables": "Meja",
     "Seats": "Jumlah kursi",
     "Number": "Nomor",
     " Person": " Orang",

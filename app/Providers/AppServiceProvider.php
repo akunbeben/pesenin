@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Merchant;
+use App\Support\DevelopmentUrlGenerator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
@@ -22,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (!app()->isProduction()) {
+            config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
+        }
+
         URL::forceScheme(config('app.scheme'));
 
         Feature::define('ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);

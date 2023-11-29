@@ -8,6 +8,7 @@ use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Filament\Panel\Concerns\HasAvatars;
@@ -23,7 +24,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Color\Rgb;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenants
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenants, HasDefaultTenant
 {
     use HasApiTokens;
     use HasAvatars;
@@ -75,6 +76,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
     public function getRouteKeyName()
     {
         return 'uuid';
+    }
+
+    public function getDefaultTenant(Panel $panel): ?Model
+    {
+        return $this->activeMerchant;
     }
 
     public function canAccessTenant(Model $tenant): bool

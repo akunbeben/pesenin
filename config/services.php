@@ -34,6 +34,7 @@ return [
     'xendit' => [
         'secret_key' => env('XENDIT_SECRET_KEY'),
         'public_key' => env('XENDIT_PUBLIC_KEY'),
+        'verification_key' => env('XENDIT_VERIFICATION_KEY'),
     ],
 
     'cloudflare' => [
