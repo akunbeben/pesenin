@@ -22,7 +22,10 @@ class TableResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-square-3-stack-3d';
 
-    protected static ?string $navigationGroup = 'Front of House';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Back of House');
+    }
 
     public static function getNavigationLabel(): string
     {

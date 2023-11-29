@@ -14,8 +14,6 @@ class BaseDashboard extends Dashboard
 {
     protected static ?string $navigationIcon = 'heroicon-m-home';
 
-    protected static ?string $navigationGroup = 'Front of House';
-
     public static function getNavigationLabel(): string
     {
         return __('Dashboard');
@@ -37,6 +35,8 @@ class BaseDashboard extends Dashboard
             MerchantOverview::class,
             LatestTransactions::class,
         ];
+
+        Feature::for(Filament::getTenant())->all();
 
         if (Feature::for(Filament::getTenant())->active('ikiosk')) {
             $widgets[] = QRCode::class;

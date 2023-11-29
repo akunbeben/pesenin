@@ -1,3 +1,7 @@
+@php
+    use \Illuminate\Support\Number;
+@endphp
+
 <div
     class="max-h-screen px-2 mx-auto overflow-y-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl"
     style="scrollbar-gutter: stable;"
@@ -94,7 +98,7 @@
             @if (! $this->cart->contains('product_id', $product->getKey()))
             <x-filament::button
                 outlined
-                size="xs"
+                size="sm"
                 x-on:click="() => {
                     if (!!{{ count($product->variants ?? []) }} == true) {
                         $dispatch('show-product', { product: {{ $product->getKey() }} })
@@ -113,7 +117,7 @@
                     outlined
                     wire:click="$dispatch('decrease-item', {product: {{ $product->getKey() }}})"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
                     </svg>
                 </x-filament::button>
@@ -126,7 +130,7 @@
                     outlined
                     wire:click="$dispatch('increase-item', {product: {{ $product->getKey() }}})"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
                     </svg>
                 </x-filament::button>
@@ -150,8 +154,8 @@
     </div>
 
     <x-filament::modal slide-over id="my-cart">
-        <div class="flex items-center justify-between p-5">
-            <button type="button" class="z-10 p-1 rounded-full top-5 left-5 bg-gray-100/50 md:hidden" x-on:click="$dispatch('close-modal', { id: 'my-cart' })">
+        <div class="flex items-center justify-between p-2.5 md:hidden">
+            <button type="button" class="p-1 rounded-full top-5 left-5 bg-gray-100/50" x-on:click="$dispatch('close-modal', { id: 'my-cart' })">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
@@ -166,63 +170,118 @@
             @endif
         </div>
 
-        <div class="flex flex-col p-2 grow">
-            @forelse ($cart as $item)
-                <div class="grid grid-cols-3 gap-2.5 border border-primary-500 dark:border-gray-700 p-2 rounded-xl">
-                    <img src="{{ $item['snapshot']['image'] }}" alt="{{ $item['snapshot']['name'] }}" class="object-cover object-center rounded-lg aspect-square">
-                    <div class="flex flex-col col-span-2 gap-2.5 grow">
-                        <span class="flex gap-1 text-gray-950 dark:text-white">
-                            {{ $item['snapshot']['name'] }}
-                            @if ($item['variant'])
-                            <x-filament::badge class="w-fit">
-                                $item['variant']
-                            </x-filament::badge>
-                            @endif
-                        </span>
+        <div class="flex flex-col p-2 grow gap-1.5">
+            <div class="max-h-[calc(90vh_-_145px)] overflow-auto flex flex-col gap-1.5">
+                @forelse ($cart as $item)
+                    <div class="grid grid-cols-3 gap-2.5 border border-primary-500 dark:border-gray-700 p-2 rounded-xl" x-data="{ show: false }">
+                        <img src="{{ $item['snapshot']['image'] }}" alt="{{ $item['snapshot']['name'] }}" class="object-cover object-center rounded-lg aspect-square">
+                        <div class="flex flex-col col-span-2 gap-2.5 grow">
+                            <span class="flex gap-1 text-gray-950 dark:text-white">
+                                {{ $item['snapshot']['name'] }}
+                                @if ($item['variant'])
+                                <x-filament::badge class="w-fit">
+                                    $item['variant']
+                                </x-filament::badge>
+                                @endif
+                            </span>
 
-                        <div class="flex items-center justify-between mt-auto">
-                            <x-filament::button
-                                class="aspect-square"
-                                size="xs"
-                                outlined
-                                wire:click="$dispatch('decrease-item', {product: {{ $item['product_id'] }}})"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                                </svg>
-                            </x-filament::button>
+                            <span class="text-gray-950 dark:text-white">
+                                {{ Number::currency($item['price'] * $item['amount'], 'IDR', config('app.locale')) }}
+                            </span>
 
-                            <span class="text-gray-950 dark:text-white">{{ $item['amount'] }}</span>
+                            <div class="flex items-center justify-between mt-auto">
+                                <x-filament::button
+                                    class="aspect-square"
+                                    size="xs"
+                                    outlined
+                                    wire:click="$dispatch('decrease-item', {product: {{ $item['product_id'] }}})"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+                                    </svg>
+                                </x-filament::button>
 
-                            <x-filament::button
-                                class="aspect-square"
-                                size="xs"
-                                outlined
-                                wire:click="$dispatch('increase-item', {product: {{ $item['product_id'] }}})"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                                </svg>
-                            </x-filament::button>
+                                <span class="text-gray-950 dark:text-white">{{ $item['amount'] }}</span>
+
+                                <div class="flex gap-1.5">
+                                    <x-filament::button
+                                        class="aspect-square"
+                                        size="xs"
+                                        outlined
+                                        wire:click="$dispatch('increase-item', {product: {{ $item['product_id'] }}})"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                                        </svg>
+                                    </x-filament::button>
+
+                                    <x-filament::button
+                                        class="aspect-square"
+                                        size="xs"
+                                        outlined
+                                        x-on:click="show = !show"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                                            <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                            <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                                        </svg>
+                                    </x-filament::button>
+                                </div>
+                            </div>
                         </div>
+                        <x-filament::input.wrapper suffix-icon="heroicon-m-pencil-square" class="col-span-3" x-show="show">
+                            <x-filament::input
+                                tabindex="-1"
+                                autocomplete="off"
+                                type="text"
+                                class="!w-1/2 py-3.5"
+                                placeholder="{{ __('Order note') }}"
+                                wire:model.blur="cart.{{ $loop->index }}.note"
+                            />
+                        </x-filament::input.wrapper>
                     </div>
+                @empty
+                <div class="flex flex-col items-center justify-center w-full h-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4">
+                    <div class="p-5 bg-gray-300 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <span class="px-10 text-base font-semibold text-center">{{ __('Your order is currently empty.') }}</span>
                 </div>
-            @empty
-            <div class="flex flex-col items-center justify-center w-full h-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4">
-                <div class="p-5 bg-gray-300 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </div>
-                <span class="px-10 text-base font-semibold text-center">{{ __('Your order is currently empty.') }}</span>
+                @endforelse
             </div>
-            @endforelse
 
             @if ($this->cart->isNotEmpty())
-            <div class="flex w-full mt-auto bottom-5">
+            @php
+                $subTotal = $this->cart->sum(fn ($cartItem) => $cartItem['price'] * $cartItem['amount']);
+            @endphp
+            <div class="flex flex-col gap-2.5 w-full mt-auto bottom-5">
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-950 dark:text-white">PPN 11%</span>
+                        <span class="text-gray-950 dark:text-white">
+                            {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
+                        <span class="text-gray-950 dark:text-white">
+                            {{ Number::currency($fee = $subTotal * 0.04, 'IDR', config('app.locale')) }}
+                        </span>
+                    </div>
+                    <hr class="w-full border-t border-gray-200 border-dashed dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-950 dark:text-white">{{ __('Total') }}</span>
+                        <span class="text-gray-950 dark:text-white">
+                            {{ Number::currency($subTotal + $tax + $fee, 'IDR', config('app.locale')) }}
+                        </span>
+                    </div>
+                </div>
                 <x-filament::button
                     class="w-full"
                     size="xl"
+                    wire:click="$dispatch('pay-now')"
                 >
                     {{ __('Pay now') }}
                 </x-filament::button>

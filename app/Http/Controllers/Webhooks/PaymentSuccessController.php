@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Webhooks;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class PaymentSuccessController extends Controller
@@ -12,8 +13,9 @@ class PaymentSuccessController extends Controller
      */
     public function __invoke(Request $request)
     {
-        logger()->info($request->keys());
-        logger()->info($request->headers->get('x-callback-token'));
+        abort_if($request->headers->get('x-callback-token') !== config('services.xendit.verification_key'), 404);
+
+        Payment::query()->create($request->toArray());
 
         return response()->json([
             'success' => true,

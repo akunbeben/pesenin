@@ -2,6 +2,7 @@
 
 use App\Livewire\Browse;
 use App\Livewire\Redirector;
+use App\Livewire\Summary;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,5 +22,5 @@ Route::get('/', function () {
 
 Route::get('redirector', Redirector::class)->name('redirector');
 Route::get('scan/{encrypted}', fn (string $encrypted) => $encrypted);
-Route::get('{scanId}/summary', Browse::class)->name('summary');
+Route::get('{order}/summary', Summary::class)->name('summary');
 Route::get('{scanId}', Browse::class)->name('browse');

@@ -41,10 +41,11 @@ namespace App\Models{
  * @property int $id
  * @property int $order_id
  * @property int $product_id
- * @property string $note
- * @property string $variant
+ * @property string|null $note
+ * @property string|null $variant
  * @property int $amount
  * @property string $price
+ * @property object $snapshot
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Order|null $order
@@ -59,6 +60,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Item whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Item wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Item whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Item whereSnapshot($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Item whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Item whereVariant($value)
  */
@@ -86,6 +88,8 @@ namespace App\Models{
  * @property-read int|null $audits_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
  * @property-read int|null $categories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Payment> $payments
+ * @property-read int|null $payments_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
  * @property-read \App\Models\Setting|null $setting
@@ -119,15 +123,19 @@ namespace App\Models{
  * @property int $id
  * @property int $scan_id
  * @property string $number
- * @property string $total
- * @property int $status
+ * @property int $total
+ * @property mixed|null $additional
+ * @property \App\Traits\Orders\Status $status
  * @property int $approved
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Item> $items
+ * @property-read int|null $items_count
  * @property-read \App\Models\Scan|null $scan
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereAdditional($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereApproved($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereId($value)
@@ -138,6 +146,32 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  */
 	class Order extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\Payment
+ *
+ * @property int $id
+ * @property int|null $merchant_id
+ * @property string $event
+ * @property string $business_id
+ * @property object $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Merchant|null $merchant
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereBusinessId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereEvent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereMerchantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereUpdatedAt($value)
+ */
+	class Payment extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -221,6 +255,8 @@ namespace App\Models{
  * @property int $merchant_id
  * @property bool $cash_mode
  * @property bool $ikiosk_mode
+ * @property bool $tax
+ * @property bool $fee
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
@@ -228,9 +264,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Setting query()
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCashMode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereFee($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereIkioskMode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereMerchantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereUpdatedAt($value)
  */
 	class Setting extends \Eloquent {}
@@ -293,6 +331,8 @@ namespace App\Models{
  * @property bool $require_reset
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $active_merchant
+ * @property-read \App\Models\Merchant|null $activeMerchant
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Merchant> $merchants
  * @property-read int|null $merchants_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
@@ -303,6 +343,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereActiveMerchant($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
@@ -314,6 +355,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUuid($value)
  */
-	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser, \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasTenants {}
+	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser, \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasDefaultTenant, \Filament\Models\Contracts\HasTenants {}
 }
 

@@ -56,11 +56,18 @@ class MerchantProfile extends Page
                             ->statePath('setting')
                             ->schema([
                                 Forms\Components\Toggle::make('cash_mode')
+                                    ->hidden()
                                     ->label(__('Accept cash payment'))
                                     ->helperText(__('You have the option to activate it, allowing you to seamlessly receive cash payments from customers.')),
                                 Forms\Components\Toggle::make('ikiosk_mode')
                                     ->label(__('iKiosk mode'))
                                     ->helperText(__('The standard system employs the \'Multiple-tables QRCode ordering\' structure. If you possess an iKiosk device, activating it will cause a transition to a singular QRCode instance.')),
+                                Forms\Components\Toggle::make('tax')
+                                    ->label(__('PPN 11%'))
+                                    ->helperText(__('With this option active, PPN 11% tax will be included in the total amount charged to the customer.')),
+                                Forms\Components\Toggle::make('fee')
+                                    ->label(__('Admin fee 4%'))
+                                    ->helperText(__('With this option active, a 4% payment gateway fee will be included in the total amount charged to the customer.')),
                             ]),
                     ]),
             ]);
@@ -74,7 +81,7 @@ class MerchantProfile extends Page
 
             $record->setting()->updateOrCreate([], $data['setting']);
 
-            if ($active = (bool) $data['setting']['ikiosk_mode']) {
+            if ((bool) $data['setting']['ikiosk_mode']) {
                 $record->tables()->getQuery()->forceDelete();
 
                 $record->tables()->create([
@@ -83,7 +90,9 @@ class MerchantProfile extends Page
                 ]);
             }
 
-            Feature::for($record)->activate('ikiosk', $active);
+            foreach (['ikiosk' => 'ikiosk_mode', 'tax' => 'tax', 'fee' => 'fee'] as $key => $value) {
+                Feature::for($record)->activate($key, $data['setting'][$value]);
+            }
 
             return $record;
         });

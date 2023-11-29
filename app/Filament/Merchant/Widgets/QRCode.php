@@ -22,7 +22,14 @@ class QRCode extends Widget implements HasActions, HasForms
 
     protected static ?int $sort = 3;
 
-    protected int | string | array $columnSpan = 2;
+    protected int | string | array $columnSpan = [
+        'default' => 6,
+        'sm' => 2,
+        'md' => 2,
+        'lg' => 2,
+        'xl' => 2,
+        '2xl' => 2,
+    ];
 
     public Table $table;
 

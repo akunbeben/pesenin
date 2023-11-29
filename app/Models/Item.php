@@ -17,6 +17,11 @@ class Item extends Model
         'variant',
         'amount',
         'price',
+        'snapshot',
+    ];
+
+    protected $casts = [
+        'snapshot' => 'object',
     ];
 
     public function order(): BelongsTo

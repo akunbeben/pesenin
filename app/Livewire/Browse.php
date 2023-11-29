@@ -3,10 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Scan;
 use App\Models\Table;
 use App\Support\Encoder;
+use App\Traits\Orders\Status;
 use Detection\MobileDetect;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -15,16 +17,21 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Feature;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Sqids\Sqids;
+use Xendit\Configuration;
+use Xendit\Invoice\CreateInvoiceRequest;
+use Xendit\Invoice\InvoiceApi;
 
 class Browse extends Component implements HasForms, HasInfolists
 {
@@ -122,7 +129,9 @@ class Browse extends Component implements HasForms, HasInfolists
                 'product_id' => $product->getKey(),
                 'snapshot' => array_merge($product->toArray(), ['image' => $product->getFirstMediaUrl('banner')]),
                 'variant' => $this->variant,
+                'note' => null,
                 'amount' => 1,
+                'price' => $product->price,
             ]);
         }
 
@@ -180,8 +189,13 @@ class Browse extends Component implements HasForms, HasInfolists
             $this->scanId = $scanId,
         ));
 
+        if ($this->scan->finished) {
+            $this->redirectRoute('summary', [$this->scan->order->number]);
+
+            return;
+        }
+
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
-        abort_if($this->scan->finished, 403, 'Please rescan the QRCode');
         abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
 
         $this->table = $this->scan->table;
@@ -193,9 +207,86 @@ class Browse extends Component implements HasForms, HasInfolists
                 'product_id' => $product->getKey(),
                 'snapshot' => array_merge($product->toArray(), ['image' => $product->getFirstMediaUrl('banner')]),
                 'variant' => $this->variant,
+                'note' => null,
                 'amount' => 1,
+                'price' => $product->price,
             ]);
         });
+    }
+
+    #[On('pay-now')]
+    public function payNow()
+    {
+        try {
+            /** @var \App\Models\Order $order */
+            $order = DB::transaction(function () {
+                $additional = [];
+                $subTotal = $this->cart->sum(fn ($item) => $item['price'] * $item['amount']);
+
+                if (Feature::for($this->table->merchant)->active('tax')) {
+                    $additional['tax'] = $subTotal * 0.11;
+                }
+
+                if (Feature::for($this->table->merchant)->active('fee')) {
+                    $additional['fee'] = $subTotal * 0.04;
+                }
+
+                $order = Order::query()->create([
+                    'status' => Status::Processed,
+                    'scan_id' => $this->scan->getKey(),
+                    'total' => $subTotal + array_sum(array_values($additional)),
+                    'additional' => $additional,
+                ]);
+
+                $order->items()->createMany($this->cart->toArray());
+
+                $this->scan->update(['finished' => true]);
+
+                return $order;
+            });
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            Notification::make()
+                ->title(__('Order failed, please try again.'))
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $fees = array_filter([
+            ['admin' => $order->additional?->fee],
+            ['tax' => $order->additional?->tax],
+        ]);
+
+        $url = $this->processPayment([
+            'external_id' => $order->number,
+            'description' => "Pesenin {$order->number}",
+            'amount' => $order->total,
+            'invoice_duration' => 1800, // 30 minutes
+            'currency' => 'IDR',
+            'success_redirect_url' => route('summary', [$order]),
+            'failure_redirect_url' => route('summary', [$order]),
+            'payment_methods' => [
+                'CREDIT_CARD', 'BCA', 'BNI',
+                'BRI', 'MANDIRI', 'PERMATA',
+                'OVO', 'DANA', 'SHOPEEPAY',
+                'LINKAJA', 'JENIUSPAY', 'DD_BRI',
+                'DD_BCA_KLIKPAY', 'QRIS',
+            ],
+        ]);
+
+        $this->redirect($url);
+
+        return;
+
+        Notification::make()
+            ->title(__('Order success'))
+            ->body(__('Your ordered items will be delivered to you as soon as possible'))
+            ->success()
+            ->persistent()
+            ->send();
     }
 
     public function render()
@@ -225,5 +316,20 @@ class Browse extends Component implements HasForms, HasInfolists
             'highlights' => $this->table->merchant->products()->highlights()->get(),
             'categories' => $this->table->merchant->categories,
         ]);
+    }
+
+    private function processPayment(array $data)
+    {
+        Configuration::setXenditKey(config('services.xendit.secret_key'));
+
+        $api = new InvoiceApi();
+
+        $invoice = new CreateInvoiceRequest($data);
+
+        try {
+            return $api->createInvoice($invoice, $this->table->merchant->business_id)->getInvoiceUrl();
+        } catch (\Xendit\XenditSdkException $th) {
+            logger()->error($th->getMessage());
+        }
     }
 }

@@ -28,3 +28,13 @@
 .flickity-page-dots {
     @apply !hidden;
 }
+
+.payment-icon > .fi-icon-btn-icon {
+    @apply !w-10 !h-10;
+}
+
+@media print {
+    .no-print * {
+        display: none !important;
+    }
+}

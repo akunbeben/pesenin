@@ -19,7 +19,10 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-squares-2x2';
 
-    protected static ?string $navigationGroup = 'Front of House';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Back of House');
+    }
 
     public static function getNavigationLabel(): string
     {

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('event');
+            $table->foreignIdFor(\App\Models\Merchant::class)->nullable()->constrained()->nullOnDelete();
+            $table->string('event')->nullable();
             $table->string('business_id')->index();
             $table->json('data');
             $table->timestamps();
