@@ -5,7 +5,6 @@ namespace App\Filament\Merchant\Widgets;
 use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Number;
 use Xendit\BalanceAndTransaction\BalanceApi;
 
@@ -21,17 +20,10 @@ class MerchantOverview extends BaseWidget
 
     public function mount(): void
     {
-        $this->balance = Cache::remember(Filament::getTenant()->getKey() . 'balance-cash', now()->addHour(), function () {
-            \Xendit\Configuration::setXenditKey(config('services.xendit.secret_key'));
+        \Xendit\Configuration::setXenditKey(config('services.xendit.secret_key'));
 
-            return (new BalanceApi())->getBalance(for_user_id: Filament::getTenant()->business_id)['balance'];
-        });
-
-        $this->holding = Cache::remember(Filament::getTenant()->getKey() . 'balance-holding', now()->addHour(), function () {
-            \Xendit\Configuration::setXenditKey(config('services.xendit.secret_key'));
-
-            return (new BalanceApi())->getBalance('HOLDING', for_user_id: Filament::getTenant()->business_id)['balance'];
-        });
+        $this->balance = (new BalanceApi())->getBalance(for_user_id: Filament::getTenant()->business_id)['balance'];
+        $this->holding = (new BalanceApi())->getBalance('HOLDING', for_user_id: Filament::getTenant()->business_id)['balance'];
     }
 
     protected function getStats(): array

@@ -256,8 +256,8 @@ class Browse extends Component implements HasForms, HasInfolists
         }
 
         $fees = array_filter([
-            ['admin' => $order->additional?->fee],
-            ['tax' => $order->additional?->tax],
+            ['admin' => $order->additional?->fee ?? 0],
+            ['tax' => $order->additional?->tax ?? 0],
         ]);
 
         $url = $this->processPayment([
@@ -265,9 +265,23 @@ class Browse extends Component implements HasForms, HasInfolists
             'description' => "Pesenin {$order->number}",
             'amount' => $order->total,
             'invoice_duration' => 1800, // 30 minutes
+            'locale' => 'id',
             'currency' => 'IDR',
             'success_redirect_url' => route('summary', [$order]),
             'failure_redirect_url' => route('summary', [$order]),
+            'items' => $this->cart->transform(function ($item) {
+                $name = $item['snapshot']['name'];
+
+                if ($item['variant']) {
+                    $name .= " - {$item['variant']}";
+                }
+
+                return [
+                    'name' => $name,
+                    'quantity' => $item['amount'],
+                    'price' => $item['price'],
+                ];
+            })->toArray(),
             'payment_methods' => [
                 'CREDIT_CARD', 'BCA', 'BNI',
                 'BRI', 'MANDIRI', 'PERMATA',

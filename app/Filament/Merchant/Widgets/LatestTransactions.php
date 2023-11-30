@@ -4,9 +4,11 @@ namespace App\Filament\Merchant\Widgets;
 
 use App\Models\Transaction;
 use Filament\Facades\Filament;
+use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Number;
 use Laravel\Pennant\Feature;
 
 class LatestTransactions extends BaseWidget
@@ -40,10 +42,29 @@ class LatestTransactions extends BaseWidget
         return $table
             ->paginated(false)
             ->query(
-                Transaction::query(),
+                Transaction::query()->latest('created'),
             )
             ->columns([
-                // ...
+                Tables\Columns\TextColumn::make('reference_id')
+                    ->label(__('Ref')),
+                Tables\Columns\TextColumn::make('channel_code')
+                    ->formatStateUsing(fn (Transaction $record) => last(explode('_', $record->channel_code)))
+                    ->label(__('Payment method')),
+                Tables\Columns\TextColumn::make('amount')
+                    ->formatStateUsing(fn (string $state) => Number::currency($state, 'IDR', config('app.locale')))
+                    ->label(__('Total')),
+                Tables\Columns\TextColumn::make('settlement_status')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state) => str($state)->title()->toString())
+                    ->color(fn (string $state) => match ($state) {
+                        'PENDING' => 'warning',
+                        'SETTLED' => 'success',
+                        default => 'gray',
+                    })
+                    ->label(__('Settlement')),
+                Tables\Columns\TextColumn::make('estimated_settlement_time')
+                    ->dateTime()
+                    ->label(__('Settlement time')),
             ]);
     }
 }

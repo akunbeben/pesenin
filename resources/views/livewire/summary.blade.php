@@ -55,7 +55,7 @@
                 </div>
                 @endforeach
 
-                @if($this->order->additional?->tax)
+                @if($this->order->additional?->tax ?? false)
                 <div class="flex items-center justify-between">
                     <span class="text-gray-950 dark:text-white">PPN 11%</span>
                     <span class="text-gray-950 dark:text-white">
@@ -64,7 +64,7 @@
                 </div>
                 @endif
 
-                @if($this->order->additional?->tax)
+                @if($this->order->additional?->fee ?? false)
                 <div class="flex items-center justify-between">
                     <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
                     <span class="text-gray-950 dark:text-white">

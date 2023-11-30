@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\URL;
 
 class ForwardingEmail implements ShouldQueue
 {
@@ -32,6 +33,10 @@ class ForwardingEmail implements ShouldQueue
      */
     public function handle(Routing $routing, Account $account): void
     {
+        if (! app()->isProduction()) {
+            URL::forceRootUrl(config('app.asset_url'));
+        }
+
         $cloudflareEmail = $routing->forward($this->user->email, $this->merchant->name);
 
         $businessId = $account->createAccount([
@@ -42,9 +47,12 @@ class ForwardingEmail implements ShouldQueue
             ],
         ]);
 
+        $token = $account->registerWebhook('invoice', route('webhooks.payment.success', [$this->merchant]), $businessId);
+
         $this->merchant->update([
             'business_id' => $businessId,
             'cloudflare_email' => $cloudflareEmail,
+            'webhook_token' => $token,
         ]);
     }
 }

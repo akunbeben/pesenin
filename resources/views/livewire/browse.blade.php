@@ -255,6 +255,8 @@
             @if ($this->cart->isNotEmpty())
             @php
                 $subTotal = $this->cart->sum(fn ($cartItem) => $cartItem['price'] * $cartItem['amount']);
+                $tax = 0;
+                $fee = 0;
             @endphp
             <div class="flex flex-col gap-2.5 w-full mt-auto bottom-5">
                 <div class="flex flex-col gap-1.5">
@@ -264,12 +266,14 @@
                             {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
                         </span>
                     </div>
+                    @features('fee', $this->table->merchant)
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
                         <span class="text-gray-950 dark:text-white">
                             {{ Number::currency($fee = $subTotal * 0.04, 'IDR', config('app.locale')) }}
                         </span>
                     </div>
+                    @endfeatures
                     <hr class="w-full border-t border-gray-200 border-dashed dark:border-gray-700">
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">{{ __('Total') }}</span>

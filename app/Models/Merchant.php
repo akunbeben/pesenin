@@ -30,9 +30,14 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         'address',
         'phone',
         'business_id',
+        'webhook_token',
         'city',
         'country',
         'zip',
+    ];
+
+    protected $casts = [
+        'webhook_token' => 'encrypted',
     ];
 
     protected $auditExclude = [

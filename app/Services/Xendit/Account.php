@@ -25,6 +25,22 @@ class Account
         ]);
     }
 
+    public function registerWebhook(string $type, string $url, string $businessId): ?string
+    {
+        try {
+            $response = $this->client->post("/callback_urls/{$type}", [
+                'headers' => ['for-user-id' => $businessId],
+                'json' => ['url' => $url],
+            ]);
+        } catch (GuzzleException $th) {
+            logger()->error($th->getMessage());
+
+            return null;
+        }
+
+        return json_decode($response->getBody()->getContents(), true)['callback_token'];
+    }
+
     public function createAccount(array $data = []): ?string
     {
         $rules = [

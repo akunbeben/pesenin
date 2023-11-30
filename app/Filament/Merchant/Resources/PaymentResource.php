@@ -43,7 +43,7 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id'),
             ])
             ->filters([
                 //

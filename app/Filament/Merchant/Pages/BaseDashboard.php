@@ -31,6 +31,10 @@ class BaseDashboard extends Dashboard
 
     public function getWidgets(): array
     {
+        if (! Filament::getTenant()->business_id) {
+            return parent::getWidgets();
+        }
+
         $widgets = [
             MerchantOverview::class,
             LatestTransactions::class,
