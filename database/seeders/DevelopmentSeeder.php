@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Jobs\ForwardingEmail;
+use App\Jobs\RegisterDestinationAddress;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -13,15 +15,22 @@ class DevelopmentSeeder extends Seeder
      */
     public function run(): void
     {
+        /** @var \App\Models\User $user */
+        $user = User::query()->firstWhere('email', 'beben.devs@gmail.com');
+
+        RegisterDestinationAddress::dispatch($user);
+
         /** @var \App\Models\Merchant $merchant */
-        $merchant = User::first()->merchants()->create([
-            'name' => 'Coffee Corner',
+        $merchant = $user->merchants()->create([
+            'name' => 'Retro Coffee',
             'address' => 'Jalan Angkasa No 36',
             'phone' => '089631581118',
             'city' => 'Banjarbaru',
             'country' => 'Indonesia',
             'zip' => '70724',
         ]);
+
+        ForwardingEmail::dispatch($user, $merchant);
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories */
         $categories = $merchant->categories()->createMany([
@@ -205,7 +214,18 @@ class DevelopmentSeeder extends Seeder
             $product->addMediaFromUrl($image)->toMediaCollection('banner');
         });
 
-        $merchant->tables()->create(['number' => 1, 'seats' => 4]);
+        $merchant->tables()->createMany([
+            ['number' => 1, 'seats' => rand(1, 8)],
+            ['number' => 2, 'seats' => rand(1, 8)],
+            ['number' => 3, 'seats' => rand(1, 8)],
+            ['number' => 4, 'seats' => rand(1, 8)],
+            ['number' => 5, 'seats' => rand(1, 8)],
+            ['number' => 6, 'seats' => rand(1, 8)],
+            ['number' => 7, 'seats' => rand(1, 8)],
+            ['number' => 8, 'seats' => rand(1, 8)],
+            ['number' => 9, 'seats' => rand(1, 8)],
+            ['number' => 10, 'seats' => rand(1, 8)],
+        ]);
     }
 
     private function variants(): ?array

@@ -180,7 +180,7 @@
                                 {{ $item['snapshot']['name'] }}
                                 @if ($item['variant'])
                                 <x-filament::badge class="w-fit">
-                                    $item['variant']
+                                    {{ $item['variant'] }}
                                 </x-filament::badge>
                                 @endif
                             </span>

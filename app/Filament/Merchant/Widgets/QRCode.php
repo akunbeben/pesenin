@@ -41,6 +41,7 @@ class QRCode extends Widget implements HasActions, HasForms
     public function visitAction(): Action
     {
         return Action::make('open_url')
+            ->label(__('Test transaction'))
             ->icon('heroicon-o-arrow-top-right-on-square')
             ->extraAttributes(['class' => 'w-full'])
             ->outlined()

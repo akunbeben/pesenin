@@ -82,12 +82,15 @@ namespace App\Models{
  * @property string $zip
  * @property string $phone
  * @property string|null $business_id
+ * @property mixed|null $webhook_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
  * @property-read int|null $categories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $employees
+ * @property-read int|null $employees_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Payment> $payments
  * @property-read int|null $payments_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
@@ -111,6 +114,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereWebhookToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereZip($value)
  */
 	class Merchant extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable, \Filament\Models\Contracts\HasAvatar {}
@@ -124,7 +128,7 @@ namespace App\Models{
  * @property int $scan_id
  * @property string $number
  * @property int $total
- * @property mixed|null $additional
+ * @property object|null $additional
  * @property \App\Traits\Orders\Status $status
  * @property int $approved
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -154,7 +158,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property int|null $merchant_id
- * @property string $event
+ * @property string|null $event
  * @property string $business_id
  * @property object $data
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -329,10 +333,12 @@ namespace App\Models{
  * @property mixed $password
  * @property string|null $remember_token
  * @property bool $require_reset
+ * @property int|null $active_merchant
+ * @property int|null $employee_of
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $active_merchant
  * @property-read \App\Models\Merchant|null $activeMerchant
+ * @property-read \App\Models\Merchant|null $employer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Merchant> $merchants
  * @property-read int|null $merchants_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
@@ -347,6 +353,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmployeeOf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)

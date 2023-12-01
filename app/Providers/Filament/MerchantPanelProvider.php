@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Merchant\Pages\BaseDashboard;
+use App\Filament\Merchant\Pages\Login;
 use App\Filament\Merchant\Pages\MerchantProfile;
 use App\Filament\Merchant\Pages\MerchantRegistration;
 use App\Filament\Merchant\Pages\ResetPassword;
@@ -29,7 +30,7 @@ class MerchantPanelProvider extends PanelProvider
             ->id('merchant')
             ->path('merchant')
             ->default()
-            ->login()
+            ->login(Login::class)
             ->passwordReset(resetAction: ResetPassword::class)
             ->registration(null)
             ->tenant(Merchant::class, 'uuid')

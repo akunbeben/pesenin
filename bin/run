@@ -1,5 +1,5 @@
 #!/bin/bash
 
-php artisan serve &
-bun run dev &
-"$PWD/bin/tunnel"
+cd /home/akunbeben/Projects/pesenin;
+
+php artisan serve & "$PWD/bin/tunnel"

@@ -16,6 +16,15 @@ class Transaction extends Model
 
     protected $keyType = 'string';
 
+    protected $schema = [
+        'id' => 'string',
+        'reference_id' => 'string',
+        'channel_code' => 'string',
+        'amount' => 'integer',
+        'settlement_status' => 'string',
+        'estimated_settlement_time' => 'string',
+    ];
+
     protected $casts = [
         'fee' => 'object',
         'estimated_settlement_time' => 'datetime',

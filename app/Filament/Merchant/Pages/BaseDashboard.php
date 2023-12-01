@@ -2,6 +2,7 @@
 
 namespace App\Filament\Merchant\Pages;
 
+use App\Filament\Merchant\Widgets\BunRunnerWidget;
 use App\Filament\Merchant\Widgets\LatestTransactions;
 use App\Filament\Merchant\Widgets\MerchantOverview;
 use App\Filament\Merchant\Widgets\QRCode;
@@ -44,6 +45,10 @@ class BaseDashboard extends Dashboard
 
         if (Feature::for(Filament::getTenant())->active('ikiosk')) {
             $widgets[] = QRCode::class;
+        }
+
+        if (! app()->isProduction()) {
+            $widgets[] = BunRunnerWidget::class;
         }
 
         return $widgets;

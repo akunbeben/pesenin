@@ -1,4 +1,7 @@
 {
+    "operator": "operator",
+    "Operator": "Operator",
+    "Operators": "Operator",
     "Success": "Berhasil",
     "Pending": "Tertunda",
     "Processed": "Diproses",
@@ -29,7 +32,7 @@
     "The standard system employs the 'Multiple-tables QRCode ordering' structure. If you possess an iKiosk device, activating it will cause a transition to a singular QRCode instance.": "Sistem bawaan menggunakan skema 'Pemesanan QRCode dengan banyak Meja'. Jika Anda menggunakan perangkat iKiosk, Anda dapat mengaktifkannya, dan ini akan beralih ke QRCode tunggal.",
     "Latest transactions": "Transaksi terbaru",
     "QR Code for your customers": "Kode QR untuk pelanggan anda",
-    "Data will refresh every hour": "Data akan diperbarui setiap satu jam",
+    "Data will refresh every 10 minutes": "Data akan diperbarui setiap 10 menit",
     "On-Hold": "Saldo tertunda",
     "Balance": "Saldo",
     "List of :label": "Daftar :label",

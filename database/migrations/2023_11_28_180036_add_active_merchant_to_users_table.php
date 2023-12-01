@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('active_merchant')->nullable();
-            $table->foreign('active_merchant')->references('id')->on('merchants');
+            $table->after('require_reset', function (Blueprint $table) {
+                $table->unsignedBigInteger('active_merchant')->nullable();
+                $table->foreign('active_merchant')->references('id')->on('merchants');
+                $table->unsignedBigInteger('employee_of')->nullable();
+                $table->foreign('employee_of')->references('id')->on('merchants');
+            });
         });
     }
 
@@ -25,6 +29,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign('users_active_merchant_foreign');
             $table->dropColumn(['active_merchant']);
+            $table->dropForeign('users_employee_of_foreign');
+            $table->dropColumn(['employee_of']);
         });
     }
 };

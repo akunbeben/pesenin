@@ -41,8 +41,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         'email',
         'password',
         'require_reset',
-        'email_verified_at',
         'active_merchant',
+        'employee_of',
+        'email_verified_at',
     ];
 
     /**
@@ -96,6 +97,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     public function merchants(): HasMany
     {
         return $this->hasMany(Merchant::class);
+    }
+
+    public function employer(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class, 'employee_of');
     }
 
     public function activeMerchant(): BelongsTo
