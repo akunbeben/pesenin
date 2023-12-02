@@ -215,7 +215,7 @@ class Browse extends Component implements HasForms, HasInfolists
     }
 
     #[On('pay-now')]
-    public function payNow()
+    public function payNow(): void
     {
         try {
             /** @var \App\Models\Order $order */

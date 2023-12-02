@@ -1,4 +1,13 @@
 {
+    "Resolve": "Selesai",
+    "Mark as resolved": "Tandai sebagai terselesaikan",
+    "Mark as priority": "Tandai sebagai prioritas",
+    "Prioritize": "Prioritaskan",
+    "prioritize": "Prioritaskan",
+    "Prioritized payments": "Transaksi diprioritaskan",
+    "Prioritized payment": "Transaksi diprioritaskan",
+    "Payment method": "Metode pembayaran",
+    "Paid at": "Dibayar pada",
     "operator": "operator",
     "Operator": "Operator",
     "Operators": "Operator",

@@ -24,7 +24,7 @@ class TableResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Back of House');
+        return __('Backoffice');
     }
 
     public static function getNavigationLabel(): string

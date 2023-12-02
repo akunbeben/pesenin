@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Merchant::class)->nullable()->constrained()->nullOnDelete();
-            $table->string('event')->nullable();
+            $table->foreignIdFor(\App\Models\Order::class)->nullable()->constrained()->nullOnDelete();
             $table->string('business_id')->index();
+            $table->string('event')->nullable();
             $table->json('data');
             $table->timestamps();
         });

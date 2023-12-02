@@ -20,7 +20,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::redirect('/login', '/merchant/login')->name('login');
 Route::get('redirector', Redirector::class)->name('redirector');
 Route::get('scan/{encrypted}', fn (string $encrypted) => $encrypted);
 Route::get('{order}/summary', Summary::class)->name('summary');
-Route::get('{scanId}', Browse::class)->name('browse');
+Route::get('{scanId}', Browse::class)->name('browse')->where('scanId', '^(?!pulse$).*$');

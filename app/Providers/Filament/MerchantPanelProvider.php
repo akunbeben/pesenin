@@ -7,6 +7,7 @@ use App\Filament\Merchant\Pages\Login;
 use App\Filament\Merchant\Pages\MerchantProfile;
 use App\Filament\Merchant\Pages\MerchantRegistration;
 use App\Filament\Merchant\Pages\ResetPassword;
+use App\Filament\Merchant\Pages\UserProfile;
 use App\Models\Merchant;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,13 +31,19 @@ class MerchantPanelProvider extends PanelProvider
             ->id('merchant')
             ->path('merchant')
             ->default()
+            ->spa()
             ->login(Login::class)
             ->passwordReset(resetAction: ResetPassword::class)
             ->registration(null)
             ->tenant(Merchant::class, 'uuid')
             ->tenantRegistration(MerchantRegistration::class)
             ->tenantProfile(MerchantProfile::class)
+            ->profile(UserProfile::class)
             ->favicon(asset('apple-touch-icon.png'))
+            ->navigationGroups([
+                'Keuangan',
+                'Backoffice',
+            ])
             ->colors([
                 'danger' => Color::Rose,
                 'info' => Color::Blue,

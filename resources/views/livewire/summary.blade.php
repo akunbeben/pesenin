@@ -2,7 +2,7 @@
     use \Illuminate\Support\Number;
 @endphp
 
-<div class="h-screen max-h-screen p-2 mx-auto overflow-y-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl" wire:poll.5s>
+<div class="h-screen max-w-sm max-h-screen p-2 mx-auto overflow-y-auto subpixel-antialiased" wire:poll.5s>
     <div class="flex items-center w-full h-full">
         <div class="flex flex-col items-center w-full gap-5 p-5 bg-gray-100 border border-gray-200 dark:bg-gray-900 dark:border-gray-800 rounded-xl">
             <div
@@ -11,17 +11,22 @@
                     'text-warning-500 bg-warning-100' => $this->order->status === \App\Traits\Orders\Status::Pending,
                     'text-primary-500 bg-primary-100' => $this->order->status === \App\Traits\Orders\Status::Processed,
                     'text-success-500 bg-success-100' => $this->order->status === \App\Traits\Orders\Status::Success,
+                    'text-danger-500 bg-danger-100' => $this->order->status === \App\Traits\Orders\Status::Expired,
                 ])
             >
                 <x-filament::icon
                     icon="{{ $this->order->status->icon() }}"
                     label="Payment status icon"
                     class="payment-icon"
+                    @class([
+                        'payment-icon',
+                        'animate-spin' => $this->order->status === \App\Traits\Orders\Status::Processed,
+                    ])
                 />
             </div>
 
             <div class="flex flex-col gap-1.5 items-center">
-                <h1 class="text-base sm:text-3xl text-gray-950 dark:text-white">{{ __('Payment :status!', ['status' => __($this->order->status->name)]) }}</h1>
+                <h1 class="text-base sm:text-2xl text-gray-950 dark:text-white">{{ __('Payment :status!', ['status' => __($this->order->status->name)]) }}</h1>
                 @if ($this->order->status !== \App\Traits\Orders\Status::Success)
                 <small class="text-gray-800 dark:text-gray-400">{{ __('Please wait until the payment success.') }}</small>
                 @endif

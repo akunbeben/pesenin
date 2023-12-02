@@ -2,7 +2,7 @@
 
 namespace App\Filament\Merchant\Widgets;
 
-use App\Models\Transaction;
+use App\Models\Payment;
 use Filament\Facades\Filament;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -41,30 +41,30 @@ class LatestTransactions extends BaseWidget
     {
         return $table
             ->paginated(false)
-            ->query(
-                Transaction::query()->latest('created'),
-            )
+            ->query(Payment::query()->latest())
             ->columns([
                 Tables\Columns\TextColumn::make('reference_id')
+                    ->getStateUsing(fn (Payment $record) => $record->data->external_id)
                     ->label(__('Ref')),
-                Tables\Columns\TextColumn::make('channel_code')
-                    ->formatStateUsing(fn (Transaction $record) => last(explode('_', $record->channel_code)))
+                Tables\Columns\TextColumn::make('payment_channel')
+                    ->getStateUsing(fn (Payment $record) => $record->data->payment_channel)
                     ->label(__('Payment method')),
                 Tables\Columns\TextColumn::make('amount')
-                    ->formatStateUsing(fn (string $state) => Number::currency($state, 'IDR', config('app.locale')))
+                    ->getStateUsing(fn (Payment $record) => Number::currency($record->data->paid_amount, 'IDR', config('app.locale')))
                     ->label(__('Total')),
-                Tables\Columns\TextColumn::make('settlement_status')
+                Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->formatStateUsing(fn (string $state) => str($state)->title()->toString())
-                    ->color(fn (string $state) => match ($state) {
+                    ->getStateUsing(fn (Payment $record) => str($record->data->status)->title()->toString())
+                    ->color(fn (Payment $record) => match ($record->data->status) {
                         'PENDING' => 'warning',
-                        'SETTLED' => 'success',
+                        'SETTLED', 'PAID' => 'success',
                         default => 'gray',
                     })
-                    ->label(__('Settlement')),
-                Tables\Columns\TextColumn::make('estimated_settlement_time')
+                    ->label(__('Status')),
+                Tables\Columns\TextColumn::make('paid_at')
+                    ->getStateUsing(fn (Payment $record) => $record->data->paid_at)
                     ->dateTime()
-                    ->label(__('Settlement time')),
+                    ->label(__('Paid at')),
             ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Merchant\Resources;
 
-use App\Filament\Merchant\Resources\PaymentResource\Pages;
+use App\Filament\Merchant\Resources\PrioritizedPaymentResource\Pages;
 use App\Models\Payment;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,11 +12,11 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Number;
 
-class PaymentResource extends Resource
+class PrioritizedPaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-m-exclamation-triangle';
 
     public static function getNavigationGroup(): ?string
     {
@@ -25,12 +25,12 @@ class PaymentResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('Payments');
+        return __('Prioritized payments');
     }
 
     public function getTitle(): string | Htmlable
     {
-        return __('Payments');
+        return __('Prioritized payments');
     }
 
     public static function form(Form $form): Form
@@ -74,25 +74,31 @@ class PaymentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('prioritize')
-                    ->hidden(fn (Payment $record) => $record->priority)
-                    ->icon('heroicon-m-exclamation-circle')
-                    ->action(fn (Payment $record) => $record->update(['priority' => true]))
+                Tables\Actions\Action::make('resolve')
+                    ->hidden(fn (Payment $record) => ! $record->priority)
+                    ->icon('heroicon-m-check')
+                    ->action(fn (Payment $record) => $record->update(['priority' => false]))
+                    ->color('success')
                     ->button()
-                    ->tooltip(__('Mark as priority'))
+                    ->tooltip(__('Mark as resolved'))
                     ->translateLabel(),
             ]);
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::query()->where('priority', true)->count();
+    }
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->latest('data->paid_at');
+        return parent::getEloquentQuery()->where('priority', true);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManagePayments::route('/'),
+            'index' => Pages\ManagePrioritizedPayments::route('/'),
         ];
     }
 }

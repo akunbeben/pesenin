@@ -135,6 +135,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Item> $items
  * @property-read int|null $items_count
+ * @property-read \App\Models\Payment|null $payment
  * @property-read \App\Models\Scan|null $scan
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
@@ -158,12 +159,17 @@ namespace App\Models{
  *
  * @property int $id
  * @property int|null $merchant_id
- * @property string|null $event
+ * @property int|null $order_id
  * @property string $business_id
+ * @property string|null $event
  * @property object $data
+ * @property \App\Traits\Orders\Status $settlement
+ * @property bool $priority
+ * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Merchant|null $merchant
+ * @property-read \App\Models\Order|null $order
  * @method static \Illuminate\Database\Eloquent\Builder|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Payment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Payment query()
@@ -173,6 +179,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Payment whereEvent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Payment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Payment whereMerchantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payment whereSettlement($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Payment whereUpdatedAt($value)
  */
 	class Payment extends \Eloquent {}

@@ -4,6 +4,7 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\ProductResource\Pages;
 use App\Models\Product;
+use Detection\MobileDetect;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -21,7 +22,7 @@ class ProductResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Back of House');
+        return __('Backoffice');
     }
 
     public static function getNavigationLabel(): string
@@ -105,26 +106,31 @@ class ProductResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $detect = new MobileDetect();
+
         return $table
             ->columns([
-                Grid::make()->columns(1)->schema([
-                    Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')
-                        ->collection('banner')
-                        ->extraImgAttributes(['class' => 'w-full !aspect-square rounded-xl'])
-                        ->extraAttributes(['class' => '!w-full'])
-                        ->limit(1)
-                        ->height('auto'),
-                    Tables\Columns\TextColumn::make('name')
-                        ->description(fn (Product $record) => str($record->description)->words(10))
-                        ->searchable()
-                        ->sortable(),
-                    Tables\Columns\TextColumn::make('price')
-                        ->searchable()
-                        ->sortable()
-                        ->formatStateUsing(fn (Product $record) => 'Rp ' . number_format($record->price, 0, ',', '.')),
-                ]),
+                Grid::make()
+                    ->extraAttributes(['class' => '!p-0'])
+                    ->columns(1)
+                    ->schema([
+                        Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')
+                            ->collection('banner')
+                            ->extraImgAttributes(['class' => 'w-full !aspect-square rounded-xl'])
+                            ->extraAttributes(['class' => '!w-full'])
+                            ->limit(1)
+                            ->height('auto'),
+                        Tables\Columns\TextColumn::make('name')
+                            ->description(fn (Product $record) => str($record->description)->words($detect->isMobile() ? ($detect->isTablet() ? 7 : 5) : 10))
+                            ->searchable()
+                            ->sortable(),
+                        Tables\Columns\TextColumn::make('price')
+                            ->searchable()
+                            ->sortable()
+                            ->formatStateUsing(fn (Product $record) => 'Rp ' . number_format($record->price, 0, ',', '.')),
+                    ]),
             ])
-            ->contentGrid(['md' => 2, 'xl' => 4, 'sm' => 2])
+            ->contentGrid(['md' => 2, 'xl' => 4, 'sm' => 2, 'default' => 2])
             ->defaultSort('id', 'desc')
             ->paginationPageOptions([8, 16, 24])
             ->filters([

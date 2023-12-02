@@ -9,8 +9,6 @@ class OrderInQueues extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-m-queue-list';
 
-    protected static ?string $navigationGroup = 'Front of House';
-
     protected static string $view = 'filament.merchant.pages.order-in-queues';
 
     public function getHeading(): string | Htmlable

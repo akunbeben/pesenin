@@ -23,12 +23,15 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Color\Rgb;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasTenants
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasTenants
 {
     use HasApiTokens;
     use HasAvatars;
     use HasFactory;
+    use InteractsWithMedia;
     use Notifiable;
 
     /**
@@ -119,7 +122,14 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
         $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][800] . ')')->toHex();
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
+        $defaultAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
+
+        return $this->getFirstMediaUrl('avatar') ?? $defaultAvatar;
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')->singleFile();
     }
 
     public function canAccessPanel(Panel $panel): bool

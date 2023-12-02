@@ -3,10 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Merchant;
+use App\Models\User;
 use App\Support\DevelopmentUrlGenerator;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
+use Laravel\Pulse\Facades\Pulse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
+        Gate::define('viewPulse', function (User $user) {
+            return in_array($user->email, ['akunbeben@gmail.com', 'beben.devs@gmail.com']);
+        });
+
         Feature::define('ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);
         Feature::define('tax', fn (Merchant $merchant) => $merchant->setting->tax);
         Feature::define('fee', fn (Merchant $merchant) => $merchant->setting->fee);
@@ -44,5 +51,15 @@ class AppServiceProvider extends ServiceProvider
         URL::forceScheme(config('app.scheme'));
         setlocale(LC_TIME, 'id_ID');
         \Carbon\Carbon::setLocale('id');
+
+        Pulse::users(function ($ids) {
+            return User::findMany($ids)->map(fn ($user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'extra' => $user->email,
+                'email' => $user->email,
+                'avatar' => $user->getFilamentAvatarUrl(),
+            ]);
+        });
     }
 }

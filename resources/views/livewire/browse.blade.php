@@ -260,12 +260,14 @@
             @endphp
             <div class="flex flex-col gap-2.5 w-full mt-auto bottom-5">
                 <div class="flex flex-col gap-1.5">
+                    @features('tax', $this->table->merchant)
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">PPN 11%</span>
                         <span class="text-gray-950 dark:text-white">
                             {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
                         </span>
                     </div>
+                    @endfeatures
                     @features('fee', $this->table->merchant)
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
@@ -285,6 +287,8 @@
                 <x-filament::button
                     class="w-full"
                     size="xl"
+                    wire:loading.attr="disabled"
+                    wire:target="$dispatch('pay-now')"
                     wire:click="$dispatch('pay-now')"
                 >
                     {{ __('Pay now') }}

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Webhooks;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
 use App\Models\Order;
-use App\Models\Payment;
 use App\Traits\Orders\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +16,6 @@ class PaymentSuccessController extends Controller
      */
     public function __invoke(Merchant $merchant, Request $request)
     {
-        logger()->info('headers', $request->headers->all());
-
         $merchant = ! $merchant->getKey()
             ? Merchant::query()->firstWhere('uuid', $request->merchant)
             : $merchant;
@@ -35,7 +32,7 @@ class PaymentSuccessController extends Controller
                     'EXPIRED' => Status::Expired,
                 }]);
 
-                Payment::query()->create([
+                $order->payment()->create([
                     'merchant_id' => $merchant->getKey(),
                     'business_id' => $merchant->business_id,
                     'event' => 'invoice.updated',
