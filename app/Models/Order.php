@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Orders\Serving;
 use App\Traits\Orders\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,12 +20,16 @@ class Order extends Model
         'total',
         'additional',
         'status',
+        'serving',
+        'queued_at',
     ];
 
     protected $casts = [
         'status' => Status::class,
+        'serving' => Serving::class,
         'total' => 'integer',
         'additional' => 'object',
+        'queued_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -54,5 +59,13 @@ class Order extends Model
     public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function process(bool $forward = true): bool
+    {
+        return $this->update([
+            'serving' => $forward ? $this->serving->next() : $this->serving->prev(),
+            'queued_at' => now(),
+        ]);
     }
 }
