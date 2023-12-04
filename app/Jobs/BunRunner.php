@@ -31,6 +31,7 @@ class BunRunner implements ShouldQueue
     public function handle(): void
     {
         Cache::forget('bun-build-time');
+        Process::path('/')->run('rm -rf /home/akunbeben/Projects/pesenin/public/build');
 
         Cache::remember('bun-build-time', now()->addMinutes(15), function () {
             $start = microtime(true);

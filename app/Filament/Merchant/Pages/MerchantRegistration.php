@@ -2,12 +2,14 @@
 
 namespace App\Filament\Merchant\Pages;
 
+use App\Http\Middleware\EnsureNotEmployee;
 use App\Jobs\ForwardingEmail;
 use App\Models\Merchant;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\Tenancy\RegisterTenant as Page;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Model;
 
 class MerchantRegistration extends Page
@@ -15,6 +17,14 @@ class MerchantRegistration extends Page
     public static function getLabel(): string
     {
         return __('Register merchant');
+    }
+
+    public static function getRouteMiddleware(Panel $panel): string | array
+    {
+        return [
+            ...parent::getRouteMiddleware($panel),
+            EnsureNotEmployee::class,
+        ];
     }
 
     public function form(Form $form): Form

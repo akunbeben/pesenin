@@ -4,7 +4,6 @@ namespace App\Filament\Central\Resources;
 
 use App\Filament\Central\Resources\UserResource\Pages;
 use App\Filament\Central\Resources\UserResource\RelationManagers;
-use App\Jobs\RegisterDestinationAddress;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +12,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
@@ -114,7 +114,6 @@ class UserResource extends Resource
                     })
                     ->after(function (User $record) {
                         $record->sendPasswordResetNotification(Password::getRepository()->create($record));
-                        RegisterDestinationAddress::dispatch($record);
                     })
                     ->createAnother(false)
                     ->icon('heroicon-m-plus')
@@ -156,6 +155,11 @@ class UserResource extends Resource
                             ->label(__('Last updated')),
                     ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('employee_of', null);
     }
 
     public static function getRelations(): array

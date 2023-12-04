@@ -2,4 +2,4 @@
 
 cd /home/akunbeben/Projects/pesenin;
 
-php artisan serve & "$PWD/bin/tunnel"
+php artisan serve & php artisan queue:listen & "$PWD/bin/tunnel"

@@ -93,6 +93,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         return $this->hasOne(Setting::class);
     }
 
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'business_id', 'business_id');
+    }
+
     public function fullAddress(): Attribute
     {
         return Attribute::get(function () {

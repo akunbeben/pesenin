@@ -17,7 +17,12 @@ class ResetPassword extends BaseNotification implements ShouldQueue
             URL::forceRootUrl(config('app.asset_url'));
         }
 
-        return URL::signedRoute('filament.merchant.auth.password-reset.reset', [
+        /** @var \App\Models\User $notifiable */
+        $route = ! $notifiable->employee_of
+            ? 'filament.merchant.auth.password-reset.reset'
+            : 'filament.outlet.auth.password-reset.reset';
+
+        return URL::signedRoute($route, [
             'token' => $this->token,
             'email' => $notifiable->getEmailForPasswordReset(),
         ]);

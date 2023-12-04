@@ -124,7 +124,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
         $defaultAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
 
-        return $this->getFirstMediaUrl('avatar') ?? $defaultAvatar;
+        return $this->getFirstMedia('avatar')?->getUrl() ?? $defaultAvatar;
     }
 
     public function registerMediaCollections(): void

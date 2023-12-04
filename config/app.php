@@ -173,6 +173,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\Filament\CentralPanelProvider::class,
         App\Providers\Filament\MerchantPanelProvider::class,
+        App\Providers\Filament\OutletPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
     ])->toArray(),

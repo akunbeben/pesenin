@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/css/filament/central/theme.css',
                 'resources/css/filament/merchant/theme.css',
+                'resources/css/filament/outlet/theme.css',
             ],
             refresh: [...refreshPaths, 'app/Filament/**', 'app/Providers/Filament/**', 'app/Livewire/**'],
         }),
