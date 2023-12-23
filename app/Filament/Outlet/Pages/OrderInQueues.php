@@ -36,11 +36,8 @@ class OrderInQueues extends Page
         return __('Order in queues');
     }
 
-    #[On('forward')]
-    public function next(Order $order): void
+    public function loads(): void
     {
-        $order->process();
-
         $this->waiting = Order::query()->with(['items'])
             ->orderBy('queued_at', 'asc')
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
@@ -58,6 +55,13 @@ class OrderInQueues extends Page
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
             ->where('serving', Serving::Completed)
             ->get();
+    }
+
+    #[On('forward')]
+    public function next(Order $order): void
+    {
+        $order->process();
+        $this->loads();
     }
 
     #[On('backward')]
@@ -65,43 +69,11 @@ class OrderInQueues extends Page
     {
         $order->process(false);
 
-        $this->waiting = Order::query()->with(['items'])
-            ->orderBy('queued_at', 'asc')
-            ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
-            ->where('serving', Serving::Waiting)
-            ->get();
-
-        $this->processed = Order::query()->with(['items'])
-            ->orderBy('queued_at', 'asc')
-            ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
-            ->where('serving', Serving::Processed)
-            ->get();
-
-        $this->completed = Order::query()->with(['items'])
-            ->latest('queued_at')
-            ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
-            ->where('serving', Serving::Completed)
-            ->get();
+        $this->loads();
     }
 
     public function mount(): void
     {
-        $this->waiting = Order::query()->with(['items'])
-            ->orderBy('queued_at', 'asc')
-            ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
-            ->where('serving', Serving::Waiting)
-            ->get();
-
-        $this->processed = Order::query()->with(['items'])
-            ->orderBy('queued_at', 'asc')
-            ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
-            ->where('serving', Serving::Processed)
-            ->get();
-
-        $this->completed = Order::query()->with(['items'])
-            ->latest('queued_at')
-            ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
-            ->where('serving', Serving::Completed)
-            ->get();
+        $this->loads();
     }
 }

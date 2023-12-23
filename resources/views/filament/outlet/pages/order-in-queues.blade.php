@@ -5,7 +5,7 @@
 @endphp
 
 <x-filament-panels::page>
-    <div class="grid gap-5 sm:grid-cols-3">
+    <div class="grid gap-5 sm:grid-cols-3" wire:poll="loads">
         <div class="flex flex-col gap-5" x-data="{ timeout: 100 }">
             <span class="text-2xl font-bold tracking-tight text-center sm:text-3xl text-warning-400">
                 {{ __('Waiting') }}
@@ -49,13 +49,14 @@
                             @endforeach
                         </div>
 
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col items-center justify-between lg:flex-row">
                             <div></div>
                             <x-filament::button
                                 icon="heroicon-m-arrow-right"
                                 icon-position="after"
                                 wire:click="$dispatch('forward', { order: '{{ $order->getRouteKey() }}' })"
                                 label="Continue"
+                                class="w-full"
                             >
                                 {{ __('Continue') }}
                             </x-filament::button>
@@ -108,13 +109,14 @@
                             @endforeach
                         </div>
 
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col items-center justify-between lg:flex-row">
                             <x-filament::button
                                 color="warning"
                                 icon="heroicon-m-arrow-left"
                                 icon-position="before"
                                 wire:click="$dispatch('backward', { order: '{{ $order->getRouteKey() }}' })"
                                 label="Go back"
+                                class="w-full"
                             >
                                 {{ __('Go back') }}
                             </x-filament::button>
@@ -124,6 +126,7 @@
                                 icon-position="after"
                                 wire:click="$dispatch('forward', { order: '{{ $order->getRouteKey() }}' })"
                                 label="Continue"
+                                class="w-full"
                             >
                                 {{ __('Continue') }}
                             </x-filament::button>
@@ -176,13 +179,14 @@
                             @endforeach
                         </div>
 
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col items-center justify-between lg:flex-row">
                             <x-filament::button
                                 color="warning"
                                 icon="heroicon-m-arrow-left"
                                 icon-position="before"
                                 wire:click="$dispatch('backward', { order: '{{ $order->getRouteKey() }}' })"
                                 label="Go back"
+                                class="w-full"
                             >
                                 {{ __('Go back') }}
                             </x-filament::button>
@@ -193,6 +197,7 @@
                                 icon-position="after"
                                 wire:click="$dispatch('forward', { order: '{{ $order->getRouteKey() }}' })"
                                 label="Finish"
+                                class="w-full"
                             >
                                 {{ __('Finish') }}
                             </x-filament::button>

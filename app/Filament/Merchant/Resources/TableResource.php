@@ -20,7 +20,7 @@ class TableResource extends Resource
 {
     protected static ?string $model = Model::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-square-3-stack-3d';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     public static function getNavigationGroup(): ?string
     {

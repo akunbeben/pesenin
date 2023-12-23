@@ -7,7 +7,7 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class OrderInQueues extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-m-queue-list';
+    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
 
     protected static string $view = 'filament.merchant.pages.order-in-queues';
 

@@ -16,7 +16,7 @@ class PrioritizedPaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-exclamation-triangle';
+    protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
 
     public static function getNavigationGroup(): ?string
     {

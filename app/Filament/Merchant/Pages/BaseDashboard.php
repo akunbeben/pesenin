@@ -13,7 +13,7 @@ use Laravel\Pennant\Feature;
 
 class BaseDashboard extends Dashboard
 {
-    protected static ?string $navigationIcon = 'heroicon-m-home';
+    protected static ?string $navigationIcon = 'heroicon-o-home';
 
     public static function getNavigationLabel(): string
     {

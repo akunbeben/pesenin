@@ -131,6 +131,8 @@ namespace App\Models{
  * @property object|null $additional
  * @property \App\Traits\Orders\Status $status
  * @property int $approved
+ * @property \Illuminate\Support\Carbon|null $queued_at
+ * @property \App\Traits\Orders\Serving $serving
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Item> $items
@@ -145,7 +147,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereQueuedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereScanId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereServing($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
@@ -349,6 +353,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Merchant|null $activeMerchant
  * @property-read \App\Models\Merchant|null $employer
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Merchant> $merchants
  * @property-read int|null $merchants_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
@@ -372,6 +378,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUuid($value)
  */
-	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser, \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasDefaultTenant, \Filament\Models\Contracts\HasTenants {}
+	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser, \Filament\Models\Contracts\HasAvatar, \Filament\Models\Contracts\HasDefaultTenant, \Spatie\MediaLibrary\HasMedia, \Filament\Models\Contracts\HasTenants {}
 }
 
