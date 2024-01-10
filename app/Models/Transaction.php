@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Sushi\Sushi;
 use Xendit\BalanceAndTransaction\TransactionApi;
-use Xendit\BalanceAndTransaction\TransactionStatuses;
 use Xendit\Configuration;
 
 class Transaction extends Model
@@ -37,8 +36,6 @@ class Transaction extends Model
     public function getRows()
     {
         Configuration::setXenditKey(config('services.xendit.secret_key'));
-
-        TransactionStatuses::class;
 
         $transactions = (new TransactionApi())->getAllTransactions(
             Filament::getTenant()->business_id,

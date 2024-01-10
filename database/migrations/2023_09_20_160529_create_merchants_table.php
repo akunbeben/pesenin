@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
             $table->uuid();
-            $table->string('cloudflare_email')->nullable();
+            $table->string('cloudflare_email')->unique()->nullable();
             $table->string('name');
-            $table->text('address');
-            $table->string('city');
-            $table->string('country');
-            $table->string('zip');
-            $table->string('phone')->unique();
+            $table->text('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->string('zip')->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->timestamps();
         });
     }

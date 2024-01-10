@@ -17,7 +17,7 @@ class LatestTransactions extends BaseWidget
 
     public function getColumnSpan(): int | string | array
     {
-        return ! Feature::for(Filament::getTenant())->active('ikiosk') ? 'full' : [
+        return ! Feature::for(Filament::getTenant())->active('feature_ikiosk') ? 'full' : [
             'default' => 6,
             'sm' => 4,
             'md' => 4,

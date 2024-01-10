@@ -62,7 +62,9 @@ class Table extends Model implements HasMedia
 
     public function name(): Attribute
     {
-        return Attribute::get(fn () => match (Feature::for($this->merchant)->active('ikiosk')) {
+        $this->loadMissing(['merchant']);
+
+        return Attribute::get(fn () => match (Feature::for($this->merchant)->active('feature_ikiosk')) {
             true => 'Default',
             false => "{$this->prefix}{$this->number}{$this->suffix}"
         });

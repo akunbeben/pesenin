@@ -43,7 +43,7 @@ class BaseDashboard extends Dashboard
 
         Feature::for(Filament::getTenant())->all();
 
-        if (Feature::for(Filament::getTenant())->active('ikiosk')) {
+        if (Feature::for(Filament::getTenant())->active('feature_ikiosk')) {
             $widgets[] = QRCode::class;
         }
 

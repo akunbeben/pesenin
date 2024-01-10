@@ -72,10 +72,10 @@ class Browse extends Component implements HasForms, HasInfolists
                     ->schema([
                         TextEntry::make('name')
                             ->label(__('Table'))
-                            ->hidden(Feature::for($this->table->merchant)->active('ikiosk'))
-                            ->columnSpan(Feature::for($this->table->merchant)->active('ikiosk') ? 2 : 1),
+                            ->hidden(Feature::for($this->table->merchant)->active('feature_ikiosk'))
+                            ->columnSpan(Feature::for($this->table->merchant)->active('feature_ikiosk') ? 2 : 1),
                         TextEntry::make('seats')
-                            ->hidden(Feature::for($this->table->merchant)->active('ikiosk'))
+                            ->hidden(Feature::for($this->table->merchant)->active('feature_ikiosk'))
                             ->translateLabel()
                             ->columnSpan(1),
                         TextEntry::make('merchant.name')

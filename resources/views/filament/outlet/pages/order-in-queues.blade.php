@@ -30,11 +30,11 @@
                         <div
                             @class([
                                 'font-semibold tracking-tight text-gray-950 dark:text-white',
-                                'text-3xl' => !Feature::for(Filament::getTenant())->active('ikiosk'),
-                                'text-xl' => Feature::for(Filament::getTenant())->active('ikiosk'),
+                                'text-3xl' => !Feature::for(Filament::getTenant())->active('feature_ikiosk'),
+                                'text-xl' => Feature::for(Filament::getTenant())->active('feature_ikiosk'),
                             ])
                         >
-                            @features('ikiosk', Filament::getTenant())
+                            @features('feature_ikiosk', Filament::getTenant())
                             {{ $order->number }}
                             @else
                             {{ __('Table') }} &mdash; {{ $order->scan->table->name }}
@@ -90,11 +90,11 @@
                         <div
                             @class([
                                 'font-semibold tracking-tight text-gray-950 dark:text-white',
-                                'text-3xl' => !Feature::for(Filament::getTenant())->active('ikiosk'),
-                                'text-xl' => Feature::for(Filament::getTenant())->active('ikiosk'),
+                                'text-3xl' => !Feature::for(Filament::getTenant())->active('feature_ikiosk'),
+                                'text-xl' => Feature::for(Filament::getTenant())->active('feature_ikiosk'),
                             ])
                         >
-                            @features('ikiosk', Filament::getTenant())
+                            @features('feature_ikiosk', Filament::getTenant())
                             {{ $order->number }}
                             @else
                             {{ __('Table') }} &mdash; {{ $order->scan->table->name }}
@@ -160,11 +160,11 @@
                         <div
                             @class([
                                 'font-semibold tracking-tight text-gray-950 dark:text-white',
-                                'text-3xl' => !Feature::for(Filament::getTenant())->active('ikiosk'),
-                                'text-xl' => Feature::for(Filament::getTenant())->active('ikiosk'),
+                                'text-3xl' => !Feature::for(Filament::getTenant())->active('feature_ikiosk'),
+                                'text-xl' => Feature::for(Filament::getTenant())->active('feature_ikiosk'),
                             ])
                         >
-                            @features('ikiosk', Filament::getTenant())
+                            @features('feature_ikiosk', Filament::getTenant())
                             {{ $order->number }}
                             @else
                             {{ __('Table') }} &mdash; {{ $order->scan->table->name }}

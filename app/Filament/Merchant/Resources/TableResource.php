@@ -44,12 +44,12 @@ class TableResource extends Resource
 
     public static function isDiscovered(): bool
     {
-        return ! Feature::for(Filament::getTenant())->active('ikiosk');
+        return ! Feature::for(Filament::getTenant())->active('feature_ikiosk');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return ! Feature::for(Filament::getTenant())->active('ikiosk');
+        return ! Feature::for(Filament::getTenant())->active('feature_ikiosk');
     }
 
     public static function form(Form $form): Form

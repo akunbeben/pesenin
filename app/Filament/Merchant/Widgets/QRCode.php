@@ -35,7 +35,7 @@ class QRCode extends Widget implements HasActions, HasForms
 
     public static function isDiscovered(): bool
     {
-        return Feature::for(Filament::getTenant())->active('ikiosk');
+        return Feature::for(Filament::getTenant())->active('feature_ikiosk');
     }
 
     public function visitAction(): Action

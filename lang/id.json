@@ -43,7 +43,7 @@
     "You have the option to activate it, allowing you to seamlessly receive cash payments from customers.": "Anda dapat mengaktifkannya untuk menerima pembayaran tunai dari pelanggan dengan mudah.",
     "Accept cash payment": "Terima pembayaran tunai",
     "iKiosk mode": "Mode iKiosk",
-    "The standard system employs the 'Multiple-tables QRCode ordering' structure. If you possess an iKiosk device, activating it will cause a transition to a singular QRCode instance.": "Sistem bawaan menggunakan skema 'Pemesanan QRCode dengan banyak Meja'. Jika Anda menggunakan perangkat iKiosk, Anda dapat mengaktifkannya, dan ini akan beralih ke QRCode tunggal.",
+    "If you have a device that is intended as an IKIOSK device, you can turn this feature on.": "Jika Anda memiliki perangkat yang ditujukan sebagai perangkat IKIOSK, Anda dapat mengaktifkan fitur ini.",
     "Latest transactions": "Transaksi terbaru",
     "QR Code for your customers": "Kode QR untuk pelanggan anda",
     "Data will refresh every 10 minutes": "Data akan diperbarui setiap 10 menit",

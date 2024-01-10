@@ -15,12 +15,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 use OwenIt\Auditing\Auditable;
 use Spatie\Color\Rgb;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, HasAvatar
+class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, HasAvatar, HasMedia
 {
     use Auditable;
     use HasAvatars;
     use HasFactory;
+    use InteractsWithMedia;
 
     protected $fillable = [
         'user_id',
@@ -105,6 +108,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         });
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')->singleFile();
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
         $name = str(Filament::getNameForDefaultAvatar($this))
@@ -115,6 +123,8 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
 
         $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][800] . ')')->toHex();
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
+        $defaultAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
+
+        return $this->getFirstMedia('avatar')?->getUrl() ?? $defaultAvatar;
     }
 }

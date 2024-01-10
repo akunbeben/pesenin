@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Merchant;
 use App\Models\User;
 use App\Support\DevelopmentUrlGenerator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Model::shouldBeStrict();
+        Model::preventSilentlyDiscardingAttributes(false);
+
         if (! app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
@@ -44,9 +48,10 @@ class AppServiceProvider extends ServiceProvider
             return in_array($user->email, ['akunbeben@gmail.com', 'beben.devs@gmail.com']);
         });
 
-        Feature::define('ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);
-        Feature::define('tax', fn (Merchant $merchant) => $merchant->setting->tax);
-        Feature::define('fee', fn (Merchant $merchant) => $merchant->setting->fee);
+        Feature::define('system_ikiosk', fn (Merchant $merchant) => false);
+        Feature::define('feature_ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);
+        Feature::define('feature_tax', fn (Merchant $merchant) => $merchant->setting->tax);
+        Feature::define('feature_fee', fn (Merchant $merchant) => $merchant->setting->fee);
 
         URL::forceScheme(config('app.scheme'));
         setlocale(LC_TIME, 'id_ID');

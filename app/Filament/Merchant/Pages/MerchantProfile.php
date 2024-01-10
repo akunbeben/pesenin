@@ -3,6 +3,7 @@
 namespace App\Filament\Merchant\Pages;
 
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Pages\Tenancy\EditTenantProfile as Page;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,10 @@ class MerchantProfile extends Page
                     ->schema([
                         Forms\Components\Tabs\Tab::make(__('Merchant detail'))
                             ->schema([
+                                SpatieMediaLibraryFileUpload::make('avatar')
+                                    ->label(__('Merchant picture'))
+                                    ->collection('avatar')
+                                    ->multiple(false),
                                 Forms\Components\TextInput::make('name')
                                     ->label(__('Name'))
                                     ->autofocus()
@@ -56,12 +61,12 @@ class MerchantProfile extends Page
                             ->statePath('setting')
                             ->schema([
                                 Forms\Components\Toggle::make('cash_mode')
-                                    ->hidden()
+                                    ->hidden() // disabled
                                     ->label(__('Accept cash payment'))
                                     ->helperText(__('You have the option to activate it, allowing you to seamlessly receive cash payments from customers.')),
                                 Forms\Components\Toggle::make('ikiosk_mode')
                                     ->label(__('iKiosk mode'))
-                                    ->helperText(__('The standard system employs the \'Multiple-tables QRCode ordering\' structure. If you possess an iKiosk device, activating it will cause a transition to a singular QRCode instance.')),
+                                    ->helperText(__('If you have a device that is intended as an IKIOSK device, you can turn this feature on.')),
                                 Forms\Components\Toggle::make('tax')
                                     ->label(__('PPN 11%'))
                                     ->helperText(__('With this option active, PPN 11% tax will be included in the total amount charged to the customer.')),
@@ -90,7 +95,7 @@ class MerchantProfile extends Page
                 ]);
             }
 
-            foreach (['ikiosk' => 'ikiosk_mode', 'tax' => 'tax', 'fee' => 'fee'] as $key => $value) {
+            foreach (['feature_ikiosk' => 'ikiosk_mode', 'tax' => 'tax', 'fee' => 'fee'] as $key => $value) {
                 Feature::for($record)->activate($key, $data['setting'][$value]);
             }
 

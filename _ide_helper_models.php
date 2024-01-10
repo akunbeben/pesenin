@@ -76,11 +76,11 @@ namespace App\Models{
  * @property string $uuid
  * @property string|null $cloudflare_email
  * @property string $name
- * @property string $address
- * @property string $city
- * @property string $country
- * @property string $zip
- * @property string $phone
+ * @property string|null $address
+ * @property string|null $city
+ * @property string|null $country
+ * @property string|null $zip
+ * @property string|null $phone
  * @property string|null $business_id
  * @property mixed|null $webhook_token
  * @property \Illuminate\Support\Carbon|null $created_at
