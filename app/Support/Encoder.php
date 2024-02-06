@@ -2,7 +2,6 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Arr;
 use Sqids\Sqids;
 
 class Encoder
@@ -32,13 +31,13 @@ class Encoder
         return (new Sqids(minLength: 10))->encode([$value]);
     }
 
-    public static function decode(string $salt, string $encoded): int
+    public static function decode(string $salt, string $encoded): array
     {
         if (static::duplicated($salt)) {
-            return 0;
+            return [0];
         }
 
-        return Arr::first((new Sqids($salt, minLength: 10))->decode($encoded));
+        return (new Sqids($salt, minLength: 10))->decode($encoded);
     }
 
     private static function duplicated(string $salt): bool

@@ -6,7 +6,6 @@ use App\Filament\Merchant\Resources\TableResource\Pages;
 use App\Models\Table as Model;
 use App\Services\Tables\QRGenerator;
 use App\Traits\Tables\QRStatus;
-use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -14,6 +13,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Laravel\Pennant\Feature;
 
 class TableResource extends Resource
@@ -40,16 +40,6 @@ class TableResource extends Resource
     public static function getPluralLabel(): ?string
     {
         return __('Table');
-    }
-
-    public static function isDiscovered(): bool
-    {
-        return ! Feature::for(Filament::getTenant())->active('feature_ikiosk');
-    }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return ! Feature::for(Filament::getTenant())->active('feature_ikiosk');
     }
 
     public static function form(Form $form): Form
@@ -125,18 +115,16 @@ class TableResource extends Resource
                 Tables\Columns\TextColumn::make('qr_status')
                     ->badge()
                     ->formatStateUsing(fn (Model $record) => $record->qr_status->label())
-                    ->color(fn (Model $record) => $record->qr_status->color())
-                    ->icon(fn (Model $record) => $record->qr_status->icon())
+                    ->color(fn (Model $record): string => $record->qr_status->color())
+                    ->icon(fn (Model $record): string => $record->qr_status->icon())
                     ->label(__('QR Code')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->translateLabel()
                     ->toggleable()
-                    ->toggledHiddenByDefault()
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->translateLabel()
                     ->toggleable()
-                    ->toggledHiddenByDefault()
                     ->dateTime(),
             ])
             ->filters([
@@ -147,7 +135,7 @@ class TableResource extends Resource
                     ->label(__('Generate QR'))
                     ->icon('heroicon-o-arrow-path')
                     ->color(fn (Model $record) => $record->qr_status->color())
-                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None)
+                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None && ! Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->action(function (Model $record, QRGenerator $service) {
                         /** @var \App\Models\Table $table */
                         $table = $record;
@@ -169,18 +157,19 @@ class TableResource extends Resource
                 Tables\Actions\Action::make('open_url')
                     ->label(__('Open URL'))
                     ->icon('heroicon-m-arrow-up-right')
+                    ->visible(fn (Model $record) => ! Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->url(fn (Model $record) => $record->url, true),
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-cloud-arrow-down')
                     ->color(fn (Model $record) => $record->qr_status->color())
-                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::Generated)
+                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::Generated && ! Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->action(function (Model $record) {
                         return response()->download($record->getFirstMediaPath('qr'), "{$record->uuid}.png");
                     }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make()
                         ->modalWidth('xl')
-                        ->hidden($deleted = fn (Model $record): bool => (bool) $record->deleted_at),
+                        ->hidden($deleted = fn (Model $record): bool => (bool) $record->deleted_at && Feature::for($record->merchant)->active('feature_ikiosk')),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\RestoreAction::make()->visible($deleted),
                     Tables\Actions\ForceDeleteAction::make()->visible($deleted),
@@ -191,6 +180,11 @@ class TableResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['merchant']);
     }
 
     public static function getPages(): array

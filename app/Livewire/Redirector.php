@@ -6,6 +6,7 @@ use App\Models\Table;
 use App\Support\Encoder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Laravel\Pennant\Feature;
 use Livewire\Component;
 use Sqids\Sqids;
 
@@ -28,9 +29,12 @@ class Redirector extends Component
             'fingerprint' => $request->fingerprint(),
         ]);
 
-        $this->url = route('browse', [
+        $this->url = route(match (Feature::for($this->table->merchant)->active('feature_ikiosk')) {
+            true => 'choose',
+            false => 'browse',
+        }, [
             'u' => $salt = Encoder::shuffle(Crypt::encrypt(now()->timestamp), 10),
-            'scanId' => (new Sqids($salt, 5))->encode([$scan->getKey()]),
+            'scanId' => (new Sqids($salt, 5))->encode([$scan->getKey(), 0]),
         ]);
     }
 

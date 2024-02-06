@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use Laravel\Pennant\Feature;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Sqids\Sqids;
@@ -62,12 +61,7 @@ class Table extends Model implements HasMedia
 
     public function name(): Attribute
     {
-        $this->loadMissing(['merchant']);
-
-        return Attribute::get(fn () => match (Feature::for($this->merchant)->active('feature_ikiosk')) {
-            true => 'Default',
-            false => "{$this->prefix}{$this->number}{$this->suffix}"
-        });
+        return Attribute::get(fn () => "{$this->prefix}{$this->number}{$this->suffix}");
     }
 
     public function url(): Attribute

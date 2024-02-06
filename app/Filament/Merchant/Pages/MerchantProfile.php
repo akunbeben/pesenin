@@ -86,16 +86,7 @@ class MerchantProfile extends Page
 
             $record->setting()->updateOrCreate([], $data['setting']);
 
-            if ((bool) $data['setting']['ikiosk_mode']) {
-                $record->tables()->getQuery()->forceDelete();
-
-                $record->tables()->create([
-                    'number' => 1,
-                    'seats' => 0,
-                ]);
-            }
-
-            foreach (['feature_ikiosk' => 'ikiosk_mode', 'tax' => 'tax', 'fee' => 'fee'] as $key => $value) {
+            foreach (['feature_ikiosk' => 'ikiosk_mode', 'feature_tax' => 'tax', 'feature_fee' => 'fee'] as $key => $value) {
                 Feature::for($record)->activate($key, $data['setting'][$value]);
             }
 

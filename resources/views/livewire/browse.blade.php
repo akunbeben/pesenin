@@ -260,7 +260,7 @@
             @endphp
             <div class="flex flex-col gap-2.5 w-full mt-auto bottom-5">
                 <div class="flex flex-col gap-1.5">
-                    @features('tax', $this->table->merchant)
+                    @features('feature_tax', $this->table->merchant)
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">PPN 11%</span>
                         <span class="text-gray-950 dark:text-white">
@@ -268,7 +268,7 @@
                         </span>
                     </div>
                     @endfeatures
-                    @features('fee', $this->table->merchant)
+                    @features('feature_fee', $this->table->merchant)
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
                         <span class="text-gray-950 dark:text-white">

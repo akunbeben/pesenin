@@ -24,6 +24,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Feature;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -45,12 +46,19 @@ class Browse extends Component implements HasForms, HasInfolists
     #[Url]
     public ?string $tab = null;
 
+    #[Locked]
     public Scan $scan;
 
+    #[Locked]
     public string $scanId;
 
+    #[Locked]
     public string $u;
 
+    #[Locked]
+    public bool $isIkiosk = false;
+
+    #[Locked]
     public Table $table;
 
     public ?Product $showed;
@@ -184,10 +192,14 @@ class Browse extends Component implements HasForms, HasInfolists
     {
         abort_if(blank($request->u), 404);
 
-        $this->scan = Scan::query()->findOrFail(Encoder::decode(
+        [$id, $isIkiosk] = Encoder::decode(
             $this->u = $request->u,
             $this->scanId = $scanId,
-        ));
+        );
+
+        $this->isIkiosk = (bool) $isIkiosk;
+
+        $this->scan = Scan::query()->findOrFail($id);
 
         if ($this->scan->finished) {
             $this->redirectRoute('summary', [$this->scan->order->number]);
@@ -195,10 +207,11 @@ class Browse extends Component implements HasForms, HasInfolists
             return;
         }
 
+        $this->table = $this->scan->table;
+
+        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && ! $this->isIkiosk, 404);
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
         abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
-
-        $this->table = $this->scan->table;
 
         $this->cart = collect([])->when(! app()->isProduction(), function (Collection $cart) {
             $product = $this->table->merchant->products->first();
@@ -223,11 +236,11 @@ class Browse extends Component implements HasForms, HasInfolists
                 $additional = [];
                 $subTotal = $this->cart->sum(fn ($item) => $item['price'] * $item['amount']);
 
-                if (Feature::for($this->table->merchant)->active('tax')) {
+                if (Feature::for($this->table->merchant)->active('feature_tax')) {
                     $additional['tax'] = $subTotal * 0.11;
                 }
 
-                if (Feature::for($this->table->merchant)->active('fee')) {
+                if (Feature::for($this->table->merchant)->active('feature_fee')) {
                     $additional['fee'] = $subTotal * 0.04;
                 }
 
@@ -254,11 +267,6 @@ class Browse extends Component implements HasForms, HasInfolists
 
             return;
         }
-
-        $fees = array_filter([
-            ['admin' => $order->additional?->fee ?? 0],
-            ['tax' => $order->additional?->tax ?? 0],
-        ]);
 
         $url = $this->processPayment([
             'external_id' => $order->number,
