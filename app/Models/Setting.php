@@ -14,6 +14,7 @@ class Setting extends Model
         'ikiosk_mode',
         'tax',
         'fee',
+        'payment',
     ];
 
     protected $casts = [
@@ -21,5 +22,6 @@ class Setting extends Model
         'ikiosk_mode' => 'boolean',
         'tax' => 'boolean',
         'fee' => 'boolean',
+        'payment' => 'boolean',
     ];
 }

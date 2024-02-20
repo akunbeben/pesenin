@@ -51,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
         Feature::define('feature_ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);
         Feature::define('feature_tax', fn (Merchant $merchant) => $merchant->setting->tax);
         Feature::define('feature_fee', fn (Merchant $merchant) => $merchant->setting->fee);
+        Feature::define('feature_payment', fn (Merchant $merchant) => $merchant->setting->payment);
 
         URL::forceScheme(config('app.scheme'));
         setlocale(LC_TIME, 'id_ID');

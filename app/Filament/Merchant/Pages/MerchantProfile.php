@@ -40,21 +40,16 @@ class MerchantProfile extends Page
                                     ->tel()
                                     ->telRegex('/^0[8][1-9]\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/')
                                     ->helperText(__('Example: 081234567890'))
-                                    ->unique(ignorable: $this->tenant)
-                                    ->required(),
+                                    ->unique(ignorable: $this->tenant),
                                 Forms\Components\Textarea::make('address')
-                                    ->label(__('Address'))
-                                    ->required(),
+                                    ->label(__('Address')),
                                 Forms\Components\Grid::make(3)->schema([
                                     Forms\Components\TextInput::make('city')
-                                        ->label(__('City'))
-                                        ->required(),
+                                        ->label(__('City')),
                                     Forms\Components\TextInput::make('zip')
-                                        ->label(__('Zip Code'))
-                                        ->required(),
+                                        ->label(__('Zip Code')),
                                     Forms\Components\TextInput::make('country')
-                                        ->label(__('Country'))
-                                        ->required(),
+                                        ->label(__('Country')),
                                 ]),
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Feature settings'))

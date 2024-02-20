@@ -10,8 +10,8 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\ActionSize;
 use Filament\Widgets\Widget;
-use Laravel\Pennant\Feature;
 
 class QRCode extends Widget implements HasActions, HasForms
 {
@@ -33,14 +33,20 @@ class QRCode extends Widget implements HasActions, HasForms
 
     public Table $table;
 
+    protected function getColumns(): int
+    {
+        return 2;
+    }
+
     public static function isDiscovered(): bool
     {
-        return Feature::for(Filament::getTenant())->active('feature_ikiosk');
+        return (bool) Filament::getTenant()?->business_id;
     }
 
     public function visitAction(): Action
     {
         return Action::make('open_url')
+            ->size(ActionSize::Large)
             ->label(__('Test transaction'))
             ->icon('heroicon-o-arrow-top-right-on-square')
             ->extraAttributes(['class' => 'w-full'])
@@ -53,6 +59,7 @@ class QRCode extends Widget implements HasActions, HasForms
         $media = $this->table->getFirstMedia('qr');
 
         return Action::make('download')
+            ->size(ActionSize::Large)
             ->icon('heroicon-o-arrow-down-on-square')
             ->extraAttributes(['class' => 'w-full'])
             ->outlined()
@@ -68,7 +75,13 @@ class QRCode extends Widget implements HasActions, HasForms
 
     public function mount(): void
     {
-        $this->table = Filament::getTenant()->tables->first();
+        /** @var \App\Models\Merchant $merchant */
+        $merchant = Filament::getTenant();
+
+        $this->table = $merchant->tables()->firstOrCreate([], [
+            'number' => 0,
+            'seats' => 0,
+        ]);
 
         if (! $this->table->getFirstMedia('qr')) {
             /** @var \SimpleSoftwareIO\QrCode\Generator $service */

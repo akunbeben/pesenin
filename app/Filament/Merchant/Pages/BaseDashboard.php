@@ -30,7 +30,7 @@ class BaseDashboard extends Dashboard
 
     public function getColumns(): int | string | array
     {
-        return Filament::getTenant()->business_id ? 6 : 2;
+        return Feature::for(Filament::getTenant())->active('feature_payment') ? 6 : 2;
     }
 
     public function getWidgets(): array
@@ -38,10 +38,13 @@ class BaseDashboard extends Dashboard
         /** @var \App\Models\Merchant $merchant */
         $merchant = Filament::getTenant();
 
-        if (! $merchant->business_id) {
+        Feature::for($merchant)->all();
+
+        if (! Feature::for($merchant)->active('feature_payment')) {
             return [
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+                QRCode::class,
             ];
         }
 
@@ -67,10 +70,6 @@ class BaseDashboard extends Dashboard
             MerchantOverview::class,
             LatestTransactions::class,
         ];
-
-        if (Feature::for($merchant)->active('feature_ikiosk')) {
-            $widgets[] = QRCode::class;
-        }
 
         if (! app()->isProduction()) {
             $widgets[] = BunRunnerWidget::class;

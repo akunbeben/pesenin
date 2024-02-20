@@ -11,6 +11,8 @@ use Filament\Forms\Form;
 use Filament\Pages\Tenancy\RegisterTenant as Page;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MerchantRegistration extends Page
@@ -53,7 +55,9 @@ class MerchantRegistration extends Page
                     Forms\Components\TextInput::make('country')
                         ->label(__('Country')),
                 ]),
-                Forms\Components\ToggleButtons::make('payment_gateway')
+                Forms\Components\ToggleButtons::make('payment')
+                    ->visible(Auth::user()->paid)
+                    ->label(__('Payment gateway'))
                     ->options([
                         0 => 'Disable',
                         1 => 'Enable',
@@ -85,9 +89,11 @@ class MerchantRegistration extends Page
 
             $merchant = Merchant::query()->create($data);
 
-            $merchant->setting()->create();
+            $merchant->setting()->create([
+                'payment' => (bool) Arr::get($data, 'payment', false),
+            ]);
 
-            ForwardingEmail::dispatch($merchant->user, $merchant, (bool) $data['payment_gateway']);
+            ForwardingEmail::dispatch($merchant->user, $merchant, (bool) Arr::get($data, 'payment', false));
         } catch (\Throwable $th) {
             DB::rollBack();
 

@@ -46,6 +46,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         'require_reset',
         'active_merchant',
         'employee_of',
+        'paid',
         'email_verified_at',
     ];
 
@@ -68,6 +69,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'require_reset' => 'boolean',
+        'paid' => 'boolean',
     ];
 
     protected static function booted(): void

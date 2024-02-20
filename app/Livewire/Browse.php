@@ -216,6 +216,10 @@ class Browse extends Component implements HasForms, HasInfolists
         $this->cart = collect([])->when(! app()->isProduction(), function (Collection $cart) {
             $product = $this->table->merchant->products->first();
 
+            if (! $product || ! Feature::for($this->table->merchant)->active('feature_payment')) {
+                return;
+            }
+
             $cart->push([
                 'product_id' => $product->getKey(),
                 'snapshot' => array_merge($product->toArray(), ['image' => $product->getFirstMediaUrl('banner')]),

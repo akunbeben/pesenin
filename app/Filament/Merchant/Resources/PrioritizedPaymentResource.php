@@ -4,6 +4,7 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\PrioritizedPaymentResource\Pages;
 use App\Models\Payment;
+use Feature;
 use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,7 +22,7 @@ class PrioritizedPaymentResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return (bool) Filament::getTenant()->business_id;
+        return Feature::for(Filament::getTenant())->active('feature_payment');
     }
 
     public static function getNavigationGroup(): ?string

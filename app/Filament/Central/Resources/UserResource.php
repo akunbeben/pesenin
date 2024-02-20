@@ -79,6 +79,7 @@ class UserResource extends Resource
                     })
                     ->tooltip(fn (User $record): ?string => ! $record->require_reset ? null : 'Please notify the user to reset their password as soon as possible for security reasons.')
                     ->alignCenter(),
+                Tables\Columns\ToggleColumn::make('paid')->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable()
                     ->toggleable()

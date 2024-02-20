@@ -25,7 +25,7 @@ class TableResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return (bool) Filament::getTenant()->business_id;
+        return Feature::for(Filament::getTenant())->active('feature_payment');
     }
 
     public static function getNavigationGroup(): ?string
