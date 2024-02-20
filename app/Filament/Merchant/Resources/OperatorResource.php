@@ -4,6 +4,7 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\OperatorResource\Pages;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,6 +20,11 @@ class OperatorResource extends Resource
     protected static ?string $tenantOwnershipRelationshipName = 'employer';
 
     protected static ?string $tenantRelationshipName = 'employees';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return (bool) Filament::getTenant()->business_id;
+    }
 
     public static function getNavigationGroup(): ?string
     {
@@ -95,7 +101,7 @@ class OperatorResource extends Resource
                         false => 'success',
                         true => 'warning',
                     })
-                    ->tooltip(fn (User $record): ?string => ! $record->require_reset ? null : 'Please notify the user to reset their password as soon as possible for security reasons.')
+                    ->tooltip(fn (User $record): ?string => !$record->require_reset ? null : 'Please notify the user to reset their password as soon as possible for security reasons.')
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable()

@@ -10,15 +10,14 @@
     "require": {
         "php": "^8.1",
         "calebporzio/sushi": "^2.4",
-        "filament/filament": "^3.1",
-        "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
+        "filament/filament": "^3.2",
+        "filament/spatie-laravel-media-library-plugin": "^3.2",
         "flowframe/laravel-trend": "^0.1.5",
         "guzzlehttp/guzzle": "^7.2",
         "hashids/hashids": "^5.0",
         "laravel/framework": "^10.34",
         "laravel/octane": "^2.1",
         "laravel/pennant": "^1.5",
-        "laravel/pulse": "^1.0@beta",
         "laravel/sanctum": "^3.2",
         "laravel/telescope": "^4.17",
         "laravel/tinker": "^2.8",
@@ -86,6 +85,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "beta",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

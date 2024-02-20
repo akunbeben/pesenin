@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
-use Laravel\Pulse\Facades\Pulse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict();
         Model::preventSilentlyDiscardingAttributes(false);
 
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
 
@@ -56,15 +55,5 @@ class AppServiceProvider extends ServiceProvider
         URL::forceScheme(config('app.scheme'));
         setlocale(LC_TIME, 'id_ID');
         \Carbon\Carbon::setLocale('id');
-
-        Pulse::users(function ($ids) {
-            return User::findMany($ids)->map(fn ($user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'extra' => $user->email,
-                'email' => $user->email,
-                'avatar' => $user->getFilamentAvatarUrl(),
-            ]);
-        });
     }
 }

@@ -26,13 +26,19 @@ class MerchantOverview extends BaseWidget
         /** @var \App\Models\Merchant $merchant */
         $merchant = Filament::getTenant();
 
-        $this->balance = Cache::remember("merchant_{$merchant->business_id}_balance", now()->addMinutes(10), function () use ($merchant) {
-            return (new BalanceApi())->getBalance(for_user_id: $merchant->business_id)['balance'];
-        });
+        $this->balance = match ($merchant->business_id) {
+            null => 0,
+            default => Cache::remember("merchant_{$merchant->business_id}_balance", now()->addMinutes(10), function () use ($merchant) {
+                return (new BalanceApi())->getBalance(for_user_id: $merchant->business_id)['balance'];
+            }),
+        };
 
-        $this->holding = Cache::remember("merchant_{$merchant->business_id}_holding", now()->addMinutes(10), function () use ($merchant) {
-            return (new BalanceApi())->getBalance('HOLDING', for_user_id: $merchant->business_id)['balance'];
-        });
+        $this->holding = match ($merchant->business_id) {
+            null => 0,
+            default => Cache::remember("merchant_{$merchant->business_id}_holding", now()->addMinutes(10), function () use ($merchant) {
+                return (new BalanceApi())->getBalance('HOLDING', for_user_id: $merchant->business_id)['balance'];
+            }),
+        };
     }
 
     protected function getStats(): array

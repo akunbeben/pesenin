@@ -23,7 +23,7 @@ class ForwardingEmail implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public User $user, public Merchant $merchant)
+    public function __construct(public User $user, public Merchant $merchant, public bool $withPayment)
     {
         //
     }
@@ -33,26 +33,28 @@ class ForwardingEmail implements ShouldQueue
      */
     public function handle(Routing $routing, Account $account): void
     {
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             URL::forceRootUrl(config('app.asset_url'));
         }
 
         $cloudflareEmail = $routing->forward($this->user->email, $this->merchant->name);
 
-        $businessId = $account->createAccount([
-            'email' => $cloudflareEmail,
-            'type' => 'MANAGED',
-            'public_profile' => [
-                'business_name' => $this->merchant->name,
-            ],
-        ]);
+        if ($this->withPayment) {
+            $businessId = $account->createAccount([
+                'email' => $cloudflareEmail,
+                'type' => 'MANAGED',
+                'public_profile' => [
+                    'business_name' => $this->merchant->name,
+                ],
+            ]);
 
-        $token = $account->registerWebhook('invoice', route('webhooks.payment.success', [$this->merchant]), $businessId);
+            $token = $account->registerWebhook('invoice', route('webhooks.payment.success', [$this->merchant]), $businessId);
+        }
 
         $this->merchant->update([
-            'business_id' => $businessId,
+            'business_id' => $businessId ?? null,
             'cloudflare_email' => $cloudflareEmail,
-            'webhook_token' => $token,
+            'webhook_token' => $token ?? null,
         ]);
     }
 }

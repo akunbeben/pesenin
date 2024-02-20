@@ -8,8 +8,13 @@ use App\Filament\Merchant\Widgets\MerchantOverview;
 use App\Filament\Merchant\Widgets\QRCode;
 use Filament\Facades\Filament;
 use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
+use Filament\Widgets\FilamentInfoWidget;
+use Filament\Widgets\WidgetConfiguration;
 use Illuminate\Contracts\Support\Htmlable;
 use Laravel\Pennant\Feature;
+
+use function PHPSTORM_META\map;
 
 class BaseDashboard extends Dashboard
 {
@@ -27,27 +32,49 @@ class BaseDashboard extends Dashboard
 
     public function getColumns(): int | string | array
     {
-        return 6;
+        return Filament::getTenant()->business_id ? 6 : 2;
     }
 
     public function getWidgets(): array
     {
-        if (! Filament::getTenant()->business_id) {
-            return parent::getWidgets();
+        /** @var \App\Models\Merchant $merchant */
+        $merchant = Filament::getTenant();
+
+        if (!$merchant->business_id) {
+            return [
+                AccountWidget::class,
+                FilamentInfoWidget::class,
+            ];
         }
 
         $widgets = [
+            (new class extends AccountWidget
+            {
+                protected int | string | array $columnSpan = 3;
+
+                public static function make(array $properties = []): WidgetConfiguration
+                {
+                    return app(WidgetConfiguration::class, ['widget' => static::class, 'properties' => $properties]);
+                }
+            })->make(),
+            (new class extends FilamentInfoWidget
+            {
+                protected int | string | array $columnSpan = 3;
+
+                public static function make(array $properties = []): WidgetConfiguration
+                {
+                    return app(WidgetConfiguration::class, ['widget' => static::class, 'properties' => $properties]);
+                }
+            })->make(),
             MerchantOverview::class,
             LatestTransactions::class,
         ];
 
-        Feature::for(Filament::getTenant())->all();
-
-        if (Feature::for(Filament::getTenant())->active('feature_ikiosk')) {
+        if (Feature::for($merchant)->active('feature_ikiosk')) {
             $widgets[] = QRCode::class;
         }
 
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             $widgets[] = BunRunnerWidget::class;
         }
 

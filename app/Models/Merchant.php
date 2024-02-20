@@ -39,6 +39,12 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         'zip',
     ];
 
+    protected $hidden = [
+        'business_id',
+        'webhook_token',
+        'cloudflare_email',
+    ];
+
     protected $casts = [
         'webhook_token' => 'encrypted',
     ];

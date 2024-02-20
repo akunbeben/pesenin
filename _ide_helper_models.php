@@ -1,6 +1,7 @@
 <?php
 
 // @formatter:off
+// phpcs:ignoreFile
 /**
  * A helper file for your Eloquent Models
  * Copy the phpDocs from this file to the correct Model,
@@ -19,6 +20,7 @@ namespace App\Models{
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $hashed
  * @property-read \App\Models\Merchant $merchant
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
@@ -91,6 +93,9 @@ namespace App\Models{
  * @property-read int|null $categories_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $employees
  * @property-read int|null $employees_count
+ * @property-read mixed $full_address
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Payment> $payments
  * @property-read int|null $payments_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
@@ -117,7 +122,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereWebhookToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereZip($value)
  */
-	class Merchant extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable, \Filament\Models\Contracts\HasAvatar {}
+	class Merchant extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable, \Filament\Models\Contracts\HasAvatar, \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -311,8 +316,10 @@ namespace App\Models{
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \App\Models\Merchant $merchant
+ * @property-read mixed $name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
  * @property-read int|null $scans_count
+ * @property-read mixed $url
  * @method static \Illuminate\Database\Eloquent\Builder|Table newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Table newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Table onlyTrashed()

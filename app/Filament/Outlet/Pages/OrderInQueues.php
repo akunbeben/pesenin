@@ -38,19 +38,19 @@ class OrderInQueues extends Page
 
     public function loads(): void
     {
-        $this->waiting = Order::query()->with(['items'])
+        $this->waiting = Order::query()->with(['items', 'scan.table'])
             ->orderBy('queued_at', 'asc')
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
             ->where('serving', Serving::Waiting)
             ->get();
 
-        $this->processed = Order::query()->with(['items'])
+        $this->processed = Order::query()->with(['items', 'scan.table'])
             ->orderBy('queued_at', 'asc')
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
             ->where('serving', Serving::Processed)
             ->get();
 
-        $this->completed = Order::query()->with(['items'])
+        $this->completed = Order::query()->with(['items', 'scan.table'])
             ->latest('queued_at')
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
             ->where('serving', Serving::Completed)

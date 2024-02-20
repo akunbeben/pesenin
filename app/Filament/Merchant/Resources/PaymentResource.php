@@ -4,6 +4,7 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\PaymentResource\Pages;
 use App\Models\Payment;
+use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -17,6 +18,11 @@ class PaymentResource extends Resource
     protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return (bool) Filament::getTenant()->business_id;
+    }
 
     public static function getNavigationGroup(): ?string
     {

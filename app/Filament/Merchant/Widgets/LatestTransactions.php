@@ -17,7 +17,7 @@ class LatestTransactions extends BaseWidget
 
     public function getColumnSpan(): int | string | array
     {
-        return ! Feature::for(Filament::getTenant())->active('feature_ikiosk') ? 'full' : [
+        return !Feature::for(Filament::getTenant())->active('feature_ikiosk') ? 'full' : [
             'default' => 6,
             'sm' => 4,
             'md' => 4,
@@ -41,7 +41,7 @@ class LatestTransactions extends BaseWidget
     {
         return $table
             ->paginated(false)
-            ->query(Payment::query()->latest())
+            ->query(Payment::query()->whereBelongsTo(Filament::getTenant(), 'merchant')->latest())
             ->columns([
                 Tables\Columns\TextColumn::make('reference_id')
                     ->getStateUsing(fn (Payment $record) => $record->data->external_id)

@@ -4,6 +4,7 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\PrioritizedPaymentResource\Pages;
 use App\Models\Payment;
+use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -17,6 +18,11 @@ class PrioritizedPaymentResource extends Resource
     protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return (bool) Filament::getTenant()->business_id;
+    }
 
     public static function getNavigationGroup(): ?string
     {
@@ -75,7 +81,7 @@ class PrioritizedPaymentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('resolve')
-                    ->hidden(fn (Payment $record) => ! $record->priority)
+                    ->hidden(fn (Payment $record) => !$record->priority)
                     ->icon('heroicon-m-check')
                     ->action(fn (Payment $record) => $record->update(['priority' => false]))
                     ->color('success')
