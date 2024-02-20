@@ -9,7 +9,6 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Number;
-use Laravel\Pennant\Feature;
 
 class LatestTransactions extends BaseWidget
 {
@@ -17,21 +16,7 @@ class LatestTransactions extends BaseWidget
 
     public function getColumnSpan(): int | string | array
     {
-        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
-            'default' => 'full',
-            'sm' => 6,
-            'md' => 4,
-            'lg' => 4,
-            'xl' => 4,
-            '2xl' => 4,
-        ] : [
-            'default' => 'full',
-            'sm' => 6,
-            'md' => 4,
-            'lg' => 4,
-            'xl' => 4,
-            '2xl' => 4,
-        ];
+        return 'full';
     }
 
     protected function getTableHeading(): string | Htmlable | null

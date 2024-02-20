@@ -101,10 +101,7 @@ class BaseDashboard extends Dashboard
                     ] : [
                         'default' => 'full',
                         'sm' => 6,
-                        'md' => 4,
-                        'lg' => 4,
-                        'xl' => 4,
-                        '2xl' => 4,
+                        'md' => 3,
                     ];
                 }
 
@@ -123,10 +120,7 @@ class BaseDashboard extends Dashboard
                     ] : [
                         'default' => 'full',
                         'sm' => 6,
-                        'md' => 4,
-                        'lg' => 4,
-                        'xl' => 4,
-                        '2xl' => 4,
+                        'md' => 3,
                     ];
                 }
 
