@@ -14,8 +14,6 @@ use Filament\Widgets\WidgetConfiguration;
 use Illuminate\Contracts\Support\Htmlable;
 use Laravel\Pennant\Feature;
 
-use function PHPSTORM_META\map;
-
 class BaseDashboard extends Dashboard
 {
     protected static ?string $navigationIcon = 'heroicon-o-home';
@@ -40,7 +38,7 @@ class BaseDashboard extends Dashboard
         /** @var \App\Models\Merchant $merchant */
         $merchant = Filament::getTenant();
 
-        if (!$merchant->business_id) {
+        if (! $merchant->business_id) {
             return [
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -54,7 +52,7 @@ class BaseDashboard extends Dashboard
 
                 public static function make(array $properties = []): WidgetConfiguration
                 {
-                    return app(WidgetConfiguration::class, ['widget' => static::class, 'properties' => $properties]);
+                    return app(WidgetConfiguration::class, ['widget' => self::class, 'properties' => $properties]);
                 }
             })->make(),
             (new class extends FilamentInfoWidget
@@ -63,7 +61,7 @@ class BaseDashboard extends Dashboard
 
                 public static function make(array $properties = []): WidgetConfiguration
                 {
-                    return app(WidgetConfiguration::class, ['widget' => static::class, 'properties' => $properties]);
+                    return app(WidgetConfiguration::class, ['widget' => self::class, 'properties' => $properties]);
                 }
             })->make(),
             MerchantOverview::class,
@@ -74,7 +72,7 @@ class BaseDashboard extends Dashboard
             $widgets[] = QRCode::class;
         }
 
-        if (!app()->isProduction()) {
+        if (! app()->isProduction()) {
             $widgets[] = BunRunnerWidget::class;
         }
 

@@ -99,6 +99,7 @@ class MerchantRegistration extends Page
         }
 
         DB::commit();
+
         return $merchant;
     }
 }

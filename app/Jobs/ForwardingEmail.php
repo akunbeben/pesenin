@@ -33,7 +33,7 @@ class ForwardingEmail implements ShouldQueue
      */
     public function handle(Routing $routing, Account $account): void
     {
-        if (!app()->isProduction()) {
+        if (! app()->isProduction()) {
             URL::forceRootUrl(config('app.asset_url'));
         }
 
