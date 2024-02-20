@@ -30,7 +30,7 @@ class BaseDashboard extends Dashboard
 
     public function getColumns(): int | string | array
     {
-        return Feature::for(Filament::getTenant())->active('feature_payment') ? 6 : 2;
+        return 6;
     }
 
     public function getWidgets(): array
@@ -42,8 +42,50 @@ class BaseDashboard extends Dashboard
 
         if (! Feature::for($merchant)->active('feature_payment')) {
             return [
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                (new class extends AccountWidget
+                {
+                    public function getColumnSpan(): int | string | array
+                    {
+                        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
+                            'default' => 6,
+                            'sm' => 3,
+                        ] : [
+                            'default' => 'full',
+                            'sm' => 6,
+                            'md' => 4,
+                            'lg' => 4,
+                            'xl' => 4,
+                            '2xl' => 4,
+                        ];
+                    }
+
+                    public static function make(array $properties = []): WidgetConfiguration
+                    {
+                        return app(WidgetConfiguration::class, ['widget' => self::class, 'properties' => $properties]);
+                    }
+                })->make(),
+                (new class extends FilamentInfoWidget
+                {
+                    public function getColumnSpan(): int | string | array
+                    {
+                        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
+                            'default' => 6,
+                            'sm' => 3,
+                        ] : [
+                            'default' => 'full',
+                            'sm' => 6,
+                            'md' => 4,
+                            'lg' => 4,
+                            'xl' => 4,
+                            '2xl' => 4,
+                        ];
+                    }
+
+                    public static function make(array $properties = []): WidgetConfiguration
+                    {
+                        return app(WidgetConfiguration::class, ['widget' => self::class, 'properties' => $properties]);
+                    }
+                })->make(),
                 QRCode::class,
             ];
         }
@@ -51,7 +93,20 @@ class BaseDashboard extends Dashboard
         $widgets = [
             (new class extends AccountWidget
             {
-                protected int | string | array $columnSpan = 3;
+                public function getColumnSpan(): int | string | array
+                {
+                    return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
+                        'default' => 6,
+                        'sm' => 3,
+                    ] : [
+                        'default' => 'full',
+                        'sm' => 6,
+                        'md' => 4,
+                        'lg' => 4,
+                        'xl' => 4,
+                        '2xl' => 4,
+                    ];
+                }
 
                 public static function make(array $properties = []): WidgetConfiguration
                 {
@@ -60,7 +115,20 @@ class BaseDashboard extends Dashboard
             })->make(),
             (new class extends FilamentInfoWidget
             {
-                protected int | string | array $columnSpan = 3;
+                public function getColumnSpan(): int | string | array
+                {
+                    return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
+                        'default' => 6,
+                        'sm' => 3,
+                    ] : [
+                        'default' => 'full',
+                        'sm' => 6,
+                        'md' => 4,
+                        'lg' => 4,
+                        'xl' => 4,
+                        '2xl' => 4,
+                    ];
+                }
 
                 public static function make(array $properties = []): WidgetConfiguration
                 {

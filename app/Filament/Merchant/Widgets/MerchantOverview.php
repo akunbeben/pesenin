@@ -7,6 +7,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Number;
+use Laravel\Pennant\Feature;
 use Xendit\BalanceAndTransaction\BalanceApi;
 
 class MerchantOverview extends BaseWidget
@@ -15,9 +16,19 @@ class MerchantOverview extends BaseWidget
 
     public $holding = 0;
 
-    protected int | string | array $columnSpan = 'full';
-
     protected static ?int $sort = 1;
+
+    public function getColumnSpan(): int | string | array
+    {
+        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? 'full' : [
+            'default' => 'full',
+            'sm' => 6,
+            'md' => 4,
+            'lg' => 4,
+            'xl' => 4,
+            '2xl' => 4,
+        ];
+    }
 
     public function mount(): void
     {
