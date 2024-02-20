@@ -130,7 +130,7 @@ class ProductResource extends Resource
                             ->formatStateUsing(fn (Product $record) => 'Rp ' . number_format($record->price, 0, ',', '.')),
                     ]),
             ])
-            ->contentGrid(['md' => 2, 'xl' => 4, 'sm' => 2, 'default' => 2])
+            ->contentGrid(['md' => 2, 'xl' => 4, 'sm' => 2, 'default' => 1])
             ->defaultSort('id', 'desc')
             ->paginationPageOptions([8, 16, 24])
             ->filters([
