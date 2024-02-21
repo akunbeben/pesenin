@@ -16,7 +16,7 @@
                 ])
             >
                 @if ($this->order->status === \App\Traits\Orders\Status::Manual)
-                <div class="p-2.5 bg-white">{!! QrCode::size(150)->generate($this->order->number) !!}</div>
+                <div class="p-2.5 bg-white rounded-lg">{!! QrCode::size(150)->generate($this->order->number) !!}</div>
                 @else
                 <x-filament::icon
                     icon="{{ $this->order->status->icon() }}"
