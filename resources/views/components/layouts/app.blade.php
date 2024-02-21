@@ -32,7 +32,12 @@
     @stack('scripts')
 </head>
 
-<body class="font-sans antialiased">
+<body
+    @class([
+        'font-sans antialiased',
+        'dark' => filament()->hasDarkModeForced(),
+    ])
+>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
         <main>
             {{ $slot }}

@@ -1,7 +1,6 @@
-- Panel antrian
-- Notification
-- Menu prioritized payment
+- Panel antrian - OK
+- Notification - OK
+- Menu prioritized payment - OK
+- PPN tetap - OK
+- Biaya admin + 11% of admin (Xendit) | Biaya layanan - OK
 - Opsi metode pembayaran
-
-- PPN tetap
-- Biaya admin + 11% of admin (Xendit)

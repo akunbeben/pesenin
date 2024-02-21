@@ -209,14 +209,14 @@ class Browse extends Component implements HasForms, HasInfolists
 
         $this->table = $this->scan->table;
 
-        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && ! $this->isIkiosk, 404);
+        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && !$this->isIkiosk, 404);
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
-        abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
+        abort_if(!$this->scan->table, 403, 'Please rescan the QRCode');
 
-        $this->cart = collect([])->when(! app()->isProduction(), function (Collection $cart) {
+        $this->cart = collect([])->when(!app()->isProduction(), function (Collection $cart) {
             $product = $this->table->merchant->products->first();
 
-            if (! $product || ! Feature::for($this->table->merchant)->active('feature_payment')) {
+            if (!$product || !Feature::for($this->table->merchant)->active('feature_payment')) {
                 return;
             }
 
@@ -317,13 +317,13 @@ class Browse extends Component implements HasForms, HasInfolists
 
     public function render()
     {
-        return view('livewire.browse', [
+        return view('components.browse.index', [
             'products' => $this->table->merchant->products()->available()->when($this->tab, function (Builder $query) {
-                if (
-                    $this->table->merchant->categories->filter(
-                        fn (Category $category) => $category->reverse($this->tab, $this->u)
-                    )->isEmpty()
-                ) {
+                $categoryHasNoFilter = $this->table->merchant->categories->filter(
+                    fn (Category $category) => $category->reverse($this->tab, $this->u)
+                )->isEmpty();
+
+                if ($categoryHasNoFilter) {
                     $this->tab = null;
 
                     return;
@@ -339,7 +339,6 @@ class Browse extends Component implements HasForms, HasInfolists
                 ->simplePaginate(
                     ($detect = new MobileDetect())->isMobile() ? ($detect->isTablet() ? 12 : 6) : 12
                 ),
-            'highlights' => $this->table->merchant->products()->highlights()->get(),
             'categories' => $this->table->merchant->categories,
         ]);
     }

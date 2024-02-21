@@ -17,7 +17,7 @@ class Encoder
         while (strlen($uniqueString) < $length) {
             $randomCharacter = $characters[rand(0, $numCharacters - 1)];
 
-            if (! in_array($randomCharacter, $usedCharacters)) {
+            if (!in_array($randomCharacter, $usedCharacters)) {
                 $uniqueString .= $randomCharacter;
                 $usedCharacters[] = $randomCharacter;
             }
@@ -34,10 +34,12 @@ class Encoder
     public static function decode(string $salt, string $encoded): array
     {
         if (static::duplicated($salt)) {
-            return [0];
+            return [0, 0];
         }
 
-        return (new Sqids($salt, minLength: 10))->decode($encoded);
+        $decoded = (new Sqids($salt, minLength: 10))->decode($encoded);
+
+        return count($decoded) > 1 ? $decoded : [0, 0];
     }
 
     private static function duplicated(string $salt): bool

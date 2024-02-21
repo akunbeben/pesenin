@@ -60,7 +60,7 @@ class MerchantProfile extends Page
                                     ->label(__('Accept cash payment'))
                                     ->helperText(__('You have the option to activate it, allowing you to seamlessly receive cash payments from customers.')),
                                 Forms\Components\Toggle::make('ikiosk_mode')
-                                    ->hidden() // disabled
+                                    // ->hidden() // disabled
                                     ->label(__('iKiosk mode'))
                                     ->helperText(__('If you have a device that is intended as an IKIOSK device, you can turn this feature on.')),
                                 Forms\Components\Toggle::make('tax')
