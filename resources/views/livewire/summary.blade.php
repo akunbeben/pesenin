@@ -7,13 +7,17 @@
         <div class="flex flex-col items-center w-full gap-5 p-5 bg-gray-100 border border-gray-200 dark:bg-gray-900 dark:border-gray-800 rounded-xl">
             <div
                 @class([
-                    'flex items-center justify-center w-20 h-20 p-5 rounded-full',
+                    'flex items-center justify-center',
+                    'rounded-full w-20 h-20 p-5' => $this->order->status !== \App\Traits\Orders\Status::Manual,
                     'text-warning-500 bg-warning-100' => $this->order->status === \App\Traits\Orders\Status::Pending,
                     'text-primary-500 bg-primary-100' => $this->order->status === \App\Traits\Orders\Status::Processed,
                     'text-success-500 bg-success-100' => $this->order->status === \App\Traits\Orders\Status::Success,
                     'text-danger-500 bg-danger-100' => $this->order->status === \App\Traits\Orders\Status::Expired,
                 ])
             >
+                @if ($this->order->status === \App\Traits\Orders\Status::Manual)
+                <div class="p-2.5 bg-white">{!! QrCode::size(150)->generate($this->order->number) !!}</div>
+                @else
                 <x-filament::icon
                     icon="{{ $this->order->status->icon() }}"
                     label="Payment status icon"
@@ -23,11 +27,14 @@
                         'animate-spin' => $this->order->status === \App\Traits\Orders\Status::Processed,
                     ])
                 />
+                @endif
             </div>
 
-            <div class="flex flex-col gap-1.5 items-center">
+            <div class="flex flex-col gap-1.5 items-center text-center">
                 <h1 class="text-base sm:text-2xl text-gray-950 dark:text-white">{{ __('Payment :status!', ['status' => __($this->order->status->name)]) }}</h1>
-                @if ($this->order->status !== \App\Traits\Orders\Status::Success)
+                @if ($this->order->status === \App\Traits\Orders\Status::Manual)
+                <small class="text-gray-800 dark:text-gray-400">{{ __('Ask merchant\'s employee to scan this QRCode to confirm your payment.') }}</small>
+                @elseif ($this->order->status !== \App\Traits\Orders\Status::Success)
                 <small class="text-gray-800 dark:text-gray-400">{{ __('Please wait until the payment success.') }}</small>
                 @endif
                 <span class="text-lg font-bold sm:text-3xl text-gray-950 dark:text-white">{{ Number::currency($this->order->total, 'IDR', 'id') }}</span>
@@ -60,20 +67,23 @@
                 </div>
                 @endforeach
 
-                @if($this->order->additional?->tax ?? false)
+                @if($tax = $this->order->additional->where('type', 'tax')->first())
                 <div class="flex items-center justify-between">
                     <span class="text-gray-950 dark:text-white">PPN 11%</span>
                     <span class="text-gray-950 dark:text-white">
-                        {{ Number::currency($this->order->additional->tax, 'IDR', config('app.locale')) }}
+                        {{ Number::currency($tax['value'], 'IDR', config('app.locale')) }}
                     </span>
                 </div>
                 @endif
 
-                @if($this->order->additional?->fee ?? false)
+                @if($fee = $this->order->additional->where('type', 'fee')->first())
+                @php
+                    $percent = Number::format($fee['value'] / ($this->order->total - $tax['value']) * 100, precision: 1);
+                @endphp
                 <div class="flex items-center justify-between">
-                    <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
+                    <span class="text-gray-950 dark:text-white">{{ __('Payment gateway fee :percent%', ['percent' => $percent]) }}</span>
                     <span class="text-gray-950 dark:text-white">
-                        {{ Number::currency($this->order->additional->fee, 'IDR', config('app.locale')) }}
+                        {{ Number::currency($fee['value'], 'IDR', config('app.locale')) }}
                     </span>
                 </div>
                 @endif

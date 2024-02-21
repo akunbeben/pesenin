@@ -61,6 +61,23 @@ class Browse extends Component implements HasForms, HasInfolists
     #[Locked]
     public Table $table;
 
+    #[Locked]
+    public array $allowedPayments = ['qris', 'ewallet', 'cash'];
+
+    #[Locked]
+    public array $qris = ['QRIS'];
+
+    #[Locked]
+    public array $ewallet = ['OVO', 'DANA', 'SHOPEEPAY', 'LINKAJA', 'JENIUSPAY'];
+
+    #[Locked]
+    public float $feeQRIS = 0.007;
+
+    #[Locked]
+    public float $feeEwallet = 0.04;
+
+    public ?string $paymentMethod = 'ewallet';
+
     public ?Product $showed;
 
     public Collection $cart;
@@ -234,24 +251,45 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('pay-now')]
     public function payNow(): void
     {
+        if (! in_array($this->paymentMethod, $this->allowedPayments)) {
+            Notification::make()
+                ->title(__('Invalid payment method'))
+                ->body(__('Please choose valid payment method'))
+                ->danger()
+                ->persistent()
+                ->send();
+
+            return;
+        }
+
+        $additional = [];
+
         try {
             /** @var \App\Models\Order $order */
-            $order = DB::transaction(function () {
-                $additional = [];
+            $order = DB::transaction(function () use (&$additional) {
                 $subTotal = $this->cart->sum(fn ($item) => $item['price'] * $item['amount']);
 
                 if (Feature::for($this->table->merchant)->active('feature_tax')) {
-                    $additional['tax'] = $subTotal * 0.11;
+                    $additional[] = ['type' => 'tax', 'value' => $subTotal * 0.11];
                 }
 
-                if (Feature::for($this->table->merchant)->active('feature_fee')) {
-                    $additional['fee'] = $subTotal * 0.04;
+                if (Feature::for($this->table->merchant)->active('feature_fee') && in_array($this->paymentMethod, ['qris', 'ewallet'])) {
+                    $additional[] = [
+                        'type' => 'fee',
+                        'value' => $subTotal * match ($this->paymentMethod) {
+                            'ewallet' => $this->feeEwallet,
+                            default => $this->feeQRIS,
+                        },
+                    ];
                 }
 
                 $order = Order::query()->create([
-                    'status' => Status::Processed,
+                    'status' => match ($this->paymentMethod) {
+                        'cash' => Status::Manual,
+                        default => Status::Processed,
+                    },
                     'scan_id' => $this->scan->getKey(),
-                    'total' => $subTotal + array_sum(array_values($additional)),
+                    'total' => $subTotal + array_sum(array_column($additional, 'value')),
                     'additional' => $additional,
                 ]);
 
@@ -272,36 +310,37 @@ class Browse extends Component implements HasForms, HasInfolists
             return;
         }
 
-        $url = $this->processPayment([
-            'external_id' => $order->number,
-            'description' => "Pesenin {$order->number}",
-            'amount' => $order->total,
-            'invoice_duration' => 1800, // 30 minutes
-            'locale' => 'id',
-            'currency' => 'IDR',
-            'success_redirect_url' => route('summary', [$order]),
-            'failure_redirect_url' => route('summary', [$order]),
-            'items' => $this->cart->transform(function ($item) {
-                $name = $item['snapshot']['name'];
+        $url = match ($this->paymentMethod) {
+            'cash' => route('summary', [$order]),
+            default => $this->processPayment([
+                'external_id' => $order->number,
+                'description' => "Pesenin {$order->number}",
+                'amount' => $order->total,
+                'invoice_duration' => 1800, // 30 minutes
+                'locale' => 'id',
+                'currency' => 'IDR',
+                'success_redirect_url' => route('summary', [$order]),
+                'failure_redirect_url' => route('summary', [$order]),
+                'items' => $this->cart->transform(function ($item) {
+                    $name = $item['snapshot']['name'];
 
-                if ($item['variant']) {
-                    $name .= " - {$item['variant']}";
-                }
+                    if ($item['variant']) {
+                        $name .= " - {$item['variant']}";
+                    }
 
-                return [
-                    'name' => $name,
-                    'quantity' => $item['amount'],
-                    'price' => $item['price'],
-                ];
-            })->toArray(),
-            'payment_methods' => [
-                'CREDIT_CARD', 'BCA', 'BNI',
-                'BRI', 'MANDIRI', 'PERMATA',
-                'OVO', 'DANA', 'SHOPEEPAY',
-                'LINKAJA', 'JENIUSPAY', 'DD_BRI',
-                'DD_BCA_KLIKPAY', 'QRIS',
-            ],
-        ]);
+                    return [
+                        'name' => $name,
+                        'quantity' => $item['amount'],
+                        'price' => $item['price'],
+                    ];
+                })->toArray(),
+                'payment_methods' => match ($this->paymentMethod) {
+                    'ewallet' => $this->ewallet,
+                    default => $this->qris,
+                },
+                'fees' => $additional,
+            ]),
+        };
 
         $this->redirect($url);
 

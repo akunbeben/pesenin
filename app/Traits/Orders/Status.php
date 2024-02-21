@@ -8,6 +8,7 @@ enum Status: int
     case Processed = 2;
     case Success = 3;
     case Expired = 4;
+    case Manual = 5;
 
     public function color(): string
     {
@@ -16,6 +17,7 @@ enum Status: int
             self::Processed => 'primary',
             self::Success => 'success',
             self::Expired => 'danger',
+            self::Manual => 'gray',
         };
     }
 
@@ -26,6 +28,7 @@ enum Status: int
             self::Processed => 'heroicon-m-arrow-path',
             self::Success => 'heroicon-m-check-circle',
             self::Expired => 'heroicon-m-x-circle',
+            self::Manual => 'heroicon-m-check-circle',
         };
     }
 }

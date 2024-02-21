@@ -106,22 +106,29 @@
             @features('feature_payment', $this->table->merchant)
             <div class="flex flex-col gap-2.5 w-full mt-auto bottom-5">
                 <div class="flex flex-col gap-1.5">
-                    @features('feature_tax', $this->table->merchant)
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-950 dark:text-white">PPN 11%</span>
-                        <span class="text-gray-950 dark:text-white">
-                            {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
-                        </span>
-                    </div>
-                    @endfeatures
-                    @features('feature_fee', $this->table->merchant)
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
-                        <span class="text-gray-950 dark:text-white">
-                            {{ Number::currency($fee = $subTotal * 0.04, 'IDR', config('app.locale')) }}
-                        </span>
-                    </div>
-                    @endfeatures
+                    @if ($this->paymentMethod)
+                        @features('feature_tax', $this->table->merchant)
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-950 dark:text-white">PPN 11%</span>
+                            <span class="text-gray-950 dark:text-white">
+                                {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
+                            </span>
+                        </div>
+                        @endfeatures
+                        @features('feature_fee', $this->table->merchant)
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
+                            <span class="text-gray-950 dark:text-white">
+                                {{
+                                    Number::currency($fee = $subTotal * match ($this->paymentMethod) {
+                                        'ewallet' => $this->feeEwallet,
+                                        default => $this->feeQRIS,
+                                    }, 'IDR', config('app.locale'))
+                                }}
+                            </span>
+                        </div>
+                        @endfeatures
+                    @endif
                     <hr class="w-full border-t border-gray-200 border-dashed dark:border-gray-700">
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">{{ __('Total') }}</span>
@@ -130,6 +137,7 @@
                         </span>
                     </div>
                 </div>
+                @if ($this->paymentMethod)
                 <x-filament::button
                     class="w-full"
                     size="xl"
@@ -139,6 +147,17 @@
                 >
                     {{ __('Pay now') }}
                 </x-filament::button>
+                @else
+                <x-filament::button
+                    class="w-full"
+                    size="xl"
+                    wire:loading.attr="disabled"
+                    wire:target="$dispatch('choose-payment')"
+                    wire:click="$dispatch('choose-payment')"
+                >
+                    {{ __('Choose payment method') }}
+                </x-filament::button>
+                @endif
             </div>
             @endfeatures
         @else

@@ -5,6 +5,7 @@ namespace App\Filament\Merchant\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\Tenancy\EditTenantProfile as Page;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -55,20 +56,30 @@ class MerchantProfile extends Page
                         Forms\Components\Tabs\Tab::make(__('Feature settings'))
                             ->statePath('setting')
                             ->schema([
-                                Forms\Components\Toggle::make('cash_mode')
-                                    ->hidden() // disabled
-                                    ->label(__('Accept cash payment'))
-                                    ->helperText(__('You have the option to activate it, allowing you to seamlessly receive cash payments from customers.')),
                                 Forms\Components\Toggle::make('ikiosk_mode')
                                     // ->hidden() // disabled
                                     ->label(__('iKiosk mode'))
                                     ->helperText(__('If you have a device that is intended as an IKIOSK device, you can turn this feature on.')),
                                 Forms\Components\Toggle::make('tax')
-                                    ->label(__('PPN 11%'))
+                                    ->label(__('Charge PPN 11% to customers'))
                                     ->helperText(__('With this option active, PPN 11% tax will be included in the total amount charged to the customer.')),
                                 Forms\Components\Toggle::make('fee')
-                                    ->label(__('Admin fee 4%'))
+                                    ->label(__('Charge service fees to customers (payment gateway)*'))
                                     ->helperText(__('With this option active, a 4% payment gateway fee will be included in the total amount charged to the customer.')),
+                            ]),
+                        Forms\Components\Tabs\Tab::make(__('Payment channels'))
+                            ->statePath('channels')
+                            ->schema([
+                                Forms\Components\Toggle::make('cash_mode')
+                                    ->hidden() // disabled
+                                    ->label(__('Accept cash payment'))
+                                    ->helperText(__('You have the option to activate it, allowing you to seamlessly receive cash payments from customers.')),
+                                Forms\Components\Toggle::make('qris')
+                                    // ->hidden() // disabled
+                                    ->label(__('QRIS')),
+                                Forms\Components\Toggle::make('e-wallet')
+                                    // ->hidden() // disabled
+                                    ->label(__('E-Wallet')),
                             ]),
                     ]),
             ]);
@@ -76,7 +87,9 @@ class MerchantProfile extends Page
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return DB::transaction(function () use (&$record, $data) {
+        DB::beginTransaction();
+
+        try {
             /** @var \App\Models\Merchant $record */
             $record->update($data);
 
@@ -85,9 +98,28 @@ class MerchantProfile extends Page
             foreach (['feature_ikiosk' => 'ikiosk_mode', 'feature_tax' => 'tax', 'feature_fee' => 'fee'] as $key => $value) {
                 Feature::for($record)->activate($key, $data['setting'][$value]);
             }
+        } catch (\Throwable $th) {
+            DB::rollBack();
 
-            return $record;
-        });
+            if (! app()->isProduction()) {
+                throw $th;
+            }
+
+            logger()->error($th->getMessage(), $th->getTrace());
+
+            Notification::make()
+                ->title(app()->isProduction() ? __('Order success') : $th->getMessage())
+                ->body(app()->isProduction() ? __('Your ordered items will be delivered to you as soon as possible') : $th->getTraceAsString())
+                ->danger()
+                ->persistent()
+                ->send();
+
+            $this->halt();
+        }
+
+        DB::commit();
+
+        return $record;
     }
 
     protected function fillForm(): void

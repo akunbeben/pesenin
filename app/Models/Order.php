@@ -28,7 +28,7 @@ class Order extends Model
         'status' => Status::class,
         'serving' => Serving::class,
         'total' => 'integer',
-        'additional' => 'object',
+        'additional' => 'collection',
         'queued_at' => 'datetime',
     ];
 
