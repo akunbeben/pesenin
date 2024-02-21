@@ -17,7 +17,7 @@ class Encoder
         while (strlen($uniqueString) < $length) {
             $randomCharacter = $characters[rand(0, $numCharacters - 1)];
 
-            if (!in_array($randomCharacter, $usedCharacters)) {
+            if (! in_array($randomCharacter, $usedCharacters)) {
                 $uniqueString .= $randomCharacter;
                 $usedCharacters[] = $randomCharacter;
             }

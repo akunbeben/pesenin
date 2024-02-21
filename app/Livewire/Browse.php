@@ -209,14 +209,14 @@ class Browse extends Component implements HasForms, HasInfolists
 
         $this->table = $this->scan->table;
 
-        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && !$this->isIkiosk, 404);
+        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && ! $this->isIkiosk, 404);
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
-        abort_if(!$this->scan->table, 403, 'Please rescan the QRCode');
+        abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
 
-        $this->cart = collect([])->when(!app()->isProduction(), function (Collection $cart) {
+        $this->cart = collect([])->when(! app()->isProduction(), function (Collection $cart) {
             $product = $this->table->merchant->products->first();
 
-            if (!$product || !Feature::for($this->table->merchant)->active('feature_payment')) {
+            if (! $product || ! Feature::for($this->table->merchant)->active('feature_payment')) {
                 return;
             }
 
