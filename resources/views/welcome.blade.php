@@ -31,20 +31,28 @@
         <link rel="manifest" href="{{ asset('site.webmanifest') }}" />
 
         <!-- Styles -->
+        @livewireStyles
         @filamentStyles
         @vite('resources/css/app.css')
+
+        <script>
+            const theme = localStorage.getItem('theme') ?? @js(filament()->getDefaultThemeMode()->value)
+
+            if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            }
+        </script>
     </head>
-    <body class="antialiased">
+    <body
+        @class([
+            'font-sans antialiased',
+            'dark' => filament()->hasDarkModeForced(),
+        ])
+    >
         <div class="relative min-h-screen bg-gray-100 bg-center sm:flex sm:justify-center sm:items-center bg-dots-darker dark:bg-dots-lighter dark:bg-gray-900 selection:bg-primary-500 selection:text-white">
             <div class="flex flex-col items-center justify-center h-screen p-6 mx-auto max-w-7xl lg:p-8">
                 <div class="flex justify-center">
-                    <a href="/">
-                        <picture>
-                            <source srcset="{{ asset('logo.png') }}" media="(prefers-color-scheme: light)" />
-                            <source srcset="{{ asset('logo-dark.png') }}" media="(prefers-color-scheme: dark)" />
-                            <img src="{{ asset('logo.png') }}" alt="Laravel Logo" class="h-auto text-gray-500 fill-current w-60" />
-                        </picture>
-                    </a>
+                    <x-app-logo />
                 </div>
 
                 <div class="mt-16">
@@ -65,6 +73,7 @@
             </div>
         </div>
 
+        @livewireScripts
         @filamentScripts
         @vite('resources/js/app.js')
     </body>

@@ -106,28 +106,36 @@
             @features('feature_payment', $this->table->merchant)
             <div class="flex flex-col gap-2.5 w-full mt-auto bottom-5">
                 <div class="flex flex-col gap-1.5">
-                    @if ($this->paymentMethod)
-                        @features('feature_tax', $this->table->merchant)
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-950 dark:text-white">PPN 11%</span>
-                            <span class="text-gray-950 dark:text-white">
-                                {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
-                            </span>
-                        </div>
-                        @endfeatures
-                        @features('feature_fee', $this->table->merchant)
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-950 dark:text-white">{{ __('Admin fee 4%') }}</span>
-                            <span class="text-gray-950 dark:text-white">
-                                {{
-                                    Number::currency($fee = $subTotal * match ($this->paymentMethod) {
-                                        'ewallet' => $this->feeEwallet,
-                                        default => $this->feeQRIS,
-                                    }, 'IDR', config('app.locale'))
-                                }}
-                            </span>
-                        </div>
-                        @endfeatures
+                    @features('feature_tax', $this->table->merchant)
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-950 dark:text-white">PPN 11%</span>
+                        <span class="text-gray-950 dark:text-white">
+                            {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
+                        </span>
+                    </div>
+                    @endfeatures
+                    @if (!in_array($this->paymentMethod, ['cash', null]))
+                    @features('feature_fee', $this->table->merchant)
+                    @php
+                        $fee = $subTotal * match ($this->paymentMethod) {
+                            'ewallet' => $this->feeEwallet,
+                            default => $this->feeQRIS,
+                        };
+
+                        $percent = Number::format($fee / $subTotal * 100, precision: match ($this->paymentMethod) {
+                            'ewallet' => 0,
+                            default => 1,
+                        });
+                    @endphp
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-950 dark:text-white">{{ __('Payment gateway fee :percent%', ['percent' => $percent]) }}</span>
+                        <span class="text-gray-950 dark:text-white">
+                            {{
+                                Number::currency($fee, 'IDR', config('app.locale'))
+                            }}
+                        </span>
+                    </div>
+                    @endfeatures
                     @endif
                     <hr class="w-full border-t border-gray-200 border-dashed dark:border-gray-700">
                     <div class="flex items-center justify-between">

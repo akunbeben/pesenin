@@ -4,7 +4,7 @@ const colors = require('tailwindcss/colors');
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 export default {
-    darkMode: 'media',
+    darkMode: 'class',
     presets: [preset],
     content: [
         './app/Filament/**/*.php',

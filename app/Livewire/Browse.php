@@ -76,7 +76,7 @@ class Browse extends Component implements HasForms, HasInfolists
     #[Locked]
     public float $feeEwallet = 0.04;
 
-    public ?string $paymentMethod = 'ewallet';
+    public ?string $paymentMethod = null;
 
     public ?Product $showed;
 
@@ -308,6 +308,21 @@ class Browse extends Component implements HasForms, HasInfolists
                 ->send();
 
             return;
+        }
+
+        if ($this->paymentMethod === 'cash') {
+            $order->payment()->create([
+                'merchant_id' => $this->table->merchant_id,
+                'business_id' => $this->table->merchant->business_id,
+                'event' => 'invoice.manual',
+                'data' => [
+                    'external_id' => $order->number,
+                    'payment_channel' => 'CASH',
+                    'paid_amount' => $order->total,
+                    'status' => 'PENDING',
+                    'paid_at' => now(),
+                ],
+            ]);
         }
 
         $url = match ($this->paymentMethod) {

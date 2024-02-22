@@ -4,7 +4,6 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\PrioritizedPaymentResource\Pages;
 use App\Models\Payment;
-use Feature;
 use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,6 +12,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Number;
+use Laravel\Pennant\Feature;
 
 class PrioritizedPaymentResource extends Resource
 {
@@ -60,9 +60,6 @@ class PrioritizedPaymentResource extends Resource
                     ->getStateUsing(fn (Payment $record) => $record->data->payment_channel)
                     ->label(__('Payment method'))
                     ->searchable(query: fn (Builder $query, string $search) => $query->where('data->payment_channel', 'LIKE', "%{$search}%")),
-                Tables\Columns\TextColumn::make('amount')
-                    ->getStateUsing(fn (Payment $record) => Number::currency($record->data->paid_amount, 'IDR', config('app.locale')))
-                    ->label(__('Total')),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->getStateUsing(fn (Payment $record) => str($record->data->status)->title()->toString())
@@ -72,6 +69,9 @@ class PrioritizedPaymentResource extends Resource
                         default => 'gray',
                     })
                     ->label(__('Status')),
+                Tables\Columns\TextColumn::make('amount')
+                    ->getStateUsing(fn (Payment $record) => Number::currency($record->data->paid_amount, 'IDR', config('app.locale')))
+                    ->label(__('Total')),
                 Tables\Columns\TextColumn::make('paid_at')
                     ->getStateUsing(fn (Payment $record) => $record->data->paid_at)
                     ->dateTime()

@@ -36,6 +36,7 @@
     "Pay now": "Bayar sekarang",
     "Explore more products": "Cari produk lainnya",
     "Admin fee 4%": "Biaya admin 4%",
+    "Payment gateway fee :percent%": "Biaya layanan :percent%",
     "Charge PPN 11% to customers": "Bebankan biaya PPN 11% kepada pelanggan",
     "Charge service fees to customers (payment gateway)*": "Bebankan biaya layanan kepada pelanggan (payment gateway)*",
     "Ask merchant's employee to scan this QRCode to confirm your payment.": "Minta karyawan outlet untuk melakukan scan QRCode ini untuk konfirmasi pembayaran anda.",

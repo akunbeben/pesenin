@@ -33,28 +33,28 @@ class LatestTransactions extends BaseWidget
     {
         return $table
             ->paginated(false)
-            ->query(Payment::query()->whereBelongsTo(Filament::getTenant(), 'merchant')->latest())
+            ->query(Payment::query()->whereBelongsTo(Filament::getTenant(), 'merchant')->latest()->limit(8))
             ->columns([
                 Tables\Columns\TextColumn::make('reference_id')
-                    ->getStateUsing(fn (Payment $record) => $record->data->external_id)
+                    ->getStateUsing(fn (Payment $record) => $record->data?->external_id)
                     ->label(__('Ref')),
                 Tables\Columns\TextColumn::make('payment_channel')
-                    ->getStateUsing(fn (Payment $record) => $record->data->payment_channel)
+                    ->getStateUsing(fn (Payment $record) => $record->data?->payment_channel)
                     ->label(__('Payment method')),
-                Tables\Columns\TextColumn::make('amount')
-                    ->getStateUsing(fn (Payment $record) => Number::currency($record->data->paid_amount, 'IDR', config('app.locale')))
-                    ->label(__('Total')),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->getStateUsing(fn (Payment $record) => str($record->data->status)->title()->toString())
-                    ->color(fn (Payment $record) => match ($record->data->status) {
+                    ->getStateUsing(fn (Payment $record) => str($record->data?->status)->title()->toString())
+                    ->color(fn (Payment $record) => match ($record->data?->status) {
                         'PENDING' => 'warning',
                         'SETTLED', 'PAID' => 'success',
                         default => 'gray',
                     })
                     ->label(__('Status')),
+                Tables\Columns\TextColumn::make('amount')
+                    ->getStateUsing(fn (Payment $record) => Number::currency($record->data?->paid_amount, 'IDR', config('app.locale')))
+                    ->label(__('Total')),
                 Tables\Columns\TextColumn::make('paid_at')
-                    ->getStateUsing(fn (Payment $record) => $record->data->paid_at)
+                    ->getStateUsing(fn (Payment $record) => $record->data?->paid_at)
                     ->dateTime()
                     ->label(__('Paid at')),
             ]);
