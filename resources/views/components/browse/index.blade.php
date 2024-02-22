@@ -22,4 +22,5 @@
     @include('components.browse.grid')
     @include('components.browse.cart-modal')
     @include('components.browse.product-modal')
+    @include('components.browse.payment-method')
 </div>

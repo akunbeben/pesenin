@@ -48,10 +48,12 @@
                     <span class="text-gray-950 dark:text-white">{{ $this->order->number }}</span>
                 </div>
 
+                @if ($this->order->status !== \App\Traits\Orders\Status::Manual)
                 <div class="flex items-center justify-between">
                     <span class="text-gray-950 dark:text-white">{{ __('Payment time') }}</span>
                     <span class="text-gray-950 dark:text-white">{{ $this->order->created_at->isoFormat('dddd, D MMM Y HH:mm') }}</span>
                 </div>
+                @endif
 
                 <div class="flex my-5 flex-col gap-1.5">
                     <span class="text-gray-950 dark:text-white">{{ __('Ordered items') }}</span>

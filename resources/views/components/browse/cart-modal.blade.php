@@ -146,22 +146,40 @@
                     </div>
                 </div>
                 @if ($this->paymentMethod)
-                <x-filament::button
-                    class="w-full"
-                    size="xl"
-                    wire:loading.attr="disabled"
-                    wire:target="$dispatch('pay-now')"
-                    wire:click="$dispatch('pay-now')"
-                >
-                    {{ __('Pay now') }}
-                </x-filament::button>
+                <div class="grid grid-cols-6 gap-2">
+                    <div class="col-span-1">
+                        <x-filament::button
+                            id="change-payment"
+                            tooltip="{{ __('Choose payment method') }}"
+                            icon="heroicon-m-credit-card"
+                            color="gray"
+                            outlined
+                            class="w-full"
+                            size="xl"
+                            wire:loading.attr="disabled"
+                            wire:target="$dispatch('open-modal', { id: 'payment-method'} )"
+                            wire:click="$dispatch('open-modal', { id: 'payment-method'} )"
+                        ></x-filament::button>
+                    </div>
+                    <div class="col-span-5">
+                        <x-filament::button
+                            class="w-full"
+                            size="xl"
+                            wire:loading.attr="disabled"
+                            wire:target="$dispatch('pay-now')"
+                            wire:click="$dispatch('pay-now')"
+                        >
+                            {{ __('Pay now') }}
+                        </x-filament::button>
+                    </div>
+                </div>
                 @else
                 <x-filament::button
                     class="w-full"
                     size="xl"
                     wire:loading.attr="disabled"
-                    wire:target="$dispatch('choose-payment')"
-                    wire:click="$dispatch('choose-payment')"
+                    wire:target="$dispatch('open-modal', { id: 'payment-method'} )"
+                    wire:click="$dispatch('open-modal', { id: 'payment-method'} )"
                 >
                     {{ __('Choose payment method') }}
                 </x-filament::button>

@@ -55,9 +55,10 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Feature settings'))
                             ->statePath('setting')
+                            ->hidden(Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('ikiosk_mode')
-                                    // ->hidden() // disabled
+                                    ->hidden() // disabled
                                     ->label(__('iKiosk mode'))
                                     ->helperText(__('If you have a device that is intended as an IKIOSK device, you can turn this feature on.')),
                                 Forms\Components\Toggle::make('tax')
@@ -69,11 +70,11 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Payment channels'))
                             ->statePath('channels')
+                            ->hidden(Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('cash_mode')
-                                    ->hidden() // disabled
-                                    ->label(__('Accept cash payment'))
-                                    ->helperText(__('You have the option to activate it, allowing you to seamlessly receive cash payments from customers.')),
+                                    // ->hidden() // disabled
+                                    ->label(__('Cash')),
                                 Forms\Components\Toggle::make('qris')
                                     // ->hidden() // disabled
                                     ->label(__('QRIS')),

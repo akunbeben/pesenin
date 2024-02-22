@@ -33,6 +33,10 @@
     @apply !w-10 !h-10;
 }
 
+#change-payment {
+    @apply !gap-0;
+}
+
 @media print {
     .no-print * {
         display: none !important;

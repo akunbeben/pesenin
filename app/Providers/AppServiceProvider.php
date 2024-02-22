@@ -48,10 +48,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Feature::define('system_ikiosk', fn (Merchant $merchant) => false);
-        Feature::define('feature_ikiosk', fn (Merchant $merchant) => $merchant->setting->ikiosk_mode);
-        Feature::define('feature_tax', fn (Merchant $merchant) => $merchant->setting->tax);
-        Feature::define('feature_fee', fn (Merchant $merchant) => $merchant->setting->fee);
-        Feature::define('feature_payment', fn (Merchant $merchant) => $merchant->setting->payment);
+        Feature::define('feature_ikiosk', fn (Merchant $merchant) => $merchant->loadMissing('setting')->setting->ikiosk_mode);
+        Feature::define('feature_tax', fn (Merchant $merchant) => $merchant->loadMissing('setting')->setting->tax);
+        Feature::define('feature_fee', fn (Merchant $merchant) => $merchant->loadMissing('setting')->setting->fee);
+        Feature::define('feature_payment', fn (Merchant $merchant) => $merchant->loadMissing(['user'])->user->paid && (bool) $merchant->business_id);
 
         URL::forceScheme(config('app.scheme'));
         setlocale(LC_TIME, 'id_ID');
