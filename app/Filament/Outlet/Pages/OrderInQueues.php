@@ -4,6 +4,7 @@ namespace App\Filament\Outlet\Pages;
 
 use App\Models\Order;
 use App\Traits\Orders\Serving;
+use App\Traits\Orders\Status;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
@@ -41,18 +42,21 @@ class OrderInQueues extends Page
         $this->waiting = Order::query()->with(['items', 'scan.table'])
             ->orderBy('queued_at', 'asc')
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
+            ->whereNotIn('status', [Status::Pending, Status::Manual, Status::Expired])
             ->where('serving', Serving::Waiting)
             ->get();
 
         $this->processed = Order::query()->with(['items', 'scan.table'])
             ->orderBy('queued_at', 'asc')
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
+            ->whereNotIn('status', [Status::Pending, Status::Manual, Status::Expired])
             ->where('serving', Serving::Processed)
             ->get();
 
         $this->completed = Order::query()->with(['items', 'scan.table'])
             ->latest('queued_at')
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
+            ->whereNotIn('status', [Status::Pending, Status::Manual, Status::Expired])
             ->where('serving', Serving::Completed)
             ->get();
     }

@@ -17,6 +17,7 @@
     "vite-cloudflared-tunnel": "^1.0.2"
   },
   "dependencies": {
-    "flickity": "^3.0.0"
+    "flickity": "^3.0.0",
+    "html5-qrcode": "^2.3.8"
   }
 }

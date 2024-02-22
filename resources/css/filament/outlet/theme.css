@@ -16,3 +16,11 @@
     border-radius: 20px;
     border: transparent;
 }
+
+#scanner__scan_region > video {
+    @apply !rounded-t-xl;
+}
+
+#qr-shaded-region {
+    @apply !rounded-t-xl;
+}
