@@ -104,12 +104,12 @@ class PaymentResource extends Resource
                                 'data' => array_merge((array) $record->data, [
                                     'status' => 'PAID',
                                     'paid_at' => now(),
-                                ])
+                                ]),
                             ]);
                         } catch (\Throwable $th) {
                             DB::rollBack();
 
-                            if (!app()->isProduction()) {
+                            if (! app()->isProduction()) {
                                 throw $th;
                             }
 

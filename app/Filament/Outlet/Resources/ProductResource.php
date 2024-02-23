@@ -3,16 +3,12 @@
 namespace App\Filament\Outlet\Resources;
 
 use App\Filament\Outlet\Resources\ProductResource\Pages;
-use App\Filament\Outlet\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Detection\MobileDetect;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
@@ -87,7 +83,7 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('mark_as_unavailable')
-                    ->hidden(fn (Product $record) => !$record->availability)
+                    ->hidden(fn (Product $record) => ! $record->availability)
                     ->icon('heroicon-m-x-mark')
                     ->color('gray')
                     ->translateLabel()

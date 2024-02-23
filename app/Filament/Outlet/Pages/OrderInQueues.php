@@ -11,10 +11,8 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 
 class OrderInQueues extends Page implements HasActions
@@ -75,7 +73,7 @@ class OrderInQueues extends Page implements HasActions
     {
         $order = Order::query()->with('payment')->where('number', $ref)->first();
 
-        if (!$order) {
+        if (! $order) {
             Notification::make()
                 ->title(__('Invalid QR'))
                 ->body(__('Please scan correct QR from the customer\'s receipt.'))
@@ -98,12 +96,12 @@ class OrderInQueues extends Page implements HasActions
                 'data' => array_merge((array) $order->payment->data, [
                     'status' => 'PAID',
                     'paid_at' => now(),
-                ])
+                ]),
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            if (!app()->isProduction()) {
+            if (! app()->isProduction()) {
                 throw $th;
             }
 
