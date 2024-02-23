@@ -1,28 +1,24 @@
 <?php
 
-namespace App\Filament\Merchant\Resources;
+namespace App\Filament\Outlet\Resources;
 
-use App\Filament\Merchant\Resources\ProductResource\Pages;
+use App\Filament\Outlet\Resources\ProductResource\Pages;
+use App\Filament\Outlet\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Detection\MobileDetect;
-use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('Backoffice');
-    }
 
     public static function getNavigationLabel(): string
     {
@@ -43,63 +39,7 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make(__('Images'))
-                    ->description(__('Product\'s images that will show to customer.'))
-                    ->aside()
-                    ->schema([
-                        Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
-                            ->hiddenLabel()
-                            ->minFiles(1)
-                            ->collection('banner')
-                            ->conversion('thumbnail')
-                            ->multiple()
-                            ->image()
-                            ->columnSpanFull(),
-                    ]),
-                Forms\Components\Section::make(__('Product details'))
-                    ->description(__('Product\'s information.'))
-                    ->aside()
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label(__('Name'))
-                            ->required()
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('description')
-                            ->label(__('Description'))
-                            ->required()
-                            ->columnSpanFull(),
-                        Forms\Components\TextInput::make('price')
-                            ->label(__('Price'))
-                            ->required()
-                            ->numeric()
-                            ->columnSpanFull(),
-                        Forms\Components\Select::make('category_id')
-                            ->relationship('category', 'name', fn (Builder $query) => $query->where('merchant_id', Filament::getTenant()->getKey()))
-                            ->native(false)
-                            ->label(__('Category'))
-                            ->required()
-                            ->columnSpanFull(),
-                    ]),
-                Forms\Components\Section::make(__('Variants'))
-                    ->description(__('Product\'s variants.'))
-                    ->aside()
-                    ->schema([
-                        Forms\Components\Repeater::make('variants')->simple(Forms\Components\TextInput::make('size'))->default(null),
-                    ]),
-                Forms\Components\Section::make(__('Availability'))
-                    ->description(__('Product\'s availability and recommendation.'))
-                    ->aside()
-                    ->schema([
-                        Forms\Components\Toggle::make('availability')
-                            ->label(__('Availability'))
-                            ->helperText(__('You can choose to display or hide this product for your customers'))
-                            ->required()
-                            ->default(true),
-                        Forms\Components\Toggle::make('recommended')
-                            ->label(__('Recommendation'))
-                            ->helperText(__('You can activate it to feature this product for your customers'))
-                            ->required(),
-                    ]),
+                //
             ]);
     }
 
@@ -160,26 +100,13 @@ class ProductResource extends Resource
                     ->translateLabel()
                     ->action(fn (Product $record) => $record->update(['availability' => true]))
                     ->successNotificationTitle(__('Product marked as available')),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ManageProducts::route('/'),
         ];
     }
 }

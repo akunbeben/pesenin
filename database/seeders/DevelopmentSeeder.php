@@ -30,7 +30,7 @@ class DevelopmentSeeder extends Seeder
             'zip' => '70724',
         ]);
 
-        ForwardingEmail::dispatch($user, $merchant);
+        ForwardingEmail::dispatch($user, $merchant, true);
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories */
         $categories = $merchant->categories()->createMany([

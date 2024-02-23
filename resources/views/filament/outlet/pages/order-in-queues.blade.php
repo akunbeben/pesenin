@@ -11,7 +11,7 @@
                 {{ __('Waiting') }}
             </span>
 
-            @foreach ($this->waiting as $order)
+            @foreach ($this->waiting as $waiting)
             <div
                 x-data="{ shown: false }"
                 x-init="setTimeout(() => { shown = true }, timeout * {{ $loop->iteration * 2.5 }})"
@@ -27,23 +27,18 @@
                     class="relative p-6 bg-white shadow-sm fi-wi-stats-overview-stat rounded-xl ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 h-fit"
                 >
                     <div class="grid gap-y-5">
-                        <div
-                            @class([
-                                'font-semibold tracking-tight text-gray-950 dark:text-white',
-                                'text-3xl' => !Feature::for(Filament::getTenant())->active('feature_ikiosk'),
-                                'text-xl' => Feature::for(Filament::getTenant())->active('feature_ikiosk'),
-                            ])
-                        >
+                        <div class="text-xl font-semibold tracking-tight text-gray-950 dark:text-white">
                             @features('feature_ikiosk', Filament::getTenant())
-                            {{ $order->number }}
+                            {{ $waiting->number }}
                             @else
-                            {{ __('Table') }} &mdash; {{ $order->scan->table->name }}
+                            {{ __('Table') }} &mdash; {{ $waiting->loadMissing(['items', 'scan.table'])->scan->table->name }}
                             @endfeatures
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            @foreach ($order->items as $item)
-                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            <span class="text-xs font-medium text-gray-500 lg:text-sm dark:text-gray-400">{{ $waiting->number }}</span>
+                            @foreach ($waiting->items as $item)
+                            <span class="text-xs font-medium lg:text-sm dark:text-gray-400">
                                 {{ $item->amount }}x {{ $item->snapshot->name }}
                             </span>
                             @endforeach
@@ -54,7 +49,7 @@
                             <x-filament::button
                                 icon="heroicon-m-arrow-right"
                                 icon-position="after"
-                                wire:click="$dispatch('forward', { order: '{{ $order->getRouteKey() }}' })"
+                                wire:click="$dispatch('forward', { order: '{{ $waiting->getRouteKey() }}' })"
                                 label="Continue"
                                 class="w-full"
                             >
@@ -71,7 +66,7 @@
                 {{ __('Processed') }}
             </span>
 
-            @foreach ($this->processed as $order)
+            @foreach ($this->processed as $processed)
             <div
                 x-data="{ shown: false }"
                 x-init="setTimeout(() => { shown = true }, timeout * {{ $loop->iteration * 2.5 }})"
@@ -87,34 +82,29 @@
                     class="relative p-6 bg-white shadow-sm fi-wi-stats-overview-stat rounded-xl ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 h-fit"
                 >
                     <div class="grid gap-y-5">
-                        <div
-                            @class([
-                                'font-semibold tracking-tight text-gray-950 dark:text-white',
-                                'text-3xl' => !Feature::for(Filament::getTenant())->active('feature_ikiosk'),
-                                'text-xl' => Feature::for(Filament::getTenant())->active('feature_ikiosk'),
-                            ])
-                        >
+                        <div class="text-xl font-semibold tracking-tight text-gray-950 dark:text-white">
                             @features('feature_ikiosk', Filament::getTenant())
-                            {{ $order->number }}
+                            <span>{{ $processed->number }}</span>
                             @else
-                            {{ __('Table') }} &mdash; {{ $order->scan->table->name }}
+                            <span>{{ __('Table') }} &mdash; {{ $processed->loadMissing(['items', 'scan.table'])->scan->table->name }}</span>
                             @endfeatures
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            @foreach ($order->items as $item)
-                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            <span class="text-xs font-medium text-gray-500 lg:text-sm dark:text-gray-400">{{ $processed->number }}</span>
+                            @foreach ($processed->items as $item)
+                            <span class="text-xs font-medium lg:text-sm dark:text-gray-400">
                                 {{ $item->amount }}x {{ $item->snapshot->name }}
                             </span>
                             @endforeach
                         </div>
 
-                        <div class="flex flex-col items-center justify-between lg:flex-row">
+                        <div class="flex flex-col items-center justify-between gap-2 lg:flex-row">
                             <x-filament::button
                                 color="warning"
                                 icon="heroicon-m-arrow-left"
                                 icon-position="before"
-                                wire:click="$dispatch('backward', { order: '{{ $order->getRouteKey() }}' })"
+                                wire:click="$dispatch('backward', { order: '{{ $processed->getRouteKey() }}' })"
                                 label="Go back"
                                 class="w-full"
                             >
@@ -124,7 +114,7 @@
                             <x-filament::button
                                 icon="heroicon-m-arrow-right"
                                 icon-position="after"
-                                wire:click="$dispatch('forward', { order: '{{ $order->getRouteKey() }}' })"
+                                wire:click="$dispatch('forward', { order: '{{ $processed->getRouteKey() }}' })"
                                 label="Continue"
                                 class="w-full"
                             >
@@ -141,7 +131,7 @@
                 {{ __('Completed') }}
             </span>
 
-            @foreach ($this->completed as $order)
+            @foreach ($this->completed as $completed)
             <div
                 x-data="{ shown: false }"
                 x-init="setTimeout(() => { shown = true }, timeout * {{ $loop->iteration * 2.5 }})"
@@ -157,34 +147,29 @@
                     class="relative p-6 bg-white shadow-sm fi-wi-stats-overview-stat rounded-xl ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 h-fit"
                 >
                     <div class="grid gap-y-5">
-                        <div
-                            @class([
-                                'font-semibold tracking-tight text-gray-950 dark:text-white',
-                                'text-3xl' => !Feature::for(Filament::getTenant())->active('feature_ikiosk'),
-                                'text-xl' => Feature::for(Filament::getTenant())->active('feature_ikiosk'),
-                            ])
-                        >
+                        <div class="text-xl font-semibold tracking-tight text-gray-950 dark:text-white">
                             @features('feature_ikiosk', Filament::getTenant())
-                            {{ $order->number }}
+                            {{ $completed->number }}
                             @else
-                            {{ __('Table') }} &mdash; {{ $order->scan->table->name }}
+                            {{ __('Table') }} &mdash; {{ $completed->loadMissing(['items', 'scan.table'])->scan->table->name }}
                             @endfeatures
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            @foreach ($order->items as $item)
-                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            <span class="text-xs font-medium text-gray-500 lg:text-sm dark:text-gray-400">{{ $completed->number }}</span>
+                            @foreach ($completed->items as $item)
+                            <span class="text-xs font-medium lg:text-sm dark:text-gray-400">
                                 {{ $item->amount }}x {{ $item->snapshot->name }}
                             </span>
                             @endforeach
                         </div>
 
-                        <div class="flex flex-col items-center justify-between lg:flex-row">
+                        <div class="flex flex-col items-center justify-between gap-2 lg:flex-row">
                             <x-filament::button
                                 color="warning"
                                 icon="heroicon-m-arrow-left"
                                 icon-position="before"
-                                wire:click="$dispatch('backward', { order: '{{ $order->getRouteKey() }}' })"
+                                wire:click="$dispatch('backward', { order: '{{ $completed->getRouteKey() }}' })"
                                 label="Go back"
                                 class="w-full"
                             >
@@ -195,7 +180,7 @@
                                 color="success"
                                 icon="heroicon-m-check"
                                 icon-position="after"
-                                wire:click="$dispatch('forward', { order: '{{ $order->getRouteKey() }}' })"
+                                wire:click="$dispatch('forward', { order: '{{ $completed->getRouteKey() }}' })"
                                 label="Finish"
                                 class="w-full"
                             >
@@ -209,3 +194,7 @@
         </div>
     </div>
 </x-filament-panels::page>
+
+@push('styles')
+@vite('resources/js/app.js')
+@endpush

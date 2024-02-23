@@ -4,13 +4,17 @@ namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\PaymentResource\Pages;
 use App\Models\Payment;
+use App\Traits\Orders\Serving;
+use App\Traits\Orders\Status;
 use Filament\Facades\Filament;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
 use Laravel\Pennant\Feature;
 
@@ -27,17 +31,17 @@ class PaymentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Financial');
+        return __('Transaction');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('Payments');
+        return __('Payment history');
     }
 
     public function getTitle(): string | Htmlable
     {
-        return __('Payments');
+        return __('Payment history');
     }
 
     public static function form(Form $form): Form
@@ -81,11 +85,58 @@ class PaymentResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('confirm')
+                    ->hidden(fn (Payment $record) => $record->loadMissing('order')->order->status === Status::Success)
+                    ->icon('heroicon-m-check')
+                    ->color('success')
+                    ->action(function (Payment $record) {
+                        $record->loadMissing('order');
+
+                        DB::beginTransaction();
+
+                        try {
+                            $record->order->update([
+                                'status' => Status::Success,
+                                'serving' => Serving::Waiting,
+                            ]);
+
+                            $record->update([
+                                'data' => array_merge((array) $record->data, [
+                                    'status' => 'PAID',
+                                    'paid_at' => now(),
+                                ])
+                            ]);
+                        } catch (\Throwable $th) {
+                            DB::rollBack();
+
+                            if (!app()->isProduction()) {
+                                throw $th;
+                            }
+
+                            logger()->error($th->getMessage(), $th->getTrace());
+
+                            Notification::make()
+                                ->title(app()->isProduction() ? __('Payment confirmation failed') : $th->getMessage())
+                                ->body(app()->isProduction() ? __('Please try again.') : $th->getTraceAsString())
+                                ->danger()
+                                ->send();
+
+                            $this->halt();
+                        }
+
+                        DB::commit();
+                        Notification::make()
+                            ->title($record->order->number)
+                            ->body(__('Payment confirmation success.'))
+                            ->success()
+                            ->send();
+                    })
+                    ->tooltip(__('Mark payment as confirmed'))
+                    ->translateLabel(),
                 Tables\Actions\Action::make('prioritize')
                     ->hidden(fn (Payment $record) => $record->priority)
                     ->icon('heroicon-m-exclamation-circle')
                     ->action(fn (Payment $record) => $record->update(['priority' => true]))
-                    ->button()
                     ->tooltip(__('Mark as priority'))
                     ->translateLabel(),
             ]);
@@ -93,7 +144,9 @@ class PaymentResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->latest('data->paid_at');
+        return parent::getEloquentQuery()
+            ->latest('data->status')
+            ->latest('data->paid_at');
     }
 
     public static function getPages(): array

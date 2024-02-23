@@ -2,7 +2,7 @@
     use App\Traits\Orders\PaymentChannels;
 @endphp
 
-<x-filament::modal id="payment-method" width="lg">
+<x-filament::modal id="payment-method" width="md">
     <x-slot name="heading">
         {{ __('Choose payment method') }}
     </x-slot>
@@ -22,12 +22,13 @@
                     @if ($payment->id() === $this->paymentMethod)
                     <span class="absolute flex w-2 h-2 rounded-full top-2 left-2 bg-sky-500"></span>
                     @endif
-                    <img src="{{ $payment->getLogo() }}" alt="{{ $payment->getLabel() }}" class="mx-auto max-h-20">
+                    <img src="{{ $payment->getLogo() }}" alt="{{ $payment->getLabel() }}" class="mx-auto max-h-16">
                     <span>{{ $payment->getLabel() }}</span>
                     <span class="text-sm">{{ $payment->getDescription() }}</span>
                 </button>
             @endforeach
 
+            @if ($this->paymentMethod)
             <x-filament::button
                 class="w-full"
                 size="xl"
@@ -35,6 +36,7 @@
             >
                 {{ __('Save payment method') }}
             </x-filament::button>
+            @endif
         </div>
     </div>
 </x-filament::modal>

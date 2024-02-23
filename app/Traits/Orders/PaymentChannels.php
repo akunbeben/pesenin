@@ -28,9 +28,9 @@ enum PaymentChannels: int implements HasDescription, HasLabel
     public function getDescription(): ?string
     {
         return match ($this) {
-            self::QRIS => __('QRIS will charge for payment gateway fee 0.7%'),
-            self::EWALLET => __('DANA, OVO, ShopeePay, JeniusPay, LinkAja, AstraPay will charge for payment gateway fee 4%'),
-            self::CASH => __('There is no payment gateway fee for cash payment.'),
+            self::QRIS => __('Payment gateway fee 0.7%'),
+            self::EWALLET => __('Payment gateway fee 4%'),
+            self::CASH => __('Payment gateway fee 0'),
         };
     }
 

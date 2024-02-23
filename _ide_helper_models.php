@@ -133,7 +133,7 @@ namespace App\Models{
  * @property int $scan_id
  * @property string $number
  * @property int $total
- * @property object|null $additional
+ * @property \Illuminate\Support\Collection|null $additional
  * @property \App\Traits\Orders\Status $status
  * @property int $approved
  * @property \Illuminate\Support\Carbon|null $queued_at
@@ -142,6 +142,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Item> $items
  * @property-read int|null $items_count
+ * @property-read \App\Models\Payment|null $latestPayment
  * @property-read \App\Models\Payment|null $payment
  * @property-read \App\Models\Scan|null $scan
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
@@ -280,17 +281,25 @@ namespace App\Models{
  * @property bool $ikiosk_mode
  * @property bool $tax
  * @property bool $fee
+ * @property bool $payment
+ * @property int $ewallet
+ * @property int $qris
+ * @property int $cash
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Setting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Setting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCashMode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereEwallet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereFee($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereIkioskMode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereMerchantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting wherePayment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereQris($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Setting whereUpdatedAt($value)
  */
@@ -356,6 +365,7 @@ namespace App\Models{
  * @property bool $require_reset
  * @property int|null $active_merchant
  * @property int|null $employee_of
+ * @property bool $paid
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Merchant|null $activeMerchant
@@ -379,6 +389,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmployeeOf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePaid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRequireReset($value)

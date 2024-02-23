@@ -55,7 +55,7 @@ class MerchantPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/merchant/theme.css')
             ->font('Be Vietnam Pro', 'https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700')
             ->maxContentWidth('full')
-            ->sidebarCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
             ->brandLogo(fn () => view('components.app-logo'))
             ->brandLogoHeight('2.5rem')
             ->discoverResources(in: app_path('Filament/Merchant/Resources'), for: 'App\\Filament\\Merchant\\Resources')

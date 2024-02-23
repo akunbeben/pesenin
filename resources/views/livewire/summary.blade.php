@@ -1,5 +1,6 @@
 @php
     use \Illuminate\Support\Number;
+    use \Illuminate\Support\Arr;
     use \App\Traits\Orders\Status;
 @endphp
 
@@ -86,7 +87,7 @@
 
                 @if($fee = $this->order->additional->where('type', 'fee')->first())
                 @php
-                    $percent = Number::format($fee['value'] / ($this->order->total - $tax['value']) * 100, precision: 1);
+                    $percent = Number::format($fee['value'] / ($this->order->total - Arr::get($tax, 'value', 0)) * 100, precision: 1);
                 @endphp
                 <div class="flex items-center justify-between">
                     <span class="text-gray-950 dark:text-white">{{ __('Payment gateway fee :percent%', ['percent' => $percent]) }}</span>

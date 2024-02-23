@@ -1,6 +1,7 @@
-@props(['class'=> null, 'url' => null])
+@props(['class'=> null, 'url' => null, 'center' => true])
 
 <a
+    @class(['mx-auto' => $center])
     href="{{ $url ?? route('home') }}"
     target="_blank"
     x-data="{

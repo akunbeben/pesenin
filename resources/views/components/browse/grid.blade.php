@@ -119,6 +119,6 @@
     <div class="flex items-center justify-center col-span-2 md:col-span-4 gap-x-1">
         <span class="text-sm md:text-base dark:text-gray-100">Powered by</span>
         <span class="text-sm md:text-base dark:text-gray-100"> &mdash; </span>
-        <x-app-logo :class="'!max-w-[100px] sm:!max-w-[150px]'" />
+        <x-app-logo :class="'!max-w-[100px] sm:!max-w-[150px]'" :center="false" />
     </div>
 </div>

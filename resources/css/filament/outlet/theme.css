@@ -24,3 +24,7 @@
 #qr-shaded-region {
     @apply !rounded-t-xl;
 }
+
+.fi-ta-image > div > div {
+    @apply w-full;
+}
