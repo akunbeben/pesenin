@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ config('app.name') }}</title>
+        <meta name="description" content="Menu QR tuh harusnya gini! Scan QR pesenin, pilih menu favorit, langsung bayar, pesanan datang. Hemat waktu, tanpa repot, sebenar-benarnya solusi menu QR.">
 
         <meta property="og:title" content="pesenin.online - Scan, pilih, Bayar. Pesanan datang 🚀">
         <meta property="og:site_name" content="pesenin.online">

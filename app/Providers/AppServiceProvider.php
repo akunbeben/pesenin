@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict();
         Model::preventSilentlyDiscardingAttributes(false);
 
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
 
@@ -53,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         Feature::define('feature_fee', fn (Merchant $merchant) => $merchant->loadMissing('setting')->setting->fee);
         Feature::define('feature_payment', fn (Merchant $merchant) => $merchant->loadMissing(['user'])->user->paid && (bool) $merchant->business_id);
 
+        URL::forceRootUrl(config('app.asset_url'));
         URL::forceScheme(config('app.scheme'));
         setlocale(LC_TIME, 'id_ID');
         \Carbon\Carbon::setLocale('id');
