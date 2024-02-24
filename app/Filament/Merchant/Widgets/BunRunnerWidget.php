@@ -13,8 +13,10 @@ class BunRunnerWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        if (! app()->isProduction() && ! $buildTime = Cache::get('bun-build-time')) {
-            BunRunner::dispatch();
+        if (! app()->isProduction()) {
+            if (! ($buildTime = Cache::get('bun-build-time'))) {
+                BunRunner::dispatch();
+            }
         }
 
         return [
