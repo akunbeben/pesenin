@@ -25,8 +25,6 @@ trait CanResetPassword
     public function sendPasswordResetNotification($token)
     {
         $this->notify((new ResetPasswordNotification($token))->createUrlUsing(function ($notifiable, $token) {
-            dd($notifiable, $token);
-
             return url(route('filament.merchant.auth.password-reset.reset', [
                 'token' => $token,
                 'email' => $notifiable->getEmailForPasswordReset(),
