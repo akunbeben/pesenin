@@ -10,6 +10,7 @@
     <div class="p-6">
         <div class="flex flex-col text-gray-950 dark:text-white gap-2.5 text-center">
             @foreach (PaymentChannels::cases() as $payment)
+                @if ($scan->table->merchant->setting->{$payment->id()})
                 <button
                     @class([
                         'border rounded-xl p-2.5 flex flex-col gap-2.5 justify-center items-center relative',
@@ -26,6 +27,7 @@
                     <span>{{ $payment->getLabel() }}</span>
                     <span class="text-sm">{{ $payment->getDescription() }}</span>
                 </button>
+                @endif
             @endforeach
 
             @if ($this->paymentMethod)

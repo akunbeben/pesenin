@@ -69,16 +69,16 @@ class MerchantProfile extends Page
                                     ->helperText(__('With this option active, a 4% payment gateway fee will be included in the total amount charged to the customer.')),
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Payment channels'))
-                            ->statePath('channels')
+                            ->statePath('setting')
                             ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
-                                Forms\Components\Toggle::make('cash_mode')
+                                Forms\Components\Toggle::make('cash')
                                     // ->hidden() // disabled
                                     ->label(__('Cash')),
                                 Forms\Components\Toggle::make('qris')
                                     // ->hidden() // disabled
                                     ->label(__('QRIS')),
-                                Forms\Components\Toggle::make('e-wallet')
+                                Forms\Components\Toggle::make('ewallet')
                                     // ->hidden() // disabled
                                     ->label(__('E-Wallet')),
                             ]),

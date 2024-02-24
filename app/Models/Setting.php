@@ -15,6 +15,9 @@ class Setting extends Model
         'tax',
         'fee',
         'payment',
+        'qris',
+        'ewallet',
+        'cash',
     ];
 
     protected $casts = [
@@ -23,5 +26,8 @@ class Setting extends Model
         'tax' => 'boolean',
         'fee' => 'boolean',
         'payment' => 'boolean',
+        'qris' => 'boolean',
+        'ewallet' => 'boolean',
+        'cash' => 'boolean',
     ];
 }
