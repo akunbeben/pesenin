@@ -142,7 +142,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Item> $items
  * @property-read int|null $items_count
- * @property-read \App\Models\Payment|null $latestPayment
  * @property-read \App\Models\Payment|null $payment
  * @property-read \App\Models\Scan|null $scan
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
@@ -282,9 +281,9 @@ namespace App\Models{
  * @property bool $tax
  * @property bool $fee
  * @property bool $payment
- * @property int $ewallet
- * @property int $qris
- * @property int $cash
+ * @property bool $ewallet
+ * @property bool $qris
+ * @property bool $cash
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
