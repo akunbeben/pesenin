@@ -12,17 +12,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory()->create([
-            'name' => 'Benny Rahmat',
-            'email' => 'akunbeben@gmail.com',
-        ]);
 
-        \App\Models\User::factory()->create([
-            'name' => 'Benny Rahmat',
-            'email' => 'beben.devs@gmail.com',
-            'paid' => true,
-        ]);
+        if (!app()->isProduction()) {
+            \App\Models\User::query()->create([
+                'name' => 'Benny Rahmat',
+                'email' => 'akunbeben@gmail.com',
+            ]);
 
-        $this->call([DevelopmentSeeder::class]);
+            \App\Models\User::factory()->create([
+                'name' => 'Benny Rahmat',
+                'email' => 'beben.devs@gmail.com',
+                'paid' => true,
+            ]);
+
+            $this->call([DevelopmentSeeder::class]);
+        }
     }
 }
