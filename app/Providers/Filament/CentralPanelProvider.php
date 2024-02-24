@@ -29,6 +29,7 @@ class CentralPanelProvider extends PanelProvider
                 app()->isLocal() => 'central',
                 app()->isProduction() => 'vorfreude',
             })
+            ->spa()
             ->login(Login::class)
             ->favicon(asset('apple-touch-icon.png'))
             ->colors([
