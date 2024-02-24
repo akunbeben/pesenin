@@ -117,7 +117,15 @@ class TableResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Table'))
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search) {
+                        $query->where('prefix', 'LIKE', "%{$search}%")
+                            ->orWhere('number', $search)
+                            ->orWhere('suffix', 'LIKE', "%{$search}%");
+                    })
+                    ->alignCenter(),
+                Tables\Columns\TextColumn::make('seats')
+                    ->label(__('Seats'))
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('qr_status')
                     ->badge()
                     ->formatStateUsing(fn (Model $record) => $record->qr_status->label())
@@ -137,6 +145,11 @@ class TableResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\Action::make('open_url')
+                    ->label(__('Open URL'))
+                    ->icon('heroicon-m-arrow-up-right')
+                    ->visible(fn (Model $record) => ! Feature::for($record->merchant)->active('feature_ikiosk'))
+                    ->url(fn (Model $record) => $record->url, true),
                 Tables\Actions\Action::make('process')
                     ->label(__('Generate QR'))
                     ->icon('heroicon-o-arrow-path')
@@ -160,11 +173,6 @@ class TableResource extends Resource
                             $table->update(['qr_status' => QRStatus::Generated]);
                         }
                     }),
-                Tables\Actions\Action::make('open_url')
-                    ->label(__('Open URL'))
-                    ->icon('heroicon-m-arrow-up-right')
-                    ->visible(fn (Model $record) => ! Feature::for($record->merchant)->active('feature_ikiosk'))
-                    ->url(fn (Model $record) => $record->url, true),
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-cloud-arrow-down')
                     ->color(fn (Model $record) => $record->qr_status->color())

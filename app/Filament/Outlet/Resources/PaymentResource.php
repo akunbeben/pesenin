@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Filament\Merchant\Resources;
+namespace App\Filament\Outlet\Resources;
 
-use App\Filament\Merchant\Resources\PaymentResource\Pages;
+use App\Filament\Outlet\Resources\PaymentResource\Pages;
 use App\Models\Item;
 use App\Models\Payment;
 use App\Traits\Orders\Serving;
 use App\Traits\Orders\Status;
-use Filament\Facades\Filament;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
@@ -20,18 +19,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
-use Laravel\Pennant\Feature;
 
 class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return Feature::for(Filament::getTenant())->active('feature_payment');
-    }
 
     public static function getNavigationGroup(): ?string
     {
@@ -252,7 +245,6 @@ class PaymentResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['order.items', 'order.scan.table'])
             ->latest('data->status')
             ->latest('data->paid_at');
     }

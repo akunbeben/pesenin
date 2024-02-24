@@ -2,7 +2,10 @@
 
 namespace App\Traits\Orders;
 
-enum Status: int
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
+
+enum Status: int implements HasColor, HasIcon
 {
     case Pending = 1;
     case Processed = 2;
@@ -10,7 +13,7 @@ enum Status: int
     case Expired = 4;
     case Manual = 5;
 
-    public function color(): string
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::Pending => 'warning',
@@ -21,7 +24,7 @@ enum Status: int
         };
     }
 
-    public function icon(): string
+    public function getIcon(): ?string
     {
         return match ($this) {
             self::Pending => 'heroicon-m-exclamation-circle',

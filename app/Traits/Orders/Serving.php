@@ -2,7 +2,10 @@
 
 namespace App\Traits\Orders;
 
-enum Serving: int
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum Serving: int implements HasColor, HasLabel
 {
     case NotReady = 1;
     case Waiting = 2;
@@ -10,13 +13,24 @@ enum Serving: int
     case Completed = 4;
     case Finished = 5;
 
-    public function color(): string
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::NotReady => __('Order is not ready'),
+            self::Waiting => __('Waiting in queue'),
+            self::Processed => __('Order processed'),
+            self::Completed => __('Order completed'),
+            self::Finished => __('Order served'),
+        };
+    }
+
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::NotReady => 'danger',
             self::Waiting => 'warning',
             self::Processed => 'primary',
-            self::Completed => 'success',
+            self::Completed, self::Finished => 'success',
         };
     }
 
