@@ -26,7 +26,7 @@
                 <div class="p-2.5 bg-white rounded-lg">{!! QrCode::size(150)->generate($this->order->number) !!}</div>
                 @else
                 <x-filament::icon
-                    icon="{{ $this->order->status->icon() }}"
+                    icon="{{ $this->order->status->getIcon() }}"
                     label="Payment status icon"
                     class="payment-icon"
                     @class([

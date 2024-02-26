@@ -75,7 +75,7 @@
             @features('feature_payment', $this->table->merchant)
             <div class="flex items-center justify-between">
                 <x-filament::button
-                    class="aspect-square"
+                    class="w-8 h-8 aspect-square"
                     size="xs"
                     outlined
                     wire:click="$dispatch('decrease-item', {product: {{ $product->getKey() }}})"
@@ -88,7 +88,7 @@
                 <span class="text-sm text-gray-950 dark:text-white">{{ $this->cart->firstWhere('product_id', $product->getKey())['amount'] }}</span>
 
                 <x-filament::button
-                    class="aspect-square"
+                    class="w-8 h-8 aspect-square"
                     size="xs"
                     outlined
                     wire:click="$dispatch('increase-item', {product: {{ $product->getKey() }}})"

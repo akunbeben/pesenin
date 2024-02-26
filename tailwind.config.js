@@ -16,13 +16,19 @@ export default {
             auto: 'auto',
             ...theme('spacing'),
             full: '100%',
-            screen: 'calc(100dvh)',
+            screen: '100vh',
+            svh: '100svh',
+            lvh: '100lvh',
+            dvh: '100dvh',
         }),
         minHeight: theme => ({
             '0': '0',
             ...theme('spacing'),
             full: '100%',
-            screen: 'calc(100dvh)',
+            screen: '100vh',
+            svh: '100svh',
+            lvh: '100lvh',
+            dvh: '100dvh',
         }),
         extend: {
             fontFamily: {

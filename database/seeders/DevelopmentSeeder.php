@@ -23,11 +23,12 @@ class DevelopmentSeeder extends Seeder
         /** @var \App\Models\Merchant $merchant */
         $merchant = $user->merchants()->create([
             'name' => 'Retro Coffee',
-            'address' => 'Jalan Angkasa No 36',
-            'phone' => '089631581118',
-            'city' => 'Banjarbaru',
-            'country' => 'Indonesia',
-            'zip' => '70724',
+        ]);
+
+        $merchant->employees()->create([
+            'name' => 'Joni Doe',
+            'email' => 'joni.doe@example.com',
+            'password' => bcrypt('password'),
         ]);
 
         ForwardingEmail::dispatch($user, $merchant, true);
