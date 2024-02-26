@@ -1,4 +1,4 @@
-<x-filament::modal slide-over id="my-cart" class="min-h-screen">
+<x-filament::modal slide-over id="my-cart">
     <div class="flex items-center justify-between p-2.5 md:hidden">
         <button type="button" class="p-1 rounded-full top-5 left-5 bg-gray-100/50" x-on:click="$dispatch('close-modal', { id: 'my-cart' })">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -16,7 +16,7 @@
     </div>
 
     <div class="flex flex-col p-2 grow gap-1.5">
-        <div class="max-h-[calc(90vh_-_145px)] overflow-auto flex flex-col gap-1.5">
+        <div class="h-full overflow-auto flex flex-col gap-1.5">
             @forelse ($cart as $item)
                 <div class="grid grid-cols-3 gap-2.5 border border-primary-500 dark:border-gray-700 p-2 rounded-xl" x-data="{ show: false }">
                     <img src="{{ $item['snapshot']['image'] }}" alt="{{ $item['snapshot']['name'] }}" class="object-cover object-center rounded-lg aspect-square">
@@ -36,7 +36,7 @@
 
                         <div class="flex items-center justify-between mt-auto">
                             <x-filament::button
-                                class="aspect-square"
+                                class="w-8 h-8 aspect-square"
                                 size="xs"
                                 outlined
                                 wire:click="$dispatch('decrease-item', {product: {{ $item['product_id'] }}})"
@@ -50,7 +50,7 @@
 
                             <div class="flex gap-1.5">
                                 <x-filament::button
-                                    class="aspect-square"
+                                    class="w-8 h-8 aspect-square"
                                     size="xs"
                                     outlined
                                     wire:click="$dispatch('increase-item', {product: {{ $item['product_id'] }}})"
@@ -61,7 +61,7 @@
                                 </x-filament::button>
 
                                 <x-filament::button
-                                    class="aspect-square"
+                                    class="w-8 h-8 aspect-square"
                                     size="xs"
                                     outlined
                                     x-on:click="show = !show"
