@@ -32,7 +32,12 @@ class MostOrderedProducts extends ChartWidget
 
     protected function getData(): array
     {
-        $products = Product::query()->withCount('orders')->whereHas('orders')->get();
+        $products = Product::query()
+            ->withCount('orders')
+            ->whereHas('orders')
+            ->orderBy('orders_count', 'DESC')
+            ->limit(5)
+            ->get();
 
         return [
             'datasets' => [
