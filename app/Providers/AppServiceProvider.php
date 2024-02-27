@@ -6,9 +6,7 @@ use App\Models\Merchant;
 use App\Models\User;
 use App\Support\DevelopmentUrlGenerator;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Number;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
 
@@ -30,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict();
         Model::preventSilentlyDiscardingAttributes(false);
 
-        if (!app()->isProduction()) {
+        if (! app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
 

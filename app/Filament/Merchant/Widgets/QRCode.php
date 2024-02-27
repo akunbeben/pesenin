@@ -83,7 +83,7 @@ class QRCode extends Widget implements HasActions, HasForms
             'seats' => 0,
         ]);
 
-        if (!$this->table->getFirstMedia('qr')) {
+        if (! $this->table->getFirstMedia('qr')) {
             /** @var \SimpleSoftwareIO\QrCode\Generator $service */
             $service = app(\SimpleSoftwareIO\QrCode\Generator::class);
 

@@ -147,7 +147,7 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('mark_as_unavailable')
-                    ->hidden(fn (Product $record) => !$record->availability)
+                    ->hidden(fn (Product $record) => ! $record->availability)
                     ->icon('heroicon-m-x-mark')
                     ->color('gray')
                     ->translateLabel()

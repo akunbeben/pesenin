@@ -2,7 +2,6 @@
 
 namespace App\Filament\Merchant\Widgets;
 
-use App\Models\Merchant;
 use Filament\Facades\Filament;
 use Filament\Widgets\Widget;
 
@@ -17,7 +16,7 @@ class XenditProgress extends Widget
 
     public function checkProgress()
     {
-        if (!Filament::getTenant()->xendit_in_progress) {
+        if (! Filament::getTenant()->xendit_in_progress) {
             $this->redirect(Filament::getUrl(Filament::getTenant()));
         }
     }

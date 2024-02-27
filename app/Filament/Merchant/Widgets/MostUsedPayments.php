@@ -2,26 +2,23 @@
 
 namespace App\Filament\Merchant\Widgets;
 
-use App\Models\Order;
 use App\Models\Payment;
-use App\Models\Table;
 use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Feature;
 
 class MostUsedPayments extends ChartWidget
 {
-    public function getHeading(): string|Htmlable|null
+    public function getHeading(): string | Htmlable | null
     {
         return __('Most used payment methods');
     }
 
     public function getColumnSpan(): int | string | array
     {
-        return !Feature::for(Filament::getTenant())->active('feature_payment') ? [
+        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
             'default' => 6,
             'sm' => 3,
         ] : [

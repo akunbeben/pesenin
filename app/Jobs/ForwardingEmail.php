@@ -34,7 +34,7 @@ class ForwardingEmail implements ShouldQueue
      */
     public function handle(Routing $routing, Account $account): void
     {
-        if (!app()->isProduction()) {
+        if (! app()->isProduction()) {
             URL::forceRootUrl(config('app.asset_url'));
         }
 
@@ -42,7 +42,7 @@ class ForwardingEmail implements ShouldQueue
 
         if (
             ($this->merchant->business_id && $this->merchant->webhook_token)
-            || !Feature::for($this->user)->active('can-have-payment')
+            || ! Feature::for($this->user)->active('can-have-payment')
         ) {
             Feature::for($this->merchant)->activate('feature_payment');
             $this->merchant->update(['xendit_in_progress' => false]);

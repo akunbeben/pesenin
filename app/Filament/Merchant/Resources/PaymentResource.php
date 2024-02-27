@@ -221,7 +221,7 @@ class PaymentResource extends Resource
                         } catch (\Throwable $th) {
                             DB::rollBack();
 
-                            if (!app()->isProduction()) {
+                            if (! app()->isProduction()) {
                                 throw $th;
                             }
 

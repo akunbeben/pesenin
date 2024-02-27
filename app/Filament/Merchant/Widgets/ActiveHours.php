@@ -3,7 +3,6 @@
 namespace App\Filament\Merchant\Widgets;
 
 use App\Models\Order;
-use App\Models\Scan;
 use Filament\Facades\Filament;
 use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
@@ -16,14 +15,14 @@ use Laravel\Pennant\Feature;
 
 class ActiveHours extends ChartWidget
 {
-    public function getHeading(): string|Htmlable|null
+    public function getHeading(): string | Htmlable | null
     {
         return __('Active hours');
     }
 
     public function getColumnSpan(): int | string | array
     {
-        return !Feature::for(Filament::getTenant())->active('feature_payment') ? [
+        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
             'default' => 6,
             'sm' => 3,
         ] : [
@@ -79,7 +78,6 @@ class ActiveHours extends ChartWidget
             }
         JS);
     }
-
 
     protected function getType(): string
     {

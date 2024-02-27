@@ -55,7 +55,7 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Feature settings'))
                             ->statePath('setting')
-                            ->hidden(!Feature::for($this->tenant)->active('feature_payment'))
+                            ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('ikiosk_mode')
                                     ->hidden() // disabled
@@ -70,7 +70,7 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Payment channels'))
                             ->statePath('setting')
-                            ->hidden(!Feature::for($this->tenant)->active('feature_payment'))
+                            ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('cash')
                                     // ->hidden() // disabled
@@ -102,7 +102,7 @@ class MerchantProfile extends Page
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            if (!app()->isProduction()) {
+            if (! app()->isProduction()) {
                 throw $th;
             }
 

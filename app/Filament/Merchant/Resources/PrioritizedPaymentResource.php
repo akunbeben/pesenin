@@ -87,7 +87,7 @@ class PrioritizedPaymentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('resolve')
-                    ->hidden(fn (Payment $record) => !$record->priority)
+                    ->hidden(fn (Payment $record) => ! $record->priority)
                     ->icon('heroicon-m-check')
                     ->action(fn (Payment $record) => $record->update(['priority' => false]))
                     ->color('success')

@@ -2,26 +2,22 @@
 
 namespace App\Filament\Merchant\Widgets;
 
-use App\Models\Scan;
 use App\Models\Table;
-use Flowframe\Trend\Trend;
-use Laravel\Pennant\Feature;
 use Filament\Facades\Filament;
-use Illuminate\Support\Carbon;
 use Filament\Widgets\ChartWidget;
-use Flowframe\Trend\TrendValue;
 use Illuminate\Contracts\Support\Htmlable;
+use Laravel\Pennant\Feature;
 
 class MostScannedTables extends ChartWidget
 {
-    public function getHeading(): string|Htmlable|null
+    public function getHeading(): string | Htmlable | null
     {
         return __('Most orders from table');
     }
 
     public function getColumnSpan(): int | string | array
     {
-        return !Feature::for(Filament::getTenant())->active('feature_payment') ? [
+        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
             'default' => 6,
             'sm' => 3,
         ] : [

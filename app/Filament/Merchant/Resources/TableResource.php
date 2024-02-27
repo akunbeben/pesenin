@@ -154,18 +154,18 @@ class TableResource extends Resource
                 Tables\Actions\Action::make('open_url')
                     ->label(__('Open URL'))
                     ->icon('heroicon-m-arrow-up-right')
-                    ->visible(fn (Model $record) => !Feature::for($record->merchant)->active('feature_ikiosk'))
+                    ->visible(fn (Model $record) => ! Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->url(fn (Model $record) => $record->url, true),
                 Tables\Actions\Action::make('process')
                     ->label(__('Generate QR'))
                     ->icon('heroicon-o-arrow-path')
                     ->color(fn (Model $record) => $record->qr_status->color())
-                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None && !Feature::for($record->merchant)->active('feature_ikiosk'))
+                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None && ! Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->action(function (Model $record, QRGenerator $service) {
                         /** @var \App\Models\Table $table */
                         $table = $record;
 
-                        if (!$table->getFirstMedia('qr')) {
+                        if (! $table->getFirstMedia('qr')) {
                             /** @var \SimpleSoftwareIO\QrCode\Generator $service */
                             $service = app(\SimpleSoftwareIO\QrCode\Generator::class);
 
@@ -182,7 +182,7 @@ class TableResource extends Resource
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-cloud-arrow-down')
                     ->color(fn (Model $record) => $record->qr_status->color())
-                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::Generated && !Feature::for($record->merchant)->active('feature_ikiosk'))
+                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::Generated && ! Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->action(function (Model $record) {
                         return response()->download($record->getFirstMediaPath('qr'), "{$record->uuid}.png");
                     }),

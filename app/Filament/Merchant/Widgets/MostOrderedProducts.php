@@ -3,10 +3,10 @@
 namespace App\Filament\Merchant\Widgets;
 
 use App\Models\Product;
-use Laravel\Pennant\Feature;
 use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
+use Laravel\Pennant\Feature;
 
 class MostOrderedProducts extends ChartWidget
 {
@@ -17,7 +17,7 @@ class MostOrderedProducts extends ChartWidget
 
     public function getColumnSpan(): int | string | array
     {
-        return !Feature::for(Filament::getTenant())->active('feature_payment') ? [
+        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
             'default' => 6,
             'sm' => 3,
         ] : [
