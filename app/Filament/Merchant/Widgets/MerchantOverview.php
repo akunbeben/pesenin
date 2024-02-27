@@ -16,6 +16,8 @@ class MerchantOverview extends BaseWidget
 
     public $holding = 0;
 
+    public $tax = 0;
+
     protected static ?int $sort = 1;
 
     public function getColumnSpan(): int | string | array
@@ -53,6 +55,13 @@ class MerchantOverview extends BaseWidget
                 return (new BalanceApi())->getBalance('HOLDING', for_user_id: $merchant->business_id)['balance'];
             }),
         };
+
+        $this->tax = match ($merchant->business_id) {
+            null => 0,
+            default => Cache::remember("merchant_{$merchant->business_id}_tax", now()->addMinutes(10), function () use ($merchant) {
+                return (new BalanceApi())->getBalance('TAX', for_user_id: $merchant->business_id)['balance'];
+            }),
+        };
     }
 
     protected function getStats(): array
@@ -60,15 +69,21 @@ class MerchantOverview extends BaseWidget
         return [
             Stat::make(__('Balance (Payment gateway)'), Number::currency($this->balance, 'IDR', 'id'))
                 ->icon('heroicon-m-banknotes')
-                ->description(__('Data will refresh every 10 minutes')),
+                ->description(__('Data will refresh every 10 minutes'))
+                ->extraAttributes(['class' => 'overview', 'title' => Number::currency($this->balance, 'IDR', 'id')]),
             Stat::make(__('On-Hold (Payment gateway)'), Number::currency($this->holding, 'IDR', 'id'))
                 ->icon('heroicon-m-hand-raised')
-                ->description(__('Data will refresh every 10 minutes')),
+                ->description(__('Data will refresh every 10 minutes'))
+                ->extraAttributes(['class' => 'overview', 'title' => Number::currency($this->holding, 'IDR', 'id')]),
+            Stat::make(__('Tax (Payment gateway)'), Number::currency($this->tax, 'IDR', 'id'))
+                ->icon('heroicon-m-chevron-up-down')
+                ->description(__('Data will refresh every 10 minutes'))
+                ->extraAttributes(['class' => 'overview', 'title' => Number::currency($this->tax, 'IDR', 'id')]),
         ];
     }
 
     protected function getColumns(): int
     {
-        return 2;
+        return 3;
     }
 }

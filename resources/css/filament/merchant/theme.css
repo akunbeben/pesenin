@@ -20,3 +20,11 @@
 .fi-ta-image > div > div {
     @apply w-full;
 }
+
+.overview > div > .tracking-tight {
+    @apply truncate;
+}
+
+.overview > div > * {
+    @apply line-clamp-1;
+}

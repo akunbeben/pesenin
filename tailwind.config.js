@@ -31,12 +31,6 @@ export default {
             dvh: '100dvh',
         }),
         extend: {
-            fontFamily: {
-                'sans': ['Be Vietnam Pro', ...defaultTheme.fontFamily.sans],
-            },
-            backgroundImage: {
-                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-            },
             colors: {
                 custom: colors.sky,
                 danger: colors.rose,
@@ -44,6 +38,12 @@ export default {
                 primary: colors.sky,
                 success: colors.emerald,
                 warning: colors.orange,
+            },
+            fontFamily: {
+                'sans': ['Be Vietnam Pro', ...defaultTheme.fontFamily.sans],
+            },
+            backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
             },
         },
     },

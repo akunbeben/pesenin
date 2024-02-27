@@ -55,12 +55,7 @@ class LatestTransactions extends BaseWidget
                     ->label(__('Via')),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->getStateUsing(fn (Payment $record) => str($record->data?->status)->title()->toString())
-                    ->color(fn (Payment $record) => match ($record->data?->status) {
-                        'PENDING' => 'warning',
-                        'SETTLED', 'PAID' => 'success',
-                        default => 'gray',
-                    })
+                    ->getStateUsing(fn (Payment $record) => $record->loadMissing('order')->status)
                     ->label(__('Status')),
                 Tables\Columns\TextColumn::make('amount')
                     ->getStateUsing(fn (Payment $record) => Number::currency($record->data?->paid_amount, 'IDR', config('app.locale')))

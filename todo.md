@@ -7,7 +7,7 @@
 
 1. Cache payment update on create merchant - OK
 2. Handle cloudflare + xendit ketika toggle fitur berbayar - OK
-3. Batalkan pembayaran (tunai)
-4. Informasi biaya payment gateway
-5. Saldo payment gateway (keterangan)
+3. Saldo payment gateway (keterangan) - OK
+4. Batalkan pembayaran (tunai)
+5. Informasi biaya payment gateway
 6. Statistik penjualan per hari/minggu/bulan

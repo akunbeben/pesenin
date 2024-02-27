@@ -12,6 +12,7 @@ enum Serving: int implements HasColor, HasLabel
     case Processed = 3;
     case Completed = 4;
     case Finished = 5;
+    case Canceled = 6;
 
     public function getLabel(): ?string
     {
@@ -21,13 +22,14 @@ enum Serving: int implements HasColor, HasLabel
             self::Processed => __('Order processed'),
             self::Completed => __('Order completed'),
             self::Finished => __('Order served'),
+            self::Canceled => __('Order canceled'),
         };
     }
 
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::NotReady => 'danger',
+            self::NotReady, self::Canceled => 'danger',
             self::Waiting => 'warning',
             self::Processed => 'primary',
             self::Completed, self::Finished => 'success',

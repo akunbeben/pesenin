@@ -19,7 +19,7 @@
                     'text-warning-500 bg-warning-100' => $this->order->status === Status::Pending,
                     'text-primary-500 bg-primary-100' => $this->order->status === Status::Processed,
                     'text-success-500 bg-success-100' => $this->order->status === Status::Success,
-                    'text-danger-500 bg-danger-100' => $this->order->status === Status::Expired,
+                    'text-danger-500 bg-danger-100' => in_array($this->order->status, [Status::Expired, Status::Canceled]),
                 ])
             >
                 @if ($this->order->status === Status::Manual)
@@ -41,7 +41,7 @@
                 <h1 class="text-base sm:text-2xl text-gray-950 dark:text-white">{{ __('Payment :status!', ['status' => __($this->order->status->name)]) }}</h1>
                 @if ($this->order->status === Status::Manual)
                 <small class="text-gray-800 dark:text-gray-400">{{ __('Ask merchant\'s employee to scan this QRCode to confirm your payment.') }}</small>
-                @elseif ($this->order->status !== Status::Success)
+                @elseif (!in_array($this->order->status, [Status::Expired, Status::Canceled]))
                 <small class="text-gray-800 dark:text-gray-400">{{ __('Please wait until the payment success.') }}</small>
                 @endif
                 <span class="text-lg font-bold sm:text-3xl text-gray-950 dark:text-white">{{ Number::currency($this->order->total, 'IDR', 'id') }}</span>
@@ -55,7 +55,7 @@
                     <span class="text-gray-950 dark:text-white">{{ $this->order->number }}</span>
                 </div>
 
-                @if ($this->order->status !== Status::Manual)
+                @if (!in_array($this->order->status, [Status::Expired, Status::Canceled, Status::Manual]))
                 <div class="flex items-center justify-between">
                     <span class="text-gray-950 dark:text-white">{{ __('Payment time') }}</span>
                     <span class="text-gray-950 dark:text-white">{{ $this->order->updated_at->isoFormat('dddd, D MMM Y HH:mm') }}</span>
@@ -103,6 +103,9 @@
                 </div>
 
                 <div class="flex no-print">
+                    @if ($this->order->status === Status::Manual)
+                    {{ $this->cancelAction }}
+                    @endif
                     @if ($this->order->status === Status::Success)
                     <x-filament::button class="w-full mt-10" size="xl" x-on:click="() => window.print()">
                         {{ __('Download receipt') }}
@@ -112,4 +115,6 @@
             </div>
         </div>
     </div>
+
+    <x-filament-actions::modals />
 </div>

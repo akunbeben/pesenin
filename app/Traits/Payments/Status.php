@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Traits\Orders;
+namespace App\Traits\Payments;
 
 use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasIcon;
+use Filament\Support\Contracts\HasLabel;
 
-enum Status: int implements HasColor, HasIcon
+enum Status: int implements HasColor, HasLabel
 {
     case Pending = 1;
     case Processed = 2;
@@ -13,6 +13,17 @@ enum Status: int implements HasColor, HasIcon
     case Expired = 4;
     case Manual = 5;
     case Canceled = 6;
+
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::Pending, self::Manual => 'PENDING',
+            self::Processed => 'PROCESSED',
+            self::Success => 'PAID',
+            self::Expired => 'EXPIRED',
+            self::Canceled => 'CANCELED',
+        };
+    }
 
     public function getColor(): string | array | null
     {
@@ -22,17 +33,6 @@ enum Status: int implements HasColor, HasIcon
             self::Success => 'success',
             self::Expired, self::Canceled => 'danger',
             self::Manual => 'gray',
-        };
-    }
-
-    public function getIcon(): ?string
-    {
-        return match ($this) {
-            self::Pending => 'heroicon-m-exclamation-circle',
-            self::Processed => 'heroicon-m-arrow-path',
-            self::Success => 'heroicon-m-check-circle',
-            self::Expired, self::Canceled => 'heroicon-m-x-circle',
-            self::Manual => 'heroicon-m-check-circle',
         };
     }
 }

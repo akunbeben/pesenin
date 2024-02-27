@@ -6,7 +6,7 @@ use App\Filament\Merchant\Resources\PaymentResource\Pages;
 use App\Models\Item;
 use App\Models\Payment;
 use App\Traits\Orders\Serving;
-use App\Traits\Orders\Status;
+use App\Traits\Payments\Status;
 use Filament\Facades\Filament;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -66,13 +66,9 @@ class PaymentResource extends Resource
                         ->columns(2)
                         ->schema([
                             Infolists\Components\TextEntry::make('status')
-                                ->getStateUsing(fn (Payment $record) => $record->data->status)
+                                ->getStateUsing(fn (Payment $record) => $record->status)
                                 ->badge()
-                                ->color(fn (string $state) => match ($state) {
-                                    'PENDING' => 'warning',
-                                    'SETTLED', 'PAID' => 'success',
-                                    default => 'gray',
-                                }),
+                                ->translateLabel(),
                             Infolists\Components\TextEntry::make('payment_channel')
                                 ->getStateUsing(fn (Payment $record) => $record->data->payment_channel)
                                 ->translateLabel(),
@@ -178,12 +174,7 @@ class PaymentResource extends Resource
                     ->searchable(query: fn (Builder $query, string $search) => $query->where('data->payment_channel', 'LIKE', "%{$search}%")),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->getStateUsing(fn (Payment $record) => str($record->data->status)->title()->toString())
-                    ->color(fn (Payment $record) => match ($record->data->status) {
-                        'PENDING' => 'warning',
-                        'SETTLED', 'PAID' => 'success',
-                        default => 'gray',
-                    })
+                    ->getStateUsing(fn (Payment $record) => $record->status)
                     ->label(__('Status')),
                 Tables\Columns\TextColumn::make('amount')
                     ->getStateUsing(fn (Payment $record) => Number::currency($record->data->paid_amount, 'IDR', config('app.locale')))
@@ -198,7 +189,7 @@ class PaymentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('confirm')
-                    ->hidden(fn (Payment $record) => $record->loadMissing('order')->order->status === Status::Success)
+                    ->hidden(fn (Payment $record) => in_array($record->status, [Status::Canceled, Status::Expired, Status::Success]))
                     ->icon('heroicon-m-check')
                     ->color('success')
                     ->action(function (Payment $record) {
@@ -246,7 +237,7 @@ class PaymentResource extends Resource
                     ->tooltip(__('Mark payment as confirmed'))
                     ->translateLabel(),
                 Tables\Actions\Action::make('prioritize')
-                    ->hidden(fn (Payment $record) => $record->priority)
+                    ->hidden(fn (Payment $record) => $record->priority || in_array($record->status, [Status::Canceled, Status::Expired, Status::Success]))
                     ->icon('heroicon-m-exclamation-circle')
                     ->action(fn (Payment $record) => $record->update(['priority' => true]))
                     ->tooltip(__('Mark as priority'))

@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Traits\Orders\Serving;
 use App\Traits\Orders\Status;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -59,6 +61,29 @@ class Order extends Model
     public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function cancel(): void
+    {
+        DB::beginTransaction();
+
+        try {
+            $this->update(['status' => Status::Canceled, 'serving' => Serving::Canceled]);
+            $this->payment->update(['status' => Status::Canceled]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            logger()->error($th->getMessage());
+
+            Notification::make()
+                ->title(__('Order cancelation failed, please try again.'))
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        DB::commit();
     }
 
     public function process(bool $forward = true): bool
