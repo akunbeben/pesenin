@@ -20,9 +20,14 @@ class PrioritizedPaymentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
 
-    public static function shouldRegisterNavigation(): bool
+    public static function canViewAny(): bool
     {
         return Feature::for(Filament::getTenant())->active('feature_payment');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canViewAny();
     }
 
     public static function getNavigationGroup(): ?string
@@ -82,7 +87,7 @@ class PrioritizedPaymentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('resolve')
-                    ->hidden(fn (Payment $record) => ! $record->priority)
+                    ->hidden(fn (Payment $record) => !$record->priority)
                     ->icon('heroicon-m-check')
                     ->action(fn (Payment $record) => $record->update(['priority' => false]))
                     ->color('success')
@@ -94,7 +99,7 @@ class PrioritizedPaymentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::query()->where('priority', true)->count();
+        return static::getEloquentQuery()->where('priority', true)->count();
     }
 
     public static function getEloquentQuery(): Builder

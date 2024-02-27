@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use OwenIt\Auditing\Auditable;
@@ -47,6 +49,13 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
         static::creating(function (Product $product) {
             $product->uuid = Str::orderedUuid();
         });
+
+        static::addGlobalScope('owned', function (Builder $builder) {
+            $builder->when(
+                Filament::getTenant(),
+                fn (Builder $builder) => $builder->whereBelongsTo(Filament::getTenant())
+            );
+        });
     }
 
     public function merchant(): BelongsTo
@@ -57,6 +66,11 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function orders(): HasManyThrough
+    {
+        return $this->hasManyThrough(Order::class, Item::class, 'product_id', 'id', null, 'order_id');
     }
 
     public function scopeAvailable(Builder $builder): Builder

@@ -55,7 +55,7 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Feature settings'))
                             ->statePath('setting')
-                            ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
+                            ->hidden(!Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('ikiosk_mode')
                                     ->hidden() // disabled
@@ -70,7 +70,7 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Payment channels'))
                             ->statePath('setting')
-                            ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
+                            ->hidden(!Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('cash')
                                     // ->hidden() // disabled
@@ -94,7 +94,7 @@ class MerchantProfile extends Page
             /** @var \App\Models\Merchant $record */
             $record->update($data);
 
-            $record->setting()->updateOrCreate([], $data['setting']);
+            $record->setting()->updateOrCreate($data['setting']);
 
             foreach (['feature_ikiosk' => 'ikiosk_mode', 'feature_tax' => 'tax', 'feature_fee' => 'fee'] as $key => $value) {
                 Feature::for($record)->activate($key, $data['setting'][$value]);
@@ -102,7 +102,7 @@ class MerchantProfile extends Page
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            if (! app()->isProduction()) {
+            if (!app()->isProduction()) {
                 throw $th;
             }
 

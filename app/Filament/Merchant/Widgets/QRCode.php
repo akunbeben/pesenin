@@ -47,7 +47,7 @@ class QRCode extends Widget implements HasActions, HasForms
     {
         return Action::make('open_url')
             ->size(ActionSize::Large)
-            ->label(__('Test transaction'))
+            ->label(__('Open'))
             ->icon('heroicon-o-arrow-top-right-on-square')
             ->extraAttributes(['class' => 'w-full'])
             ->outlined()
@@ -78,12 +78,12 @@ class QRCode extends Widget implements HasActions, HasForms
         /** @var \App\Models\Merchant $merchant */
         $merchant = Filament::getTenant();
 
-        $this->table = $merchant->tables()->firstOrCreate([], [
+        $this->table = $merchant->tables()->withoutGlobalScope('owned')->firstOrCreate([
             'number' => 0,
             'seats' => 0,
         ]);
 
-        if (! $this->table->getFirstMedia('qr')) {
+        if (!$this->table->getFirstMedia('qr')) {
             /** @var \SimpleSoftwareIO\QrCode\Generator $service */
             $service = app(\SimpleSoftwareIO\QrCode\Generator::class);
 
@@ -95,6 +95,8 @@ class QRCode extends Widget implements HasActions, HasForms
             ))->toMediaCollection('qr');
 
             $this->table->update(['qr_status' => QRStatus::Generated]);
+
+            $this->dispatch('$refresh()');
         }
     }
 }

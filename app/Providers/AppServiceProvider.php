@@ -8,6 +8,7 @@ use App\Support\DevelopmentUrlGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Number;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
 
@@ -29,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict();
         Model::preventSilentlyDiscardingAttributes(false);
 
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
 
@@ -43,15 +44,11 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('viewPulse', function (User $user) {
-            return in_array($user->email, ['akunbeben@gmail.com', 'beben.devs@gmail.com']);
-        });
-
-        Feature::define('system_ikiosk', fn (Merchant $merchant) => false);
+        Feature::define('can-have-payment', fn (User $user) => $user->paid);
         Feature::define('feature_ikiosk', fn (Merchant $merchant) => $merchant->loadMissing('setting')->setting->ikiosk_mode);
         Feature::define('feature_tax', fn (Merchant $merchant) => $merchant->loadMissing('setting')->setting->tax);
         Feature::define('feature_fee', fn (Merchant $merchant) => $merchant->loadMissing('setting')->setting->fee);
-        Feature::define('feature_payment', fn (Merchant $merchant) => $merchant->loadMissing(['user'])->user->paid && (bool) $merchant->business_id);
+        Feature::define('feature_payment', fn (Merchant $merchant) => (bool) $merchant->loadMissing('setting')->setting->payment);
 
         URL::forceRootUrl(config('app.asset_url'));
         URL::forceScheme(config('app.scheme'));

@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Number;
+use Laravel\Pennant\Feature;
 
 class LatestTransactions extends BaseWidget
 {
@@ -16,7 +17,17 @@ class LatestTransactions extends BaseWidget
 
     public function getColumnSpan(): int | string | array
     {
-        return 'full';
+        return !Feature::for(Filament::getTenant())->active('feature_payment') ? [
+            'default' => 6,
+            'sm' => 6,
+        ] : [
+            'default' => 'full',
+            'sm' => 6,
+            'md' => 6,
+            'lg' => 6,
+            'xl' => 6,
+            '2xl' => 6,
+        ];
     }
 
     protected function getTableHeading(): string | Htmlable | null
@@ -33,6 +44,7 @@ class LatestTransactions extends BaseWidget
     {
         return $table
             ->paginated(false)
+            ->recordUrl(fn (Payment $record) => route('filament.merchant.resources.payments.view', [Filament::getTenant(), $record]))
             ->query(Payment::query()->whereBelongsTo(Filament::getTenant(), 'merchant')->latest()->limit(8))
             ->columns([
                 Tables\Columns\TextColumn::make('reference_id')
@@ -40,7 +52,7 @@ class LatestTransactions extends BaseWidget
                     ->label(__('Ref')),
                 Tables\Columns\TextColumn::make('payment_channel')
                     ->getStateUsing(fn (Payment $record) => $record->data?->payment_channel)
-                    ->label(__('Payment method')),
+                    ->label(__('Via')),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->getStateUsing(fn (Payment $record) => str($record->data?->status)->title()->toString())

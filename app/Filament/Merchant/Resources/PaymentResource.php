@@ -28,9 +28,14 @@ class PaymentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
-    public static function shouldRegisterNavigation(): bool
+    public static function canViewAny(): bool
     {
         return Feature::for(Filament::getTenant())->active('feature_payment');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canViewAny();
     }
 
     public static function getNavigationGroup(): ?string
@@ -216,7 +221,7 @@ class PaymentResource extends Resource
                         } catch (\Throwable $th) {
                             DB::rollBack();
 
-                            if (! app()->isProduction()) {
+                            if (!app()->isProduction()) {
                                 throw $th;
                             }
 

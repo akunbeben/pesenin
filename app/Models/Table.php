@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Traits\Tables\QRStatus;
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
@@ -30,12 +33,21 @@ class Table extends Model implements HasMedia
 
     protected $casts = [
         'qr_status' => QRStatus::class,
+        'number' => 'integer',
+        'seats' => 'integer',
     ];
 
     protected static function booted(): void
     {
         static::creating(function (Table $table) {
             $table->uuid = Str::orderedUuid();
+        });
+
+        static::addGlobalScope('owned', function (Builder $builder) {
+            $builder->when(
+                Filament::getTenant(),
+                fn (Builder $builder) => $builder->whereBelongsTo(Filament::getTenant())->where('number', '<>', 0)
+            );
         });
     }
 
@@ -52,6 +64,11 @@ class Table extends Model implements HasMedia
     public function scans(): HasMany
     {
         return $this->hasMany(Scan::class);
+    }
+
+    public function orders(): HasManyThrough
+    {
+        return $this->hasManyThrough(Order::class, Scan::class);
     }
 
     public function registerMediaCollections(): void

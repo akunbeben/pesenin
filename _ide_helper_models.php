@@ -85,6 +85,7 @@ namespace App\Models{
  * @property string|null $phone
  * @property string|null $business_id
  * @property mixed|null $webhook_token
+ * @property bool $xendit_in_progress
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
@@ -120,6 +121,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereWebhookToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereXenditInProgress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereZip($value)
  */
 	class Merchant extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable, \Filament\Models\Contracts\HasAvatar, \Spatie\MediaLibrary\HasMedia {}
@@ -325,6 +327,8 @@ namespace App\Models{
  * @property-read int|null $media_count
  * @property-read \App\Models\Merchant $merchant
  * @property-read mixed $name
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
  * @property-read int|null $scans_count
  * @property-read mixed $url

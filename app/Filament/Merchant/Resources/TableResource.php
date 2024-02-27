@@ -3,6 +3,7 @@
 namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\TableResource\Pages;
+use App\Filament\Merchant\Resources\TableResource\RelationManagers;
 use App\Models\Table as Model;
 use App\Services\Tables\QRGenerator;
 use App\Traits\Tables\QRStatus;
@@ -23,9 +24,14 @@ class TableResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
-    public static function shouldRegisterNavigation(): bool
+    public static function canViewAny(): bool
     {
         return Feature::for(Filament::getTenant())->active('feature_payment');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canViewAny();
     }
 
     public static function getNavigationGroup(): ?string
@@ -77,7 +83,7 @@ class TableResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
-            Infolists\Components\Grid::make(4)->schema([
+            Infolists\Components\Grid::make(6)->schema([
                 Infolists\Components\Section::make()->columns(4)->schema([
                     Infolists\Components\TextEntry::make('name')
                         ->translateLabel(),
@@ -93,7 +99,7 @@ class TableResource extends Resource
                         ->color(fn (Model $record) => $record->qr_status->color())
                         ->icon(fn (Model $record) => $record->qr_status->icon())
                         ->label(__('QR Code')),
-                ])->columnSpan(3),
+                ])->columnSpan(4),
                 Infolists\Components\Section::make(__('QR Code'))
                     ->description(__('Tap to see more details'))
                     ->collapsible()
@@ -104,7 +110,7 @@ class TableResource extends Resource
                             ->hiddenLabel()
                             ->height('auto')
                             ->extraImgAttributes(['class' => 'w-full rounded-xl']),
-                    ])->columnSpan(1),
+                    ])->columnSpan(2),
             ]),
         ]);
     }
@@ -148,18 +154,18 @@ class TableResource extends Resource
                 Tables\Actions\Action::make('open_url')
                     ->label(__('Open URL'))
                     ->icon('heroicon-m-arrow-up-right')
-                    ->visible(fn (Model $record) => ! Feature::for($record->merchant)->active('feature_ikiosk'))
+                    ->visible(fn (Model $record) => !Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->url(fn (Model $record) => $record->url, true),
                 Tables\Actions\Action::make('process')
                     ->label(__('Generate QR'))
                     ->icon('heroicon-o-arrow-path')
                     ->color(fn (Model $record) => $record->qr_status->color())
-                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None && ! Feature::for($record->merchant)->active('feature_ikiosk'))
+                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::None && !Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->action(function (Model $record, QRGenerator $service) {
                         /** @var \App\Models\Table $table */
                         $table = $record;
 
-                        if (! $table->getFirstMedia('qr')) {
+                        if (!$table->getFirstMedia('qr')) {
                             /** @var \SimpleSoftwareIO\QrCode\Generator $service */
                             $service = app(\SimpleSoftwareIO\QrCode\Generator::class);
 
@@ -176,7 +182,7 @@ class TableResource extends Resource
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-cloud-arrow-down')
                     ->color(fn (Model $record) => $record->qr_status->color())
-                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::Generated && ! Feature::for($record->merchant)->active('feature_ikiosk'))
+                    ->visible(fn (Model $record): bool => $record->qr_status === QRStatus::Generated && !Feature::for($record->merchant)->active('feature_ikiosk'))
                     ->action(function (Model $record) {
                         return response()->download($record->getFirstMediaPath('qr'), "{$record->uuid}.png");
                     }),
@@ -196,9 +202,18 @@ class TableResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\OrdersRelationManager::class,
+        ];
+    }
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['merchant']);
+        return parent::getEloquentQuery()
+            ->where('number', '<>', 0)
+            ->with(['merchant']);
     }
 
     public static function getPages(): array

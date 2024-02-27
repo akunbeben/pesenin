@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\URL;
+use Laravel\Pennant\Feature;
 
 class ForwardingEmail implements ShouldQueue
 {
@@ -33,28 +34,54 @@ class ForwardingEmail implements ShouldQueue
      */
     public function handle(Routing $routing, Account $account): void
     {
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             URL::forceRootUrl(config('app.asset_url'));
         }
 
-        $cloudflareEmail = $routing->forward($this->user->email, $this->merchant->name);
+        $this->merchant->update(['xendit_in_progress' => true]);
 
-        if ($this->withPayment) {
-            $businessId = $account->createAccount([
-                'email' => $cloudflareEmail,
-                'type' => 'MANAGED',
-                'public_profile' => [
-                    'business_name' => $this->merchant->name,
-                ],
-            ]);
+        if (
+            ($this->merchant->business_id && $this->merchant->webhook_token)
+            || !Feature::for($this->user)->active('can-have-payment')
+        ) {
+            Feature::for($this->merchant)->activate('feature_payment');
+            $this->merchant->update(['xendit_in_progress' => false]);
+            $this->merchant->setting->update(['payment' => true]);
 
-            $token = $account->registerWebhook('invoice', route('webhooks.payment.success', [$this->merchant]), $businessId);
+            return;
+        }
+
+        $cloudflareEmail = $routing->forward(
+            destination: $this->user->email,
+            suffix: $this->merchant->name
+        );
+
+        if ($this->withPayment && Feature::for($this->user)->active('can-have-payment')) {
+            $businessId = $account->createAccount(
+                data: [
+                    'email' => $cloudflareEmail,
+                    'type' => 'MANAGED',
+                    'public_profile' => [
+                        'business_name' => $this->merchant->name,
+                    ],
+                ]
+            );
+
+            $token = $account->registerWebhook(
+                type: 'invoice',
+                url: route('webhooks.payment.success', [$this->merchant]),
+                businessId: $businessId
+            );
+
+            Feature::for($this->merchant)->activate('feature_payment');
+            $this->merchant->setting->update(['payment' => true]);
         }
 
         $this->merchant->update([
             'business_id' => $businessId ?? null,
             'cloudflare_email' => $cloudflareEmail,
             'webhook_token' => $token ?? null,
+            'xendit_in_progress' => false,
         ]);
     }
 }

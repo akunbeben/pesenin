@@ -13,6 +13,7 @@ use App\Models\Merchant;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -39,6 +40,11 @@ class MerchantPanelProvider extends PanelProvider
             ->tenant(Merchant::class, 'uuid')
             ->tenantRegistration(MerchantRegistration::class)
             ->tenantProfile(MerchantProfile::class)
+            ->tenantMenuItems([
+                'profile' => MenuItem::make(),
+                'register' => MenuItem::make()
+                    ->visible(fn () => auth()->user()->paid),
+            ])
             ->profile(UserProfile::class)
             ->favicon(asset('apple-touch-icon.png'))
             ->navigationGroups([

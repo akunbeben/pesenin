@@ -11,9 +11,11 @@
         </x-slot>
 
         <div class="flex flex-col gap-2.5">
-            {{ $this->visitAction }}
             <img src="{{ $this->table->getFirstMediaUrl('qr') }}" alt="Shareable QR Code" class="rounded-lg">
-            {{ $this->downloadAction }}
+            <div class="flex gap-2.5">
+                {{ $this->visitAction }}
+                {{ $this->downloadAction }}
+            </div>
         </div>
     </x-filament::section>
 </x-filament-widgets::widget>

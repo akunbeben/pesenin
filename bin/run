@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd /home/akunbeben/Projects/pesenin;
+cd /var/www/pesenin;
 
 php artisan serve & php artisan queue:listen & "$PWD/bin/tunnel"

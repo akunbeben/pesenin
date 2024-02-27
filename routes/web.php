@@ -3,6 +3,7 @@
 use App\Livewire\Browse;
 use App\Livewire\Choose;
 use App\Livewire\Redirector;
+use App\Livewire\Scanner;
 use App\Livewire\Summary;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,7 @@ Route::get('/', function () {
 
 Route::redirect('/login', '/merchant/login')->name('login');
 Route::get('redirector', Redirector::class)->name('redirector');
+Route::get('scanner', Scanner::class)->name('scanner');
 Route::get('scan/{encrypted}', fn (string $encrypted) => $encrypted);
 Route::get('{order}/summary', Summary::class)->name('summary');
 Route::get('{scanId}/choose', Choose::class)->name('choose');

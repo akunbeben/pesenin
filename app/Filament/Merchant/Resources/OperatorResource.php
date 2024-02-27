@@ -22,9 +22,14 @@ class OperatorResource extends Resource
 
     protected static ?string $tenantRelationshipName = 'employees';
 
-    public static function shouldRegisterNavigation(): bool
+    public static function canViewAny(): bool
     {
         return Feature::for(Filament::getTenant())->active('feature_payment');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canViewAny();
     }
 
     public static function getNavigationGroup(): ?string
@@ -102,7 +107,7 @@ class OperatorResource extends Resource
                         false => 'success',
                         true => 'warning',
                     })
-                    ->tooltip(fn (User $record): ?string => ! $record->require_reset ? null : 'Please notify the user to reset their password as soon as possible for security reasons.')
+                    ->tooltip(fn (User $record): ?string => !$record->require_reset ? null : 'Please notify the user to reset their password as soon as possible for security reasons.')
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable()

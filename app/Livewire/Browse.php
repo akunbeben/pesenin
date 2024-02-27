@@ -198,10 +198,6 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('view-cart')]
     public function viewCart(): void
     {
-        $this->js(<<<'JS'
-            console.log($wire.cart)
-        JS);
-
         $this->dispatch('open-modal', id: 'my-cart');
     }
 
@@ -226,14 +222,14 @@ class Browse extends Component implements HasForms, HasInfolists
 
         $this->table = $this->scan->table;
 
-        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && ! $this->isIkiosk, 404);
+        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && !$this->isIkiosk, 404);
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
-        abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
+        abort_if(!$this->scan->table, 403, 'Please rescan the QRCode');
 
-        $this->cart = collect([])->when(! app()->isProduction(), function (Collection $cart) {
+        $this->cart = collect([])->when(!app()->isProduction(), function (Collection $cart) {
             $product = $this->table->merchant->products->first();
 
-            if (! $product || ! Feature::for($this->table->merchant)->active('feature_payment')) {
+            if (!$product || !Feature::for($this->table->merchant)->active('feature_payment')) {
                 return;
             }
 
@@ -251,7 +247,7 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('pay-now')]
     public function payNow(): void
     {
-        if (! in_array($this->paymentMethod, $this->allowedPayments)) {
+        if (!in_array($this->paymentMethod, $this->allowedPayments)) {
             Notification::make()
                 ->title(__('Invalid payment method'))
                 ->body(__('Please choose valid payment method'))

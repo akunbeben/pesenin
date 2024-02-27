@@ -48,7 +48,7 @@
                         x-transition:leave-start="opacity-100 transform translate-x-0"
                         x-transition:leave-end="opacity-0 transform -translate-x-12"
                     >
-                        <img src="{{ $image }}" loading="lazy" class="z-0 object-cover object-center w-full h-64">
+                        <img src="{{ $image }}" class="z-0 object-cover object-center w-full h-64">
                     </div>
                     @endforeach
                 </div>

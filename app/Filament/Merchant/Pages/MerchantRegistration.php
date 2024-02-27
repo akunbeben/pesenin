@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\DB;
 
 class MerchantRegistration extends Page
 {
+    public static function canView(): bool
+    {
+        return auth()->user()->paid;
+    }
+
     public static function getLabel(): string
     {
         return __('Register merchant');
@@ -89,7 +94,7 @@ class MerchantRegistration extends Page
 
             $merchant = Merchant::query()->create($data);
 
-            $merchant->setting()->create([
+            $merchant->setting()->updateOrCreate([
                 'payment' => (bool) Arr::get($data, 'payment', false),
             ]);
 
