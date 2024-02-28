@@ -66,20 +66,29 @@ class MerchantProfile extends Page
                                     ->helperText(__('With this option active, PPN 11% tax will be included in the total amount charged to the customer.')),
                                 Forms\Components\Toggle::make('fee')
                                     ->label(__('Charge service fees to customers (payment gateway)*'))
-                                    ->helperText(__('With this option active, a 4% payment gateway fee will be included in the total amount charged to the customer.')),
+                                    ->helperText(__('With this option active, a :value payment gateway fee will be included in the total amount charged to the customer.', ['value' => '0,7-4%'])),
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Payment channels'))
                             ->statePath('setting')
                             ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('cash')
-                                    // ->hidden() // disabled
+                                    ->helperText(__(':payment payment has a fee :value', [
+                                        'payment' => 'Cash',
+                                        'value' => 0,
+                                    ]))
                                     ->label(__('Cash')),
                                 Forms\Components\Toggle::make('qris')
-                                    // ->hidden() // disabled
+                                    ->helperText(__(':payment payment has a fee :value', [
+                                        'payment' => 'QRIS',
+                                        'value' => '0,7%',
+                                    ]))
                                     ->label(__('QRIS')),
                                 Forms\Components\Toggle::make('ewallet')
-                                    // ->hidden() // disabled
+                                    ->helperText(__(':payment payment has a fee :value', [
+                                        'payment' => 'E-Wallet',
+                                        'value' => '4%',
+                                    ]))
                                     ->label(__('E-Wallet')),
                             ]),
                     ]),
