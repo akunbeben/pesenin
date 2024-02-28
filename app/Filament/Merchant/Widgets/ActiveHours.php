@@ -3,11 +3,10 @@
 namespace App\Filament\Merchant\Widgets;
 
 use App\Models\Order;
+use Carbon\CarbonPeriod;
 use Filament\Facades\Filament;
 use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -37,27 +36,37 @@ class ActiveHours extends ChartWidget
 
     protected function getData(): array
     {
-        $orders = Trend::query(Order::query()->whereRelation('payment', function (Builder $query) {
-            $query->whereBelongsTo(Filament::getTenant());
-        }))
-            ->dateColumn('created_at')
-            ->between(
-                start: now()->startOfDay(),
-                end: now()->endOfDay(),
-            )
-            ->perHour()
-            ->count();
+        $start = Carbon::parse('00:00');
+        $end = Carbon::parse('23:59');
+
+        $orders = Order::query()
+            ->whereRelation('payment', fn (Builder $query) => $query->whereBelongsTo(
+                Filament::getTenant(),
+            ))
+            ->selectRaw("
+                date_format(created_at, '%H:00') AS date,
+                COUNT(*) as aggregate
+            ")
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        $period = collect(CarbonPeriod::create($start, '1 Hour', $end))
+            ->map(fn ($time) => [
+                'date' => $time->format('H:i'),
+                'aggregate' => $orders->where('date', $time->format('H:i'))->value('aggregate', 0),
+            ]);
 
         return [
             'datasets' => [
                 [
                     'label' => '',
-                    'data' => $orders->map(fn (TrendValue $value) => $value->aggregate),
+                    'data' => $period->pluck('aggregate'),
                     'tension' => 0.5,
                     'fill' => true,
                 ],
             ],
-            'labels' => $orders->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('H:i')),
+            'labels' => $period->pluck('date'),
         ];
     }
 
