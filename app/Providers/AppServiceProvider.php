@@ -5,7 +5,10 @@ namespace App\Providers;
 use App\Models\Merchant;
 use App\Models\User;
 use App\Support\DevelopmentUrlGenerator;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
@@ -51,6 +54,8 @@ class AppServiceProvider extends ServiceProvider
         URL::forceRootUrl(config('app.asset_url'));
         URL::forceScheme(config('app.scheme'));
         setlocale(LC_TIME, 'id_ID');
-        \Carbon\Carbon::setLocale('id');
+        Carbon::setLocale(config('app.locale'));
+        CarbonPeriod::setLocale(config('app.locale'));
+        DB::statement("SET lc_time_names = 'id_ID'");
     }
 }

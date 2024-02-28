@@ -10,13 +10,27 @@ use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Laravel\Pennant\Feature;
 
 class ActiveHours extends ChartWidget
 {
+    public ?string $filter = 'hourly';
+
     public function getHeading(): string | Htmlable | null
     {
-        return __('Active hours');
+        return match ($this->filter) {
+            'daily' => __('Peak days'),
+            default => __('Peak hours'),
+        };
+    }
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'hourly' => __('Hourly'),
+            'daily' => __('Daily'),
+        ];
     }
 
     public function getColumnSpan(): int | string | array
@@ -36,6 +50,50 @@ class ActiveHours extends ChartWidget
 
     protected function getData(): array
     {
+        $period = match ($this->filter) {
+            'daily' => $this->peakDays(),
+            default => $this->peakHours(),
+        };
+
+        return [
+            'datasets' => [
+                [
+                    'label' => '',
+                    'data' => $period->pluck('aggregate'),
+                    'tension' => 0.5,
+                    'fill' => true,
+                ],
+            ],
+            'labels' => $period->pluck('date'),
+        ];
+    }
+
+    protected function peakDays(): Collection
+    {
+        $start = Carbon::now()->startOfWeek();
+        $end = Carbon::now()->endOfWeek();
+
+        $orders = Order::query()
+            ->whereRelation('payment', fn (Builder $query) => $query->whereBelongsTo(
+                Filament::getTenant(),
+            ))
+            ->selectRaw("
+                date_format(created_at, '%W') AS date,
+                COUNT(*) as aggregate
+            ")
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return collect(CarbonPeriod::create($start, '1 Day', $end))
+            ->map(fn ($time) => [
+                'date' => $time->isoFormat('dddd'),
+                'aggregate' => $orders->where('date', $time->isoFormat('dddd'))->value('aggregate', 0),
+            ]);
+    }
+
+    protected function peakHours(): Collection
+    {
         $start = Carbon::parse('00:00');
         $end = Carbon::parse('23:59');
 
@@ -51,23 +109,11 @@ class ActiveHours extends ChartWidget
             ->orderBy('date')
             ->get();
 
-        $period = collect(CarbonPeriod::create($start, '1 Hour', $end))
+        return collect(CarbonPeriod::create($start, '1 Hour', $end))
             ->map(fn ($time) => [
                 'date' => $time->format('H:i'),
                 'aggregate' => $orders->where('date', $time->format('H:i'))->value('aggregate', 0),
             ]);
-
-        return [
-            'datasets' => [
-                [
-                    'label' => '',
-                    'data' => $period->pluck('aggregate'),
-                    'tension' => 0.5,
-                    'fill' => true,
-                ],
-            ],
-            'labels' => $period->pluck('date'),
-        ];
     }
 
     protected function getOptions(): RawJs
