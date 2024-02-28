@@ -4,12 +4,15 @@ namespace App\Models;
 
 use App\Traits\Orders\Serving;
 use App\Traits\Orders\Status;
+use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\DB;
 
 class Order extends Model
@@ -41,6 +44,15 @@ class Order extends Model
         static::creating(function (Order $model) {
             $model->number = 'ref-' . now()->format('ymd') . '-' . uniqid();
         });
+
+        static::addGlobalScope('owned', function (Builder $builder) {
+            $builder->when(
+                Filament::getTenant(),
+                fn (Builder $builder) => $builder->whereRelation('table', function (Builder $query) {
+                    $query->whereBelongsTo(Filament::getTenant());
+                })
+            );
+        });
     }
 
     public function getRouteKeyName()
@@ -61,6 +73,32 @@ class Order extends Model
     public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function table(): HasOneThrough
+    {
+        return $this->hasOneThrough(Table::class, Scan::class, 'id', 'id', 'scan_id', 'table_id');
+    }
+
+    public function scopePaid(Builder $query): void
+    {
+        $query->where('status', Status::Success);
+    }
+
+    public function scopeToday(Builder $query): void
+    {
+        $query->whereRelation('payment', fn ($subQuery) => $subQuery->whereBetween(
+            'updated_at',
+            [now()->startOfDay(), now()->endOfDay()]
+        ));
+    }
+
+    public function scopeThisMonth(Builder $query): void
+    {
+        $query->whereRelation('payment', fn ($subQuery) => $subQuery->whereBetween(
+            'updated_at',
+            [now()->startOfMonth(), now()->endOfMonth()]
+        ));
     }
 
     public function cancel(): void

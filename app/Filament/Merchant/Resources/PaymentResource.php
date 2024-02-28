@@ -17,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
@@ -185,7 +186,25 @@ class PaymentResource extends Resource
                     ->label(__('Paid at')),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('data')
+                    ->label('Via')
+                    ->options(
+                        fn () => Payment::query()
+                            ->select([
+                                'data->payment_channel as payment_channel',
+                                DB::raw('COUNT(`payments`.`id`) as id'),
+                            ])
+                            ->whereBelongsTo(Filament::getTenant())
+                            ->groupBy('payment_channel')
+                            ->get()
+                            ->mapWithKeys(fn ($payment) => [$payment->payment_channel => $payment->payment_channel])
+                    )
+                    ->modifyQueryUsing(fn (Builder $query, array $data) => $query->when(Arr::get($data, 'value'), function (Builder $query) use ($data) {
+                        $query->where(
+                            'data->payment_channel',
+                            $data['value']
+                        );
+                    })),
             ])
             ->actions([
                 Tables\Actions\Action::make('confirm')

@@ -3,6 +3,7 @@
 namespace App\Filament\Merchant\Widgets;
 
 use App\Models\Table;
+use App\Traits\Orders\Status;
 use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
@@ -32,7 +33,11 @@ class MostScannedTables extends ChartWidget
 
     protected function getData(): array
     {
-        $tables = Table::query()->withCount('orders')->whereHas('orders')->get();
+        $tables = Table::query()
+            ->withCount('orders')
+            ->whereRelation('orders', 'status', Status::Success)
+            ->whereHas('orders')
+            ->get();
 
         return [
             'datasets' => [

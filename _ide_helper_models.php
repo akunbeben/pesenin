@@ -146,9 +146,12 @@ namespace App\Models{
  * @property-read int|null $items_count
  * @property-read \App\Models\Payment|null $payment
  * @property-read \App\Models\Scan|null $scan
+ * @property-read \App\Models\Table|null $table
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order paid()
  * @method static \Illuminate\Database\Eloquent\Builder|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order today()
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereAdditional($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereApproved($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
@@ -174,11 +177,12 @@ namespace App\Models{
  * @property string $business_id
  * @property string|null $event
  * @property object $data
- * @property \App\Traits\Orders\Status $settlement
+ * @property int $settlement
  * @property bool $priority
  * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Traits\Payments\Status $status
  * @property-read \App\Models\Merchant|null $merchant
  * @property-read \App\Models\Order|null $order
  * @method static \Illuminate\Database\Eloquent\Builder|Payment newModelQuery()
@@ -221,6 +225,8 @@ namespace App\Models{
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \App\Models\Merchant $merchant
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
  * @method static \Illuminate\Database\Eloquent\Builder|Product available()
  * @method static \Illuminate\Database\Eloquent\Builder|Product highlights()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
