@@ -2,6 +2,7 @@
 
 namespace App\Filament\Merchant\Pages;
 
+use App\Forms\Components\XenditLink;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
@@ -90,6 +91,7 @@ class MerchantProfile extends Page
                                         'value' => '4%',
                                     ]))
                                     ->label(__('E-Wallet')),
+                                XenditLink::make('xendit_link')->hiddenLabel(),
                             ]),
                     ]),
             ]);

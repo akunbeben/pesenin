@@ -10,4 +10,4 @@
 3. Saldo payment gateway (keterangan) - OK
 4. Batalkan pembayaran (tunai) - OK
 5. Informasi biaya payment gateway - OK
-6. Statistik penjualan per hari/minggu/bulan
+6. Statistik penjualan per hari/minggu/bulan - Hold

@@ -15,8 +15,8 @@ class SalesOverview extends BaseWidget
         $salesThisMonth = Order::query()->paid()->thisMonth()->sum('total');
 
         return [
-            Stat::make('Sales today', Number::currency($salesToday, 'IDR', config('app.locale'))),
-            Stat::make('Sales today', Number::currency($salesThisMonth, 'IDR', config('app.locale'))),
+            Stat::make(__('Sales today'), Number::currency($salesToday, 'IDR', config('app.locale'))),
+            Stat::make(__('Sales last month'), Number::currency($salesThisMonth, 'IDR', config('app.locale'))),
         ];
     }
 

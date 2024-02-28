@@ -268,8 +268,8 @@ class PaymentResource extends Resource
     {
         return parent::getEloquentQuery()
             ->with(['order.items', 'order.scan.table'])
-            ->latest('data->status')
-            ->latest('data->paid_at');
+            ->latest('data->paid_at')
+            ->latest('data->status');
     }
 
     public static function getPages(): array

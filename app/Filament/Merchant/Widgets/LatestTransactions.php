@@ -44,8 +44,21 @@ class LatestTransactions extends BaseWidget
     {
         return $table
             ->paginated(false)
+            ->headerActions([
+                Tables\Actions\Action::make('More detail')
+                    ->color('gray')
+                    ->icon('heroicon-m-link')
+                    ->translateLabel()
+                    ->url(route('filament.merchant.resources.payments.index', [Filament::getTenant()])),
+            ])
             ->recordUrl(fn (Payment $record) => route('filament.merchant.resources.payments.view', [Filament::getTenant(), $record]))
-            ->query(Payment::query()->whereBelongsTo(Filament::getTenant(), 'merchant')->latest()->limit(8))
+            ->query(
+                Payment::query()
+                    ->whereBelongsTo(Filament::getTenant(), 'merchant')
+                    ->latest('data->paid_at')
+                    ->latest('data->status')
+                    ->limit(8)
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('reference_id')
                     ->getStateUsing(fn (Payment $record) => $record->data?->external_id)
