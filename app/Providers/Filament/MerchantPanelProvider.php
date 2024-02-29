@@ -42,9 +42,9 @@ class MerchantPanelProvider extends PanelProvider
             ->tenantProfile(MerchantProfile::class)
             ->tenantMenuItems([
                 'profile' => MenuItem::make(),
-                'register' => MenuItem::make()
-                    ->visible(fn () => auth()->user()->paid),
+                'register' => MenuItem::make()->visible(fn () => auth()->user()->paid),
             ])
+            ->globalSearch()
             ->profile(UserProfile::class)
             ->favicon(asset('apple-touch-icon.png'))
             ->navigationGroups([

@@ -41,7 +41,7 @@
                 <h1 class="text-base sm:text-2xl text-gray-950 dark:text-white">{{ __('Payment :status!', ['status' => __($this->order->status->name)]) }}</h1>
                 @if ($this->order->status === Status::Manual)
                 <small class="text-gray-800 dark:text-gray-400">{{ __('Ask merchant\'s employee to scan this QRCode to confirm your payment.') }}</small>
-                @elseif (!in_array($this->order->status, [Status::Expired, Status::Canceled]))
+                @elseif (!in_array($this->order->status, [Status::Expired, Status::Canceled, Status::Success]))
                 <small class="text-gray-800 dark:text-gray-400">{{ __('Please wait until the payment success.') }}</small>
                 @endif
                 <span class="text-lg font-bold sm:text-3xl text-gray-950 dark:text-white">{{ Number::currency($this->order->total, 'IDR', 'id') }}</span>

@@ -38,6 +38,7 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         'country',
         'zip',
         'xendit_in_progress',
+        'was_paid',
     ];
 
     protected $hidden = [
@@ -49,6 +50,7 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
     protected $casts = [
         'webhook_token' => 'encrypted',
         'xendit_in_progress' => 'boolean',
+        'was_paid' => 'boolean',
     ];
 
     protected $auditExclude = [

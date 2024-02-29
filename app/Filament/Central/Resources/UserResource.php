@@ -4,6 +4,7 @@ namespace App\Filament\Central\Resources;
 
 use App\Filament\Central\Resources\UserResource\Pages;
 use App\Filament\Central\Resources\UserResource\RelationManagers;
+use App\Models\Merchant;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,6 +16,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Laravel\Pennant\Feature;
 
 class UserResource extends Resource
 {
@@ -79,7 +81,31 @@ class UserResource extends Resource
                     })
                     ->tooltip(fn (User $record): ?string => ! $record->require_reset ? null : 'Please notify the user to reset their password as soon as possible for security reasons.')
                     ->alignCenter(),
-                Tables\Columns\ToggleColumn::make('paid')->alignCenter(),
+                Tables\Columns\ToggleColumn::make('paid')
+                    ->afterStateUpdated(function (User $record, bool $state) {
+                        $record->loadMissing('merchants.setting');
+
+                        Feature::for($record)->activate('can-have-payment', $state);
+
+                        match ($state) {
+                            false => $record->merchants
+                                ->where('setting.payment', true)
+                                ->each(function (Merchant $merchant) use ($state) {
+                                    $merchant->update(['was_paid' => $merchant->setting->payment]);
+                                    $merchant->setting->update(['payment' => $state]);
+                                    Feature::for($merchant)->activate('feature_payment', $state);
+                                }),
+                            true => $record->merchants
+                                ->each(function (Merchant $merchant) use ($state) {
+                                    $merchant->setting->update(['payment' => (bool) $merchant->was_paid]);
+
+                                    if ($merchant->was_paid) {
+                                        Feature::for($merchant)->activate('feature_payment', $state);
+                                    }
+                                })
+                        };
+                    })
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable()
                     ->toggleable()

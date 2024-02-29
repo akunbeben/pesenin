@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Tenancy\EditTenantProfile as Page;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Feature;
 
@@ -105,7 +106,7 @@ class MerchantProfile extends Page
             /** @var \App\Models\Merchant $record */
             $record->update($data);
 
-            $record->setting()->updateOrCreate($data['setting']);
+            $record->setting()->updateOrCreate(['merchant_id' => $record->getKey()], Arr::except($data['setting'], ['xendit_link']));
 
             foreach (['feature_ikiosk' => 'ikiosk_mode', 'feature_tax' => 'tax', 'feature_fee' => 'fee'] as $key => $value) {
                 Feature::for($record)->activate($key, $data['setting'][$value]);

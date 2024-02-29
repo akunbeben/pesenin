@@ -94,7 +94,7 @@ class MerchantRegistration extends Page
 
             $merchant = Merchant::query()->create($data);
 
-            $merchant->setting()->updateOrCreate([
+            $merchant->setting()->updateOrCreate(['merchant_id' => $merchant->getKey()], [
                 'payment' => (bool) Arr::get($data, 'payment', false),
             ]);
 

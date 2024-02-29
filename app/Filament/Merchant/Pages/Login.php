@@ -14,7 +14,7 @@ class Login extends Page
         }
 
         $this->form->fill(app()->isLocal() ? [
-            'email' => 'beben.devs@gmail.com',
+            'email' => 'demo.pesenin.online@gmail.com',
             'password' => 'password',
             'remember' => true,
         ] : []);

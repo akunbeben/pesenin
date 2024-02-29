@@ -19,6 +19,8 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function getNavigationGroup(): ?string
     {
         return __('Backoffice');
@@ -121,7 +123,7 @@ class ProductResource extends Resource
                             ->height('auto'),
                         Tables\Columns\TextColumn::make('name')
                             ->description(fn (Product $record) => str($record->description)->words($detect->isMobile() ? ($detect->isTablet() ? 7 : 5) : 10))
-                            ->searchable()
+                            ->searchable(condition: true, isGlobal: true)
                             ->sortable(),
                         Tables\Columns\TextColumn::make('price')
                             ->searchable()

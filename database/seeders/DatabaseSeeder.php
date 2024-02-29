@@ -17,12 +17,13 @@ class DatabaseSeeder extends Seeder
             \App\Models\User::factory()->create([
                 'name' => 'Benny Rahmat',
                 'email' => 'akunbeben@gmail.com',
+                'paid' => false,
             ]);
 
             \App\Models\User::factory()->create([
-                'name' => 'Benny Rahmat',
-                'email' => 'beben.devs@gmail.com',
-                'paid' => true,
+                'name' => 'Demo Account',
+                'email' => 'demo.pesenin.online@gmail.com',
+                'paid' => false,
             ]);
 
             $this->call([DevelopmentSeeder::class]);

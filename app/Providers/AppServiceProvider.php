@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::shouldBeStrict();
         Model::preventSilentlyDiscardingAttributes(false);
 
         if (! app()->isProduction()) {

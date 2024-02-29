@@ -12,11 +12,11 @@ class ViewPayment extends ViewRecord
 
     public function getHeading(): string | Htmlable
     {
-        return $this->record->order->number;
+        return $this->record->loadMissing('order')->order->number;
     }
 
     public function getTitle(): string
     {
-        return $this->record->order->number;
+        return $this->record->loadMissing('order')->order->number;
     }
 }

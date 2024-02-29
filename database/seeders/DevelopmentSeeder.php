@@ -16,7 +16,7 @@ class DevelopmentSeeder extends Seeder
     public function run(): void
     {
         /** @var \App\Models\User $user */
-        $user = User::query()->firstWhere('email', 'beben.devs@gmail.com');
+        $user = User::query()->firstWhere('email', 'demo.pesenin.online@gmail.com');
 
         RegisterDestinationAddress::dispatch($user);
 
@@ -31,7 +31,7 @@ class DevelopmentSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        ForwardingEmail::dispatch($user, $merchant, true);
+        ForwardingEmail::dispatch($user, $merchant, false);
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories */
         $categories = $merchant->categories()->createMany([

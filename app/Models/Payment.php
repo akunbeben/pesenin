@@ -58,4 +58,9 @@ class Payment extends Model
     {
         return Attribute::get(fn () => Status::tryFrom($this->order->status->value));
     }
+
+    public function number(): Attribute
+    {
+        return Attribute::get(fn () => $this->loadMissing('order')->order->number);
+    }
 }

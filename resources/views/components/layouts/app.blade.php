@@ -35,11 +35,11 @@
 
 <body
     @class([
-        'font-sans antialiased',
+        'font-sans antialiased bg-gray-50 dark:bg-gray-950',
         'dark' => filament()->hasDarkModeForced(),
     ])
 >
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div class="min-h-screen">
         <main>
             {{ $slot }}
         </main>

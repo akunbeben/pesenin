@@ -17,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,16 @@ class PaymentResource extends Resource
     protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
+    protected static ?string $recordTitleAttribute = 'order.number';
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Ref' => $record->order->number,
+            'Total' => $record->order->total,
+        ];
+    }
 
     public static function canViewAny(): bool
     {
