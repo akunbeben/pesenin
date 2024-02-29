@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductResource extends Resource
 {
@@ -97,6 +98,11 @@ class ProductResource extends Resource
                     ->action(fn (Product $record) => $record->update(['availability' => true]))
                     ->successNotificationTitle(__('Product marked as available')),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('merchant_id', auth()->user()->employee_of);
     }
 
     public static function getPages(): array
