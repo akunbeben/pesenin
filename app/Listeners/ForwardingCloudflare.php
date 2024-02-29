@@ -28,11 +28,11 @@ class ForwardingCloudflare implements ShouldQueue
      */
     public function handle(MerchantRegistrationCompleted $event): void
     {
-        if (!app()->isProduction()) {
+        if (! app()->isProduction()) {
             URL::forceRootUrl(config('app.asset_url'));
         }
 
-        if (!$event->merchant->xendit_in_progress) {
+        if (! $event->merchant->xendit_in_progress) {
             $event->merchant->update(['xendit_in_progress' => true]);
         }
 

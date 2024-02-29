@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\BusinessAccountRegistered;
 use App\Events\SkippedBusinessRegistration;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class FinalizingMerchantRegistration
 {
@@ -20,7 +18,7 @@ class FinalizingMerchantRegistration
     /**
      * Handle the event.
      */
-    public function handle(BusinessAccountRegistered|SkippedBusinessRegistration $event): void
+    public function handle(BusinessAccountRegistered | SkippedBusinessRegistration $event): void
     {
         $event->merchant->update([
             'business_id' => $event->businessId,

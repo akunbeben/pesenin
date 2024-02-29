@@ -34,7 +34,7 @@ class BaseDashboard extends Dashboard
             Action::make('enable_payment')
                 ->hidden(
                     $merchant->xendit_in_progress
-                        || !Feature::active('can-have-payment')
+                        || ! Feature::active('can-have-payment')
                         || Feature::for($merchant)->active('feature_payment')
                 )
                 ->action(function () use ($merchant) {
@@ -75,13 +75,13 @@ class BaseDashboard extends Dashboard
             return [XenditProgress::class];
         }
 
-        if (!Filament::getTenant()->loadMissing('setting')->setting->payment) {
+        if (! Filament::getTenant()->loadMissing('setting')->setting->payment) {
             return [
                 (new class extends AccountWidget
                 {
                     public function getColumnSpan(): int | string | array
                     {
-                        return !Filament::getTenant()->loadMissing('setting')->setting->payment ? [
+                        return ! Filament::getTenant()->loadMissing('setting')->setting->payment ? [
                             'default' => 6,
                             'sm' => 6,
                         ] : [
