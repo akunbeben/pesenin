@@ -2,8 +2,8 @@
 
 namespace App\Filament\Merchant\Pages;
 
+use App\Events\MerchantRegistrationCompleted;
 use App\Http\Middleware\EnsureNotEmployee;
-use App\Jobs\ForwardingEmail;
 use App\Models\Merchant;
 use Filament\Facades\Filament;
 use Filament\Forms;
@@ -98,7 +98,9 @@ class MerchantRegistration extends Page
                 'payment' => (bool) Arr::get($data, 'payment', false),
             ]);
 
-            ForwardingEmail::dispatch($merchant->user, $merchant, (bool) Arr::get($data, 'payment', false));
+            $merchant->update(['xendit_in_progress' => true]);
+
+            MerchantRegistrationCompleted::dispatch($merchant->user, $merchant, (bool) Arr::get($data, 'payment', false));
         } catch (\Throwable $th) {
             DB::rollBack();
 

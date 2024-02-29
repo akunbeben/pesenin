@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Jobs\ForwardingEmail;
+use App\Events\MerchantRegistrationCompleted;
 use App\Jobs\RegisterDestinationAddress;
 use App\Models\Product;
 use App\Models\User;
@@ -31,7 +31,7 @@ class DevelopmentSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        ForwardingEmail::dispatch($user, $merchant, false);
+        MerchantRegistrationCompleted::dispatch($user, $merchant, false);
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories */
         $categories = $merchant->categories()->createMany([

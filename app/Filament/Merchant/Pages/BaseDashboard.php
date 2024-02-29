@@ -2,6 +2,7 @@
 
 namespace App\Filament\Merchant\Pages;
 
+use App\Events\PaymentFeatureActivated;
 use App\Filament\Merchant\Widgets\ActiveHours;
 use App\Filament\Merchant\Widgets\LatestTransactions;
 use App\Filament\Merchant\Widgets\MerchantOverview;
@@ -11,7 +12,6 @@ use App\Filament\Merchant\Widgets\MostUsedPayments;
 use App\Filament\Merchant\Widgets\QRCode;
 use App\Filament\Merchant\Widgets\SalesOverview;
 use App\Filament\Merchant\Widgets\XenditProgress;
-use App\Jobs\ForwardingEmail;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Pages\Dashboard;
@@ -34,13 +34,13 @@ class BaseDashboard extends Dashboard
             Action::make('enable_payment')
                 ->hidden(
                     $merchant->xendit_in_progress
-                        || ! Feature::active('can-have-payment')
+                        || !Feature::active('can-have-payment')
                         || Feature::for($merchant)->active('feature_payment')
                 )
                 ->action(function () use ($merchant) {
                     $merchant->update(['xendit_in_progress' => true]);
 
-                    ForwardingEmail::dispatch($merchant->user, $merchant, true);
+                    PaymentFeatureActivated::dispatch($merchant);
                 })
                 ->requiresConfirmation()
                 ->modalDescription(__('Activating this feature will allow merchant to have payment capability.'))
@@ -75,13 +75,13 @@ class BaseDashboard extends Dashboard
             return [XenditProgress::class];
         }
 
-        if (! Filament::getTenant()->loadMissing('setting')->setting->payment) {
+        if (!Filament::getTenant()->loadMissing('setting')->setting->payment) {
             return [
                 (new class extends AccountWidget
                 {
                     public function getColumnSpan(): int | string | array
                     {
-                        return ! Filament::getTenant()->loadMissing('setting')->setting->payment ? [
+                        return !Filament::getTenant()->loadMissing('setting')->setting->payment ? [
                             'default' => 6,
                             'sm' => 6,
                         ] : [

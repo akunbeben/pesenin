@@ -31,7 +31,7 @@ class Routing
 
     public function register(string $destination): string
     {
-        if (! filter_var($destination, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($destination, FILTER_VALIDATE_EMAIL)) {
             throw new \Exception('Invalid email format');
         }
 
@@ -48,9 +48,9 @@ class Routing
         //
     }
 
-    public function forward(string $destination, ?string $suffix = null)
+    public function forward(string $destination, ?string $suffix = null): ?string
     {
-        if (! filter_var($destination, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($destination, FILTER_VALIDATE_EMAIL)) {
             throw new \Exception('Invalid email format');
         }
 
@@ -86,7 +86,7 @@ class Routing
             ],
         )->getBody()->getContents();
 
-        if (! json_decode($response, true)['success']) {
+        if (!json_decode($response, true)['success']) {
             return null;
         }
 
