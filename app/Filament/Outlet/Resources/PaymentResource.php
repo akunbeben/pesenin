@@ -6,7 +6,7 @@ use App\Filament\Outlet\Resources\PaymentResource\Pages;
 use App\Models\Item;
 use App\Models\Payment;
 use App\Traits\Orders\Serving;
-use App\Traits\Orders\Status;
+use App\Traits\Payments\Status;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
@@ -236,8 +236,9 @@ class PaymentResource extends Resource
     {
         return parent::getEloquentQuery()
             ->with('order')
-            ->latest('data->status')
-            ->latest('data->paid_at');
+            ->where('merchant_id', auth()->user()->employee_of)
+            ->latest('data->paid_at')
+            ->latest('data->status');
     }
 
     public static function getPages(): array
