@@ -102,7 +102,7 @@ class ProductResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('merchant_id', auth()->user()->employee_of);
+        return parent::getEloquentQuery();
     }
 
     public static function getPages(): array

@@ -236,7 +236,6 @@ class PaymentResource extends Resource
     {
         return parent::getEloquentQuery()
             ->with('order')
-            ->where('merchant_id', auth()->user()->employee_of)
             ->latest('data->paid_at')
             ->latest('data->status');
     }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\Payments\Status;
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,6 +30,19 @@ class Payment extends Model
         'priority' => 'boolean',
         'status' => Status::class,
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('owned', function (Builder $builder) {
+            $builder->when(
+                Filament::getTenant(),
+                fn (Builder $builder) => $builder->whereBelongsTo(Filament::getTenant())
+            )->when(auth()->user()->employee_of, fn (Builder $builder) => $builder->where(
+                'merchant_id',
+                auth()->user()->employee_of
+            ));
+        });
+    }
 
     public function merchant(): BelongsTo
     {

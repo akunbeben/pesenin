@@ -11,7 +11,6 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
@@ -49,12 +48,6 @@ class OrderInQueues extends Page implements HasActions
     {
         $this->waiting = Order::query()->with(['items', 'scan.table'])
             ->orderBy('queued_at', 'asc')
-            ->when(
-                auth()->user()->employee_of,
-                fn (Builder $builder) => $builder->whereRelation('table', function (Builder $query) {
-                    $query->where('merchant_id', auth()->user()->employee_of);
-                })
-            )
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
             ->whereNotIn('status', [Status::Pending, Status::Manual, Status::Expired])
             ->where('serving', Serving::Waiting)
@@ -62,12 +55,6 @@ class OrderInQueues extends Page implements HasActions
 
         $this->processed = Order::query()->with(['items', 'scan.table'])
             ->orderBy('queued_at', 'asc')
-            ->when(
-                auth()->user()->employee_of,
-                fn (Builder $builder) => $builder->whereRelation('table', function (Builder $query) {
-                    $query->where('merchant_id', auth()->user()->employee_of);
-                })
-            )
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
             ->whereNotIn('status', [Status::Pending, Status::Manual, Status::Expired])
             ->where('serving', Serving::Processed)
@@ -75,12 +62,6 @@ class OrderInQueues extends Page implements HasActions
 
         $this->completed = Order::query()->with(['items', 'scan.table'])
             ->latest('queued_at')
-            ->when(
-                auth()->user()->employee_of,
-                fn (Builder $builder) => $builder->whereRelation('table', function (Builder $query) {
-                    $query->where('merchant_id', auth()->user()->employee_of);
-                })
-            )
             ->whereNotIn('serving', [Serving::NotReady, Serving::Finished])
             ->whereNotIn('status', [Status::Pending, Status::Manual, Status::Expired])
             ->where('serving', Serving::Completed)

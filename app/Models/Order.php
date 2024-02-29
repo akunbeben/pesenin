@@ -51,6 +51,11 @@ class Order extends Model
                 fn (Builder $builder) => $builder->whereRelation('table', function (Builder $query) {
                     $query->whereBelongsTo(Filament::getTenant());
                 })
+            )->when(
+                auth()->user()->employee_of,
+                fn (Builder $builder) => $builder->whereRelation('table', function (Builder $query) {
+                    $query->where('merchant_id', auth()->user()->employee_of);
+                })
             );
         });
     }
