@@ -54,7 +54,7 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
             $builder->when(
                 Filament::getTenant(),
                 fn (Builder $builder) => $builder->whereBelongsTo(Filament::getTenant())
-            )->when(auth()->user()->employee_of, fn (Builder $builder) => $builder->where(
+            )->when(auth()->user()?->employee_of, fn (Builder $builder) => $builder->where(
                 'merchant_id',
                 auth()->user()->employee_of
             ));

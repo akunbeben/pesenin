@@ -16,19 +16,13 @@ export default {
             auto: 'auto',
             ...theme('spacing'),
             full: '100%',
-            screen: '100vh',
-            svh: '100svh',
-            lvh: '100lvh',
-            dvh: '100dvh',
+            screen: ['100vh', '100dvh'],
         }),
         minHeight: theme => ({
             '0': '0',
             ...theme('spacing'),
             full: '100%',
-            screen: '100vh',
-            svh: '100svh',
-            lvh: '100lvh',
-            dvh: '100dvh',
+            screen: ['100vh', '100dvh'],
         }),
         extend: {
             colors: {

@@ -15,7 +15,7 @@
         @endif
     </div>
 
-    <div class="flex flex-col p-2 grow gap-1.5">
+    <div class="flex flex-col p-2 grow gap-1.5 relative">
         <div class="h-full overflow-auto flex flex-col gap-1.5">
             @forelse ($cart as $item)
                 <div class="grid grid-cols-3 gap-2.5 border border-primary-500 dark:border-gray-700 p-2 rounded-xl" x-data="{ show: false }">
@@ -104,7 +104,7 @@
                 $fee = 0;
             @endphp
             @features('feature_payment', $this->table->merchant)
-            <div class="flex flex-col gap-2.5 w-full mt-auto bottom-5">
+            <div class="flex flex-col gap-2.5 w-full sticky bottom-0 py-2 left-0 right-0 dark:bg-gray-950/5 bg-white">
                 <div class="flex flex-col gap-1.5">
                     @features('feature_tax', $this->table->merchant)
                     <div class="flex items-center justify-between">
