@@ -40,7 +40,7 @@ class Service
         } catch (GuzzleException $th) {
             logger()->error($th->getMessage());
 
-            if (!app()->isProduction()) {
+            if (! app()->isProduction()) {
                 throw $th;
             }
 
@@ -61,7 +61,7 @@ class Service
             'base_uri' => 'https://open-api.pawoon.com',
             'headers' => [
                 'Content-Type' => 'application/json',
-                'Authorization' => "Bearer {$integration->access_token}"
+                'Authorization' => "Bearer {$integration->access_token}",
             ],
         ]);
 

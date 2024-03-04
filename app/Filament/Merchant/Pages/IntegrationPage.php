@@ -2,7 +2,6 @@
 
 namespace App\Filament\Merchant\Pages;
 
-use App\Models\Integration;
 use App\Forms\Components\CustomLink;
 use App\Services\Pawoon\Service;
 use Filament\Actions;
@@ -39,7 +38,7 @@ class IntegrationPage extends Page
         return Feature::for(Filament::getTenant())->active('feature_payment');
     }
 
-    public function getTitle(): string|Htmlable
+    public function getTitle(): string | Htmlable
     {
         return __('Integrate to your POS');
     }
@@ -53,7 +52,7 @@ class IntegrationPage extends Page
             ],
         ];
 
-        if (Filament::getTenant()->integration && !Filament::getTenant()->external_id) {
+        if (Filament::getTenant()->integration && ! Filament::getTenant()->external_id) {
             $this->dispatch('get-outlets');
         }
     }
@@ -92,7 +91,7 @@ class IntegrationPage extends Page
                     DB::rollBack();
                     logger()->error($th->getMessage());
 
-                    if (!app()->isProduction()) {
+                    if (! app()->isProduction()) {
                         throw $th;
                     }
 
@@ -109,7 +108,7 @@ class IntegrationPage extends Page
     #[On('save-outlet')]
     public function saveOutlet(): void
     {
-        if (!$this->selectedOutlet) {
+        if (! $this->selectedOutlet) {
             return;
         }
 
@@ -123,7 +122,7 @@ class IntegrationPage extends Page
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
 
-            if (!app()->isProduction()) {
+            if (! app()->isProduction()) {
                 throw $th;
             }
 
