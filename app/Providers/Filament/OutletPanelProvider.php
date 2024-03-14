@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Merchant\Pages\ResetPassword;
 use App\Filament\Merchant\Pages\UserProfile;
+use App\Filament\Outlet\Pages\Login;
 use App\Http\Middleware\EnsureEmployee;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -29,7 +30,7 @@ class OutletPanelProvider extends PanelProvider
             ->path('outlet')
             ->spa()
             ->topNavigation()
-            ->login()
+            ->login(Login::class)
             ->passwordReset(resetAction: ResetPassword::class)
             ->registration(null)
             ->profile(UserProfile::class)

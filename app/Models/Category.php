@@ -15,6 +15,7 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = [
+        'external_id',
         'merchant_id',
         'name',
     ];

@@ -30,6 +30,8 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         'uuid',
         'cloudflare_email',
         'name',
+        'external_id',
+        'external_name',
         'address',
         'phone',
         'business_id',
@@ -45,9 +47,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
         'business_id',
         'webhook_token',
         'cloudflare_email',
+        'external_id',
     ];
 
     protected $casts = [
+        'external_id' => 'encrypted',
         'webhook_token' => 'encrypted',
         'xendit_in_progress' => 'boolean',
         'was_paid' => 'boolean',
@@ -104,6 +108,11 @@ class Merchant extends Model implements \OwenIt\Auditing\Contracts\Auditable, Ha
     public function setting(): HasOne
     {
         return $this->hasOne(Setting::class);
+    }
+
+    public function integration(): HasOne
+    {
+        return $this->hasOne(Integration::class);
     }
 
     public function transactions(): HasMany

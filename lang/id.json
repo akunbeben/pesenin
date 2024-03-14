@@ -1,4 +1,7 @@
 {
+    "Data syncronization is processed in the background": "Sinkronasi data sedang dilakukan dibelakang layar",
+    "Get client ID and client secret from this url": "Dapatkan client ID dan client secret dari url ini",
+    "More integration with other POS system is coming soon": "Integrasi lebih lanjut dengan sistem POS lainnya akan segera hadir",
     "Aggregated data between Payment gateway and Cash": "Data gabungan antara Payment gateway dan Cash",
     "Activating this feature will allow merchant to have payment capability.": "Mengaktifkan fitur ini akan memungkinkan merchant untuk memiliki fitur pembayaran.",
     "Sales last month": "Penjualan bulan ini",
@@ -13,7 +16,9 @@
     "Peak days": "Hari sibuk",
     "Daily": "Perhari",
     "Hourly": "Perjam",
+    "Integrate now": "Integrasikan sekarang",
     "Cancel order": "Batalkan pesanan",
+    "Submit": "Kirim",
     "Canceled": "dibatalkan",
     "Orders count": "Jumlah order",
     "Scan receipt": "Scan struk",

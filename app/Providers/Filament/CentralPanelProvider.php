@@ -26,8 +26,8 @@ class CentralPanelProvider extends PanelProvider
         return $panel
             ->id('central')
             ->path(match (true) {
-                app()->isLocal() => 'central',
                 app()->isProduction() => 'vorfreude',
+                default => 'central',
             })
             ->spa()
             ->login(Login::class)

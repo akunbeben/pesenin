@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use OwenIt\Auditing\Auditable;
 use Spatie\MediaLibrary\HasMedia;
@@ -22,9 +21,11 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
     use InteractsWithMedia;
 
     protected $fillable = [
+        'external_id',
         'uuid',
         'merchant_id',
         'category_id',
+        'category_external_id',
         'name',
         'description',
         'price',
@@ -68,6 +69,10 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
 
     public function category(): BelongsTo
     {
+        if ($this->external_id) {
+            return $this->belongsTo(Category::class, 'category_external_id', 'external_id');
+        }
+
         return $this->belongsTo(Category::class);
     }
 
@@ -93,7 +98,7 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('banner')->useFallbackUrl(Vite::asset('resources/images/placeholder.png'));
+        $this->addMediaCollection('banner');
     }
 
     public function registerMediaConversions(?Media $media = null): void

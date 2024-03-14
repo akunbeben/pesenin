@@ -16,6 +16,7 @@ namespace App\Models{
  * App\Models\Category
  *
  * @property int $id
+ * @property string|null $external_id
  * @property int $merchant_id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -28,12 +29,44 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Category query()
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereMerchantId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdatedAt($value)
  */
 	class Category extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\Integration
+ *
+ * @property int $id
+ * @property int $merchant_id
+ * @property string $provider
+ * @property mixed $client_id
+ * @property mixed $client_secret
+ * @property mixed|null $access_token
+ * @property string|null $token_expiration
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Merchant $merchant
+ * @property-read mixed $token_valid
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereAccessToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereClientSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereMerchantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereTokenExpiration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Integration whereUpdatedAt($value)
+ */
+	class Integration extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -78,6 +111,8 @@ namespace App\Models{
  * @property string $uuid
  * @property string|null $cloudflare_email
  * @property string $name
+ * @property mixed|null $external_id
+ * @property string|null $external_name
  * @property string|null $address
  * @property string|null $city
  * @property string|null $country
@@ -88,6 +123,7 @@ namespace App\Models{
  * @property bool $xendit_in_progress
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool|null $was_paid
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
@@ -95,6 +131,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $employees
  * @property-read int|null $employees_count
  * @property-read mixed $full_address
+ * @property-read \App\Models\Integration|null $integration
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Payment> $payments
@@ -114,12 +151,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCloudflareEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereExternalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereExternalName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereWasPaid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereWebhookToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereXenditInProgress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereZip($value)
@@ -151,6 +191,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order paid()
  * @method static \Illuminate\Database\Eloquent\Builder|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order thisMonth()
  * @method static \Illuminate\Database\Eloquent\Builder|Order today()
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereAdditional($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereApproved($value)
@@ -184,6 +225,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Traits\Payments\Status $status
  * @property-read \App\Models\Merchant|null $merchant
+ * @property-read mixed $number
  * @property-read \App\Models\Order|null $order
  * @method static \Illuminate\Database\Eloquent\Builder|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Payment newQuery()
@@ -208,9 +250,11 @@ namespace App\Models{
  * App\Models\Product
  *
  * @property int $id
+ * @property string|null $external_id
  * @property string $uuid
  * @property int $merchant_id
- * @property int $category_id
+ * @property int|null $category_id
+ * @property string|null $category_external_id
  * @property string $name
  * @property string|null $description
  * @property int $price
@@ -221,7 +265,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\Category $category
+ * @property-read \App\Models\Category|null $category
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \App\Models\Merchant $merchant
@@ -234,9 +278,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Product query()
  * @method static \Illuminate\Database\Eloquent\Builder|Product search(?string $keyword)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereAvailability($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereMerchantId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereName($value)
