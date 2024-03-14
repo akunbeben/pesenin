@@ -13,13 +13,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        if (! app()->isProduction()) {
-            \App\Models\User::factory()->create([
-                'name' => 'Benny Rahmat',
-                'email' => 'akunbeben@gmail.com',
-                'paid' => false,
-            ]);
+        \App\Models\User::query()->create([
+            'name' => 'Benny Rahmat',
+            'email' => 'akunbeben@gmail.com',
+            'password' => bcrypt(env('APP_CENTRAL_PASS')),
+            'paid' => false,
+        ]);
 
+        if (! app()->isProduction()) {
             \App\Models\User::factory()->create([
                 'name' => 'Demo Account',
                 'email' => 'demo.pesenin.online@gmail.com',

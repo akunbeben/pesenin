@@ -1,0 +1,29 @@
+name: Continous Deployment
+
+on:
+  push:
+    branches: [ "1.x" ]
+
+jobs:
+  laravel-tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Deploy Using ssh
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE }}
+        port: 22
+        script: |
+          cd /home/beben/app
+          git pull origin 1.x
+          git status
+          composer install --no-dev
+          bun install
+          bun run dev
+          rm -rfv node_modules
