@@ -22,7 +22,8 @@ jobs:
         script: |
           cd /home/beben/app
           git pull origin 1.x
+          git status
           composer install --no-dev
-          bun install
-          bun run dev
+          /home/beben/.bun/bin/bun install
+          /home/beben/.bun/bin/bun run dev
           rm -rfv node_modules
