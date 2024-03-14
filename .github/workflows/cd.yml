@@ -24,6 +24,8 @@ jobs:
           git pull origin 1.x
           git status
           composer install --no-dev
+          sudo chmod -R 775 bootstrap/cache
+          sudo chmod -R 777 storage
           /home/beben/.bun/bin/bun install
           /home/beben/.bun/bin/bun run build
           rm -rfv node_modules
