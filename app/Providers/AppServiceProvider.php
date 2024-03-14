@@ -8,6 +8,7 @@ use App\Support\DevelopmentUrlGenerator;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
         if (! app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
+
+        Gate::define('viewHorizon', function (User $user) {
+            return in_array($user->email, explode(',', config('app.central')));
+        });
 
         $this->callAfterResolving('blade.compiler', function ($blade) {
             $blade->if('features', function ($feature, $merchant, $value = null) {
