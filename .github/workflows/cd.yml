@@ -23,7 +23,8 @@ jobs:
           cd /home/beben/app
           git pull origin 1.x
           git status
+          rm -rf vendor
           composer install --no-dev
           /home/beben/.bun/bin/bun install
           /home/beben/.bun/bin/bun run build
-          rm -rfv node_modules
+          rm -rf node_modules
