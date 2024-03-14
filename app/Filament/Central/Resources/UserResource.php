@@ -122,7 +122,9 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->modalWidth('xl'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()->before(fn (User $record) => $record->update([
+                    'active_merchant' => null,
+                ])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
