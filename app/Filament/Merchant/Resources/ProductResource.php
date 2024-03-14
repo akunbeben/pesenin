@@ -3,6 +3,7 @@
 namespace App\Filament\Merchant\Resources;
 
 use App\Filament\Merchant\Resources\ProductResource\Pages;
+use App\Forms\Components\CustomImage;
 use App\Models\Product;
 use Detection\MobileDetect;
 use Filament\Facades\Filament;
@@ -115,7 +116,7 @@ class ProductResource extends Resource
                     ->extraAttributes(['class' => '!p-0'])
                     ->columns(1)
                     ->schema([
-                        Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')
+                        CustomImage::make('banner')
                             ->collection('banner')
                             ->extraImgAttributes(['class' => 'w-full !aspect-square rounded-xl'])
                             ->extraAttributes(['class' => '!w-full'])

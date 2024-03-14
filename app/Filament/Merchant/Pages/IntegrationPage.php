@@ -2,6 +2,7 @@
 
 namespace App\Filament\Merchant\Pages;
 
+use App\Events\SyncToPawoon;
 use App\Forms\Components\CustomLink;
 use App\Services\Pawoon\Service;
 use Filament\Actions;
@@ -55,6 +56,26 @@ class IntegrationPage extends Page
         if (Filament::getTenant()->integration && ! Filament::getTenant()->external_id) {
             $this->dispatch('get-outlets');
         }
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\Action::make('moka')
+                ->hidden(! Filament::getTenant()->integration && ! Filament::getTenant()->external_id)
+                ->requiresConfirmation()
+                ->size('lg')
+                ->label(__('Sync Products'))
+                ->icon('heroicon-o-arrow-path')
+                ->modalIcon('heroicon-o-arrow-path')
+                ->color('gray')
+                ->successNotificationTitle(__('Data syncronization is processed in the background'))
+                ->action(function (Actions\Action $action) {
+                    SyncToPawoon::dispatch(Filament::getTenant());
+
+                    $action->success();
+                }),
+        ];
     }
 
     public function pawoon(): Actions\Action

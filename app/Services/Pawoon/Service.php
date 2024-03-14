@@ -27,6 +27,19 @@ class Service
         return new static($client, $integration);
     }
 
+    public static function make(Integration $integration): static
+    {
+        $client = new Client([
+            'base_uri' => 'https://open-api.pawoon.com',
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => "Bearer {$integration->access_token}",
+            ],
+        ]);
+
+        return new static($client, $integration);
+    }
+
     public function connect(): bool
     {
         try {
@@ -55,19 +68,6 @@ class Service
         ]);
     }
 
-    public static function make(Integration $integration): static
-    {
-        $client = new Client([
-            'base_uri' => 'https://open-api.pawoon.com',
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => "Bearer {$integration->access_token}",
-            ],
-        ]);
-
-        return new static($client, $integration);
-    }
-
     public function outlets(): ?array
     {
         try {
@@ -84,6 +84,53 @@ class Service
                 'name' => $outlet['name'],
             ];
         })->toArray();
+    }
+
+    public function categories(): ?array
+    {
+        try {
+            $response = $this->client->get('/products/categories?with_trashed=true');
+        } catch (GuzzleException $th) {
+            logger()->error($th->getMessage());
+
+            return null;
+        }
+
+        return collect(json_decode($response->getBody()->getContents(), true)['data'])->transform(function (array $category) {
+            return [
+                'external_id' => $category['id'],
+                'name' => $category['name'],
+                'merchant_id' => $this->integration->merchant_id,
+                'created_at' => $category['created_at'],
+                'updated_at' => $category['updated_at'],
+            ];
+        })->toArray();
+    }
+
+    public function products(string $outletId): ?array
+    {
+        try {
+            $response = $this->client->get("/products?outlet_id={$outletId}");
+        } catch (GuzzleException $th) {
+            logger()->error($th->getMessage());
+
+            return null;
+        }
+
+        return collect(json_decode($response->getBody()->getContents(), true)['data'])
+            ->transform(function (array $product) {
+                return [
+                    'external_id' => $product['id'],
+                    'name' => $product['name'],
+                    'merchant_id' => $this->integration->merchant_id,
+                    'category_external_id' => $product['product_category_id'],
+                    'image' => $product['image'],
+                    'price' => $product['price'],
+                    'availability' => $product['sellable'],
+                    'created_at' => $product['created_at'],
+                    'updated_at' => $product['updated_at'],
+                ];
+            })->toArray();
     }
 
     public function registerWebhook(string $type, string $url, string $businessId): ?string
