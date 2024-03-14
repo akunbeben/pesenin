@@ -175,6 +175,7 @@ return [
         App\Providers\Filament\MerchantPanelProvider::class,
         App\Providers\Filament\OutletPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
     ])->toArray(),
 
     /*
