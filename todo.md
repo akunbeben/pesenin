@@ -11,3 +11,4 @@
 4. Batalkan pembayaran (tunai) - OK
 5. Informasi biaya payment gateway - OK
 6. Statistik penjualan per hari/minggu/bulan - Hold
+7. Opsi untuk bayar setelah makan/sajian siap
