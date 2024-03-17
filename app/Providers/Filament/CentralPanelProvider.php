@@ -7,6 +7,7 @@ use App\Filament\Central\Pages\Login;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -50,7 +51,7 @@ class CentralPanelProvider extends PanelProvider
             ->plugins([
                 \BezhanSalleh\FilamentGoogleAnalytics\FilamentGoogleAnalyticsPlugin::make(),
             ])
-            ->pages([Dashboard::class])
+            ->pages([Pages\Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Central/Widgets'), for: 'App\\Filament\\Central\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
