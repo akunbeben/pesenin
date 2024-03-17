@@ -1,0 +1,38 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-93cc98a0.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/css/filament/central/theme.css": {
+    "file": "assets/theme-52574ab5.css",
+    "isEntry": true,
+    "src": "resources/css/filament/central/theme.css"
+  },
+  "resources/css/filament/merchant/theme.css": {
+    "file": "assets/theme-d7623244.css",
+    "isEntry": true,
+    "src": "resources/css/filament/merchant/theme.css"
+  },
+  "resources/css/filament/outlet/theme.css": {
+    "file": "assets/theme-1d1f939f.css",
+    "isEntry": true,
+    "src": "resources/css/filament/outlet/theme.css"
+  },
+  "resources/images/placeholder.png": {
+    "file": "assets/placeholder-5c4c7311.png",
+    "src": "resources/images/placeholder.png"
+  },
+  "resources/js/app.css": {
+    "file": "assets/app-058dc1dd.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/js/app.js": {
+    "css": [
+      "assets/app-058dc1dd.css"
+    ],
+    "file": "assets/app-099ae6c9.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}
