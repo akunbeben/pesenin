@@ -47,9 +47,10 @@ class CentralPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/central/theme.css')
             ->discoverResources(in: app_path('Filament/Central/Resources'), for: 'App\\Filament\\Central\\Resources')
             ->discoverPages(in: app_path('Filament/Central/Pages'), for: 'App\\Filament\\Central\\Pages')
-            ->pages([
-                Pages\Dashboard::class,
+            ->plugins([
+                \BezhanSalleh\FilamentGoogleAnalytics\FilamentGoogleAnalyticsPlugin::make(),
             ])
+            ->pages([Pages\Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Central/Widgets'), for: 'App\\Filament\\Central\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
