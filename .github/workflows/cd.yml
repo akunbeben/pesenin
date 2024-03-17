@@ -27,6 +27,3 @@ jobs:
           composer install --no-dev
           php artisan optimize:clear
           php artisan optimize
-          /home/beben/.bun/bin/bun install
-          /home/beben/.bun/bin/bun run build
-          rm -rf node_modules
