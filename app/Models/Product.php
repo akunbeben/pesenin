@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 use OwenIt\Auditing\Auditable;
 use Spatie\MediaLibrary\HasMedia;
@@ -40,6 +43,8 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
         'variants' => 'array',
         'price' => 'integer',
     ];
+
+    protected $appends = ['banner', 'thumbnail', 'price_rupiah'];
 
     protected $auditExclude = [
         'id',
@@ -98,7 +103,7 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('banner');
+        $this->addMediaCollection('banner')->useFallbackUrl(Vite::asset('resources/images/placeholder.png'));
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -108,5 +113,20 @@ class Product extends Model implements \OwenIt\Auditing\Contracts\Auditable, Has
             ->nonQueued()
             ->width(200)
             ->height(200);
+    }
+
+    public function priceRupiah(): Attribute
+    {
+        return Attribute::get(fn () => Number::currency($this->price, 'IDR', config('app.locale')));
+    }
+
+    public function banner(): Attribute
+    {
+        return Attribute::get(fn () => $this->getFirstMediaUrl('banner'));
+    }
+
+    public function thumbnail(): Attribute
+    {
+        return Attribute::get(fn () => $this->getFirstMediaUrl('banner', 'thumbnail'));
     }
 }
