@@ -154,7 +154,7 @@
                 x-init="() => {
                     initCalculate();
                     $watch('paymentMethod', value => initCalculate())
-                    // $watch('cart', value => initCalculate())
+                    $watch('cart', value => initCalculate())
                 }"
             >
                 <div class="flex flex-col gap-1.5">
