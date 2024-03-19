@@ -25,6 +25,6 @@ jobs:
           git status
           rm -rf vendor
           composer install --no-dev
-          /home/beben/.bun/bin/bun install
-          /home/beben/.bun/bin/bun run build
-          rm -rf node_modules
+          php artisan optimize:clear
+          php artisan optimize
+          php artisan view:clear

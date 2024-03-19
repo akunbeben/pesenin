@@ -214,13 +214,19 @@ class Browse extends Component implements HasForms, HasInfolists
 
         $this->scan = Scan::query()->findOrFail($id);
 
+        $this->table = $this->scan->table;
+
+        if ($this->scan->order && $this->scan->order->status === Status::Pending) {
+            $this->redirect($this->getInvoice($this->scan->order->number));
+
+            return;
+        }
+
         if ($this->scan->finished) {
             $this->redirectRoute('summary', [$this->scan->order->number]);
 
             return;
         }
-
-        $this->table = $this->scan->table;
 
         abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && ! $this->isIkiosk, 404);
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
@@ -282,7 +288,7 @@ class Browse extends Component implements HasForms, HasInfolists
                 $order = Order::query()->create([
                     'status' => match ($this->paymentMethod) {
                         'cash' => Status::Manual,
-                        default => Status::Processed,
+                        default => Status::Pending,
                     },
                     'scan_id' => $this->scan->getKey(),
                     'total' => $subTotal + array_sum(array_column($additional, 'value')),
@@ -391,6 +397,22 @@ class Browse extends Component implements HasForms, HasInfolists
                 ),
             'categories' => $this->table->merchant->categories,
         ]);
+    }
+
+    private function getInvoice(string $id): string
+    {
+        Configuration::setXenditKey(config('services.xendit.secret_key'));
+
+        $api = new InvoiceApi();
+
+        try {
+            /** @var \Xendit\Invoice\Invoice $invoice */
+            $invoice = collect($api->getInvoices($this->table->merchant->business_id, $id))->first();
+
+            return $invoice->getInvoiceUrl();
+        } catch (\Xendit\XenditSdkException $th) {
+            logger()->error($th->getMessage());
+        }
     }
 
     private function processPayment(array $data)

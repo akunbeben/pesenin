@@ -18,7 +18,9 @@ class MerchantOverview extends BaseWidget
 
     public $tax = 0;
 
-    public bool $unavailable = false;
+    public bool $xenditNotReady = false;
+
+    public bool $fetchFailed = false;
 
     protected static ?int $sort = 1;
 
@@ -45,43 +47,55 @@ class MerchantOverview extends BaseWidget
         $merchant = Filament::getTenant();
 
         try {
-            $balance = Cache::remember("merchant_{$merchant->business_id}_balance", now()->addMinutes(10), function () use ($merchant) {
-                return (new BalanceApi())->getBalance(for_user_id: $merchant->business_id)['balance'];
-            });
+            $this->balance = match ($merchant->business_id) {
+                null => 0,
+                default => Cache::remember("merchant_{$merchant->business_id}_balance", now()->addMinutes(10), function () use ($merchant) {
+                    return (new BalanceApi())->getBalance(for_user_id: $merchant->business_id)['balance'];
+                }),
+            };
 
-            $holding = Cache::remember("merchant_{$merchant->business_id}_holding", now()->addMinutes(10), function () use ($merchant) {
-                return (new BalanceApi())->getBalance('HOLDING', for_user_id: $merchant->business_id)['balance'];
-            });
+            $this->holding = match ($merchant->business_id) {
+                null => 0,
+                default => Cache::remember("merchant_{$merchant->business_id}_holding", now()->addMinutes(10), function () use ($merchant) {
+                    return (new BalanceApi())->getBalance('HOLDING', for_user_id: $merchant->business_id)['balance'];
+                }),
+            };
 
-            $tax = Cache::remember("merchant_{$merchant->business_id}_tax", now()->addMinutes(10), function () use ($merchant) {
-                return (new BalanceApi())->getBalance('TAX', for_user_id: $merchant->business_id)['balance'];
-            });
+            $this->tax = match ($merchant->business_id) {
+                null => 0,
+                default => Cache::remember("merchant_{$merchant->business_id}_tax", now()->addMinutes(10), function () use ($merchant) {
+                    return (new BalanceApi())->getBalance('TAX', for_user_id: $merchant->business_id)['balance'];
+                }),
+            };
         } catch (\Xendit\XenditSdkException $th) {
-            Cache::remember("merchant_{$merchant->business_id}_tax", now()->addMinutes(10), function () use ($merchant) {
-                return (new BalanceApi())->getBalance('TAX', for_user_id: $merchant->business_id)['balance'];
-            });
+            $this->xenditNotReady = true;
+
+            logger()->error('Xendit error: ', $th->getTrace());
         } catch (\Throwable $th) {
-            //throw $th;
+            $this->fetchFailed = true;
+
+            logger()->error('Xendit error: ', $th->getTrace());
         }
-
-        $this->balance = match ($merchant->business_id) {
-            null => 0,
-            default => $balance,
-        };
-
-        $this->holding = match ($merchant->business_id) {
-            null => 0,
-            default => $holding,
-        };
-
-        $this->tax = match ($merchant->business_id) {
-            null => 0,
-            default => $tax,
-        };
     }
 
     protected function getStats(): array
     {
+        if ($this->xenditNotReady) {
+            return [
+                Stat::make(__('Failed to fetch data.'), null)
+                    ->icon('heroicon-m-document-check')
+                    ->description(__('Please activate your xendit account.')),
+            ];
+        }
+
+        if ($this->fetchFailed) {
+            return [
+                Stat::make(__('Failed to fetch data.'), null)
+                    ->icon('heroicon-m-document-check')
+                    ->description(__('Unexpected error, try again.')),
+            ];
+        }
+
         return [
             Stat::make(__('Balance (Payment gateway)'), Number::currency($this->balance, 'IDR', 'id'))
                 ->icon('heroicon-m-banknotes')
