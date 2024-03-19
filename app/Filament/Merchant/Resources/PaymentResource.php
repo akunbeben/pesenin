@@ -6,6 +6,7 @@ use App\Filament\Merchant\Resources\PaymentResource\Pages;
 use App\Models\Item;
 use App\Models\Payment;
 use App\Traits\Orders\Serving;
+use App\Traits\Orders\Status as OrderStatus;
 use App\Traits\Payments\Status;
 use Filament\Facades\Filament;
 use Filament\Infolists;
@@ -229,7 +230,7 @@ class PaymentResource extends Resource
 
                         try {
                             $record->order->update([
-                                'status' => Status::Success,
+                                'status' => OrderStatus::Success,
                                 'serving' => Serving::Waiting,
                             ]);
 

@@ -88,7 +88,7 @@ class ActiveHours extends ChartWidget
         return collect(CarbonPeriod::create($start, '1 Day', $end))
             ->map(fn ($time) => [
                 'date' => $time->isoFormat('dddd'),
-                'aggregate' => $orders->where('date', $time->isoFormat('dddd'))->value('aggregate', 0),
+                'aggregate' => $orders->where('date', $time->format('l'))->value('aggregate', 0),
             ]);
     }
 
