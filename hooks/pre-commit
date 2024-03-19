@@ -4,6 +4,7 @@ staged_files=$(git diff --cached --name-only)
 
 if [ -n "$staged_files" ]; then
     ./vendor/bin/pint
+    bun run build
     git add $staged_files
 fi
 

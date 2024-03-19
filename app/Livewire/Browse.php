@@ -232,22 +232,7 @@ class Browse extends Component implements HasForms, HasInfolists
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
         abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
 
-        $this->cart = collect([])->when(! app()->isProduction(), function (Collection $cart) {
-            $product = $this->table->merchant->products->first();
-
-            if (! $product || ! Feature::for($this->table->merchant)->active('feature_payment')) {
-                return;
-            }
-
-            $cart->push([
-                'product_id' => $product->getKey(),
-                'snapshot' => array_merge($product->toArray(), ['image' => $product->getFirstMediaUrl('banner')]),
-                'variant' => $this->variant,
-                'note' => null,
-                'amount' => 1,
-                'price' => $product->price,
-            ]);
-        });
+        $this->cart = collect([]);
     }
 
     #[On('pay-now')]

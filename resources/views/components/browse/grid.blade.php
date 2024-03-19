@@ -48,58 +48,70 @@
             @endif
             <img src="{{ $product->getFirstMediaUrl('banner', 'thumbnail') }}" alt="{{ $product->description }}" class="object-cover object-center aspect-square rounded-xl">
             <div class="flex items-center gap-1">
-                @if ($this->cart->contains($product))
-                <span class="relative inline-flex w-2 h-2 rounded-full bg-primary-500"></span>
-                @endif
+                <span class="relative inline-flex w-2 h-2 rounded-full bg-primary-500" x-show="!!cart.find(x => x.product_id === {{ $product->getKey() }})"></span>
                 <span class="text-xs font-semibold text-gray-950 dark:text-white">{{ $product->name }}</span>
             </div>
             <span class="text-xs text-gray-950 dark:text-white">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
         </div>
-        @if (! $this->cart->contains('product_id', $product->getKey()))
-            @features('feature_payment', $this->table->merchant)
+        @features('feature_payment', $this->table->merchant)
+        <x-filament::button
+            outlined
+            size="sm"
+            x-show="!cart.find(x => x.product_id === {{ $product->getKey() }})?.amount"
+            x-on:click="() => {
+                if (!!{{ count($product->variants ?? []) }} == true) {
+                    $dispatch('show-product', { product: {{ $product->getKey() }} })
+                } else {
+                    $dispatch('add-to-cart', { product: {{ $product->getKey() }} })
+                }
+            }"
+        >
+            {{ __('Add') }}
+        </x-filament::button>
+        @endfeatures
+        @features('feature_payment', $this->table->merchant)
+        <div class="flex items-center justify-between">
             <x-filament::button
+                class="w-8 h-8 aspect-square"
+                size="xs"
                 outlined
-                size="sm"
+                x-show="cart.find(x => x.product_id === {{ $product->getKey() }})?.amount"
+                style="display: none;"
                 x-on:click="() => {
-                    if (!!{{ count($product->variants ?? []) }} == true) {
-                        $dispatch('show-product', { product: {{ $product->getKey() }} })
-                    } else {
-                        $dispatch('add-to-cart', { product: {{ $product->getKey() }} })
+                    if (cart.find(x => x.product_id === {{ $product->getKey() }}) && cart.find(x => x.product_id === {{ $product->getKey() }}).amount === 1) {
+                        return $wire.dispatch('decrease-item', {product: {{ $product->getKey() }} });
                     }
+
+                    cart.find(x => x.product_id === {{ $product->getKey() }}).amount--
                 }"
             >
-                {{ __('Add') }}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+                </svg>
             </x-filament::button>
-            @endfeatures
-        @else
-            @features('feature_payment', $this->table->merchant)
-            <div class="flex items-center justify-between">
-                <x-filament::button
-                    class="w-8 h-8 aspect-square"
-                    size="xs"
-                    outlined
-                    wire:click="$dispatch('decrease-item', {product: {{ $product->getKey() }}})"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                    </svg>
-                </x-filament::button>
 
-                <span class="text-sm text-gray-950 dark:text-white">{{ $this->cart->firstWhere('product_id', $product->getKey())['amount'] }}</span>
+            <span
+                class="text-sm text-gray-950 dark:text-white"
+                x-text="cart.find(x => x.product_id === {{ $product->getKey() }})?.amount"
+                x-show="cart.find(x => x.product_id === {{ $product->getKey() }})?.amount"
+                style="display: none;"
+            >
+            </span>
 
-                <x-filament::button
-                    class="w-8 h-8 aspect-square"
-                    size="xs"
-                    outlined
-                    wire:click="$dispatch('increase-item', {product: {{ $product->getKey() }}})"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                    </svg>
-                </x-filament::button>
-            </div>
-            @endfeatures
-        @endif
+            <x-filament::button
+                class="w-8 h-8 aspect-square"
+                size="xs"
+                outlined
+                x-on:click="cart.find(x => x.product_id === {{ $product->getKey() }}).amount++"
+                x-show="cart.find(x => x.product_id === {{ $product->getKey() }})?.amount"
+                style="display: none;"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                </svg>
+            </x-filament::button>
+        </div>
+        @endfeatures
     </div>
     @empty
     <div class="flex flex-col items-center justify-center w-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4 h-80">

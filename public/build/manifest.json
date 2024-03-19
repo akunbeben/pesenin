@@ -1,0 +1,38 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-ffde31f6.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/css/filament/central/theme.css": {
+    "file": "assets/theme-7b05d625.css",
+    "isEntry": true,
+    "src": "resources/css/filament/central/theme.css"
+  },
+  "resources/css/filament/merchant/theme.css": {
+    "file": "assets/theme-361b5a2c.css",
+    "isEntry": true,
+    "src": "resources/css/filament/merchant/theme.css"
+  },
+  "resources/css/filament/outlet/theme.css": {
+    "file": "assets/theme-3b6ae842.css",
+    "isEntry": true,
+    "src": "resources/css/filament/outlet/theme.css"
+  },
+  "resources/images/placeholder.png": {
+    "file": "assets/placeholder-5c4c7311.png",
+    "src": "resources/images/placeholder.png"
+  },
+  "resources/js/app.css": {
+    "file": "assets/app-058dc1dd.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/js/app.js": {
+    "css": [
+      "assets/app-058dc1dd.css"
+    ],
+    "file": "assets/app-40a50d9b.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}

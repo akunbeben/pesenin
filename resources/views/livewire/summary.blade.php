@@ -6,6 +6,8 @@
 
 <div
     class="h-screen max-w-sm max-h-screen p-2 mx-auto overflow-y-auto subpixel-antialiased"
+    x-data
+    x-init="() => localStorage.removeItem('_x_cart')"
     @if (!in_array($this->order->status, [Status::Expired, Status::Success]))
     wire:poll.5s
     @endif

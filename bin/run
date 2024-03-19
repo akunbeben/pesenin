@@ -2,4 +2,5 @@
 
 cd /home/akunbeben/Projects/pesenin;
 
-php artisan serve & php artisan queue:listen & "$PWD/bin/tunnel"
+php artisan octane:start --server=swoole --port=8089 & php artisan queue:listen & "$PWD/bin/tunnel"
+# php artisan serve --port=8089 & php artisan queue:listen & "$PWD/bin/tunnel"

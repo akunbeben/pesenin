@@ -1,3 +1,7 @@
+@php
+    use Laravel\Pennant\Feature;
+@endphp
+
 <x-filament::modal slide-over id="my-cart">
     <div class="flex items-center justify-between p-2.5 md:hidden">
         <button type="button" class="p-1 rounded-full top-5 left-5 bg-gray-100/50" x-on:click="$dispatch('close-modal', { id: 'my-cart' })">
@@ -17,43 +21,44 @@
 
     <div class="flex flex-col p-2 grow gap-1.5 relative">
         <div class="h-full overflow-auto flex flex-col gap-1.5">
-            @forelse ($cart as $item)
-                <div class="grid grid-cols-3 gap-2.5 border border-primary-500 dark:border-gray-700 p-2 rounded-xl" x-data="{ show: false }">
-                    <img src="{{ $item['snapshot']['image'] }}" alt="{{ $item['snapshot']['name'] }}" class="object-cover object-center rounded-lg aspect-square">
+            <template x-for="(product, idx) in cart" :key="idx">
+                <div class="grid grid-cols-3 gap-2.5 border border-primary-500 dark:border-gray-700 p-2 rounded-xl" x-data="{ show: false, takeout: false }" x-show="!takeout">
+                    <img x-bind:src="product.snapshot.image" x-bind:alt="product.snapshot.name" class="object-cover object-center rounded-lg aspect-square">
                     <div class="flex flex-col col-span-2 gap-2.5 grow">
-                        <span class="flex gap-1 text-gray-950 dark:text-white">
-                            {{ $item['snapshot']['name'] }}
-                            @if ($item['variant'])
-                            <x-filament::badge class="w-fit">
-                                {{ $item['variant'] }}
-                            </x-filament::badge>
-                            @endif
-                        </span>
+                        <div class="flex gap-1 text-gray-950 dark:text-white">
+                            <span x-text="product.snapshot.name"></span>
+                            <x-filament::badge class="w-fit" x-show="!!product.variant" x-text="product.variant"></x-filament::badge>
+                        </div>
 
-                        <span class="text-gray-950 dark:text-white">
-                            {{ Number::currency($item['price'] * $item['amount'], 'IDR', config('app.locale')) }}
-                        </span>
+                        <span class="text-gray-950 dark:text-white" x-text="rupiah(product.price * product.amount)"></span>
 
                         <div class="flex items-center justify-between mt-auto">
                             <x-filament::button
                                 class="w-8 h-8 aspect-square"
                                 size="xs"
                                 outlined
-                                wire:click="$dispatch('decrease-item', {product: {{ $item['product_id'] }}})"
+                                x-on:click="() => {
+                                    if (cart.find(x => x.product_id === product.product_id) && cart.find(x => x.product_id === product.product_id).amount === 1) {
+                                        takeout = true
+                                        $dispatch('decrease-item', {product: product.product_id });
+                                    }
+
+                                    cart.find(x => x.product_id === product.product_id).amount--
+                                }"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
                                 </svg>
                             </x-filament::button>
 
-                            <span class="text-gray-950 dark:text-white">{{ $item['amount'] }}</span>
+                            <span class="text-gray-950 dark:text-white" x-text="product.amount"></span>
 
                             <div class="flex gap-1.5">
                                 <x-filament::button
                                     class="w-8 h-8 aspect-square"
                                     size="xs"
                                     outlined
-                                    wire:click="$dispatch('increase-item', {product: {{ $item['product_id'] }}})"
+                                    x-on:click="cart.find(x => x.product_id === product.product_id).amount++"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
@@ -81,12 +86,12 @@
                             type="text"
                             class="!w-1/2 py-3.5"
                             placeholder="{{ __('Order note') }}"
-                            wire:model.blur="cart.{{ $loop->index }}.note"
+                            x-model="product.note"
                         />
                     </x-filament::input.wrapper>
                 </div>
-            @empty
-            <div class="flex flex-col items-center justify-center w-full h-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4">
+            </template>
+            <div class="flex flex-col items-center justify-center w-full h-full col-span-2 row-span-2 gap-5 text-gray-500 md:col-span-4" x-show="!cart.length">
                 <div class="p-5 bg-gray-300 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -94,7 +99,6 @@
                 </div>
                 <span class="px-10 text-base font-semibold text-center">{{ __('Your order is currently empty.') }}</span>
             </div>
-            @endforelse
         </div>
 
         @if ($this->cart->isNotEmpty())
@@ -104,49 +108,93 @@
                 $fee = 0;
             @endphp
             @features('feature_payment', $this->table->merchant)
-            <div class="flex flex-col gap-2.5 w-full sticky bottom-0 py-2 left-0 right-0 dark:bg-gray-950/5 bg-white">
+            <div
+                class="flex flex-col gap-2.5 w-full sticky bottom-0 py-2 left-0 right-0 dark:bg-gray-950/5 bg-white"
+                x-show="cart.length"
+                x-data="{
+                    subTotal: 0,
+                    fee: 0,
+                    tax: 0,
+                    total: 0,
+                    calculateSubTotal: () => {
+                        $data.subTotal = cart.reduce((total, item) => total + (item.price * item.amount), 0);
+
+                        return rupiah($data.subTotal);
+                    },
+                    calculateTax: () => {
+                        if (Boolean({{ Feature::for($this->table->merchant)->active('feature_tax') ?? false }})) {
+                            $data.tax = $data.subTotal * 0.11;
+                        } else {
+                            $data.tax = 0;
+                        }
+
+                        return rupiah($data.tax);
+                    },
+                    calculateFee: () => {
+                        if (!['cash', null].includes(paymentMethod)) {
+                            $data.fee = $data.subTotal * {{ match ($this->paymentMethod) { 'ewallet' => $this->feeEwallet, default => $this->feeQRIS } }};
+                        } else {
+                            $data.fee = 0;
+                        }
+
+                        return rupiah($data.fee);
+                    },
+                    calculate: (subTotal, fee, tax) => {
+                        $data.total = parseInt(subTotal) + parseInt(fee) + parseInt(tax)
+                        return rupiah($data.total)
+                    },
+                    initCalculate: () => {
+                        $data.calculateSubTotal();
+                        $data.calculateFee();
+                        $data.calculateTax();
+
+                        $data.calculate($data.subTotal, $data.fee, $data.tax);
+                    },
+                }"
+                x-init="() => {
+                    initCalculate();
+                    $watch('paymentMethod', value => initCalculate())
+                    $watch('cart', value => initCalculate())
+                }"
+            >
                 <div class="flex flex-col gap-1.5">
                     @features('feature_tax', $this->table->merchant)
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-950 dark:text-white">PPN 11%</span>
-                        <span class="text-gray-950 dark:text-white">
-                            {{ Number::currency($tax = $subTotal * 0.11, 'IDR', config('app.locale')) }}
-                        </span>
-                    </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-950 dark:text-white">PPN 11%</span>
+                            <span class="text-gray-950 dark:text-white" x-text="rupiah(tax)"></span>
+                        </div>
                     @endfeatures
                     @if (!in_array($this->paymentMethod, ['cash', null]))
-                    @features('feature_fee', $this->table->merchant)
-                    @php
-                        $fee = $subTotal * match ($this->paymentMethod) {
-                            'ewallet' => $this->feeEwallet,
-                            default => $this->feeQRIS,
-                        };
+                        @features('feature_fee', $this->table->merchant)
+                            @php
+                                $fee = $subTotal * match ($this->paymentMethod) {
+                                    'ewallet' => $this->feeEwallet,
+                                    default => $this->feeQRIS,
+                                };
 
-                        $percent = Number::format($fee / $subTotal * 100, precision: match ($this->paymentMethod) {
-                            'ewallet' => 0,
-                            default => 1,
-                        });
-                    @endphp
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-950 dark:text-white">{{ __('Payment gateway fee :percent%', ['percent' => $percent]) }}</span>
-                        <span class="text-gray-950 dark:text-white">
-                            {{
-                                Number::currency($fee, 'IDR', config('app.locale'))
-                            }}
-                        </span>
-                    </div>
-                    @endfeatures
+                                $percent = Number::format($fee / $subTotal * 100, precision: match ($this->paymentMethod) {
+                                    'ewallet' => 0,
+                                    default => 1,
+                                });
+                            @endphp
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-950 dark:text-white">{{ __('Payment gateway fee :percent%', ['percent' => $percent]) }}</span>
+                            <span class="text-gray-950 dark:text-white" x-text="rupiah(fee)"></span>
+                        </div>
+                        @endfeatures
                     @endif
                     <hr class="w-full border-t border-gray-200 border-dashed dark:border-gray-700">
                     <div class="flex items-center justify-between">
                         <span class="text-gray-950 dark:text-white">{{ __('Total') }}</span>
-                        <span class="text-gray-950 dark:text-white">
+                        <span
+                            class="text-gray-950 dark:text-white"
+                            x-text="rupiah(total)"
+                        >
                             {{ Number::currency($subTotal + $tax + $fee, 'IDR', config('app.locale')) }}
                         </span>
                     </div>
                 </div>
-                @if ($this->paymentMethod)
-                <div class="grid grid-cols-6 gap-2">
+                <div class="grid grid-cols-6 gap-2" x-show="!!paymentMethod">
                     <div class="col-span-1">
                         <x-filament::button
                             id="change-payment"
@@ -157,8 +205,7 @@
                             class="w-full"
                             size="xl"
                             wire:loading.attr="disabled"
-                            wire:target="$dispatch('open-modal', { id: 'payment-method'} )"
-                            wire:click="$dispatch('open-modal', { id: 'payment-method'} )"
+                            x-on:click="$dispatch('open-modal', { id: 'payment-method'} )"
                         ></x-filament::button>
                     </div>
                     <div class="col-span-5">
@@ -173,17 +220,14 @@
                         </x-filament::button>
                     </div>
                 </div>
-                @else
                 <x-filament::button
                     class="w-full"
                     size="xl"
-                    wire:loading.attr="disabled"
-                    wire:target="$dispatch('open-modal', { id: 'payment-method'} )"
-                    wire:click="$dispatch('open-modal', { id: 'payment-method'} )"
+                    x-on:click="$dispatch('open-modal', { id: 'payment-method'} )"
+                    x-show="!paymentMethod"
                 >
                     {{ __('Choose payment method') }}
                 </x-filament::button>
-                @endif
             </div>
             @endfeatures
         @else
