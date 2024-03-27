@@ -5,14 +5,14 @@
 @endphp
 
 <div
-    class="h-screen max-w-sm max-h-screen p-2 mx-auto overflow-y-auto subpixel-antialiased"
+    class="h-screen max-w-sm max-h-screen p-2 mx-auto overflow-hidden subpixel-antialiased"
     x-data
     x-init="() => localStorage.removeItem('_x_cart')"
     @if (!in_array($this->order->status, [Status::Expired, Status::Success]))
     wire:poll.5s
     @endif
 >
-    <div class="flex items-center w-full h-full">
+    <div class="flex flex-col items-center justify-center w-full h-full gap-5 my-5">
         <div class="flex flex-col items-center w-full gap-5 p-5 bg-gray-100 border border-gray-200 dark:bg-gray-900 dark:border-gray-800 rounded-xl">
             <div
                 @class([
@@ -116,6 +116,8 @@
                 </div>
             </div>
         </div>
+
+        <x-app-logo :class="'!max-w-[100px] sm:!max-w-[150px] no-print'" :center="false" />
     </div>
 
     <x-filament-actions::modals />

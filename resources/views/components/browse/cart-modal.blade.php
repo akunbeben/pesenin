@@ -213,8 +213,10 @@
                             class="w-full"
                             size="xl"
                             wire:loading.attr="disabled"
-                            wire:target="$dispatch('pay-now')"
-                            wire:click="$dispatch('pay-now')"
+                            x-on:click="() => {
+                                $dispatch('close-modal', { id: 'my-cart' })
+                                $wire.$dispatch('pay-now')
+                            }"
                         >
                             {{ __('Pay now') }}
                         </x-filament::button>
