@@ -12,15 +12,17 @@
             @foreach (PaymentChannels::cases() as $payment)
                 @if ($scan->table->merchant->setting->{$payment->id()})
                 <button
-                    x-bind:class="{
-                        'border rounded-xl p-2.5 flex flex-col gap-2.5 justify-center items-center relative': true,
-                        'border-gray-300 dark:border-gray-800': '{{ $payment->id() }}' !== paymentMethod,
-                        'border-primary-500': '{{ $payment->id() }}' === paymentMethod,
-                    }"
+                    @class([
+                        'border rounded-xl p-2.5 flex flex-col gap-2.5 justify-center items-center relative',
+                        'border-gray-300 dark:border-gray-800' => $payment->id() !== $this->paymentMethod,
+                        'border-primary-500' => $payment->id() === $this->paymentMethod,
+                    ])
                     type="button"
-                    x-on:click="paymentMethod = '{{ $payment->id() }}'"
+                    wire:click="$set('paymentMethod', '{{ $payment->id() }}')"
                 >
-                    <span class="absolute flex w-2 h-2 rounded-full top-2 left-2 bg-sky-500" x-show="paymentMethod === '{{ $payment->id() }}'"></span>
+                    @if ($payment->id() === $this->paymentMethod)
+                    <span class="absolute flex w-2 h-2 rounded-full top-2 left-2 bg-sky-500"></span>
+                    @endif
                     <img src="{{ $payment->getLogo() }}" alt="{{ $payment->getLabel() }}" class="mx-auto max-h-16">
                     <span>{{ $payment->getLabel() }}</span>
                     <span class="text-sm">{{ $payment->getDescription() }}</span>
@@ -28,14 +30,15 @@
                 @endif
             @endforeach
 
+            @if ($this->paymentMethod)
             <x-filament::button
                 class="w-full"
                 size="xl"
-                x-show="!!paymentMethod"
                 x-on:click="$dispatch('close-modal', { id: 'payment-method' })"
             >
                 {{ __('Save payment method') }}
             </x-filament::button>
+            @endif
         </div>
     </div>
 </x-filament::modal>

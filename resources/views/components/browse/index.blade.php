@@ -7,18 +7,16 @@
 <div
     class="min-h-screen px-2 mx-auto overflow-y-auto subpixel-antialiased sm:max-w-sm md:max-w-3xl"
     style="scrollbar-gutter: stable;"
-    x-data="{
-        scrolling: false,
-        cart: $wire.entangle('cart'),
-        showed: $wire.entangle('showed'),
-        paymentMethod: $wire.entangle('paymentMethod'),
-        rupiah: (amount) => new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount)
+    x-data="{ scrolling: false }"
+    x-init="() => {
+        $refs.root.addEventListener('scroll', () => {
+            scrolling = true;
+            setTimeout(() => {
+                scrolling = false;
+            }, 1000);
+        });
     }"
+    x-ref="root"
 >
     @include('components.browse.cart')
     @include('components.browse.grid')
