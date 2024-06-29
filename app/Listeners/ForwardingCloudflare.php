@@ -48,6 +48,11 @@ class ForwardingCloudflare implements ShouldQueue
                 true => CloudflareForwarded::dispatch($event->user, $event->merchant, $event->withPayment),
                 false => SkippedBusinessRegistration::dispatch($event->merchant, null, null),
             };
+
+            return;
         }
+
+        logger('Skipped business registration');
+        SkippedBusinessRegistration::dispatch($event->merchant, null, null);
     }
 }
