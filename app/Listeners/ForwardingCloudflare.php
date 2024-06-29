@@ -52,7 +52,6 @@ class ForwardingCloudflare implements ShouldQueue
             return;
         }
 
-        logger('Skipped business registration');
         SkippedBusinessRegistration::dispatch($event->merchant, null, null);
     }
 }
