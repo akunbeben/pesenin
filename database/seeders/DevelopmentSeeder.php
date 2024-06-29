@@ -31,7 +31,7 @@ class DevelopmentSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        MerchantRegistrationCompleted::dispatch($user, $merchant, false);
+        MerchantRegistrationCompleted::dispatch($user, $merchant, true);
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories */
         $categories = $merchant->categories()->createMany([

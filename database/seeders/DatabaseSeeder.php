@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             \App\Models\User::factory()->create([
                 'name' => 'Demo Account',
                 'email' => 'demo.pesenin.online@gmail.com',
-                'paid' => false,
+                'paid' => true,
             ]);
 
             $this->call([DevelopmentSeeder::class]);
