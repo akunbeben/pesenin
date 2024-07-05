@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Support\DevelopmentUrlGenerator;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -29,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::preventSilentlyDiscardingAttributes(false);
 
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
 
@@ -54,5 +55,6 @@ class AppServiceProvider extends ServiceProvider
         setlocale(LC_TIME, 'id_ID');
         Carbon::setLocale(config('app.locale'));
         CarbonPeriod::setLocale(config('app.locale'));
+        JsonResource::withoutWrapping();
     }
 }

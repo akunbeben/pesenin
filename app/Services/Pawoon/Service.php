@@ -51,9 +51,9 @@ class Service
                 ],
             ]);
         } catch (GuzzleException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
-            if (! app()->isProduction()) {
+            if (!app()->isProduction()) {
                 throw $th;
             }
 
@@ -73,7 +73,7 @@ class Service
         try {
             $response = $this->client->get('/outlets');
         } catch (GuzzleException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             return null;
         }
@@ -91,7 +91,7 @@ class Service
         try {
             $response = $this->client->get('/products/categories?with_trashed=true');
         } catch (GuzzleException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             return null;
         }
@@ -112,7 +112,7 @@ class Service
         try {
             $response = $this->client->get("/products?outlet_id={$outletId}");
         } catch (GuzzleException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             return null;
         }
@@ -141,7 +141,7 @@ class Service
                 'json' => ['url' => $url],
             ]);
         } catch (GuzzleException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             return null;
         }

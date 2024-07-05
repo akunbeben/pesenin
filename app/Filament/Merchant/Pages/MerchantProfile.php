@@ -30,6 +30,7 @@ class MerchantProfile extends Page
                         Forms\Components\Tabs\Tab::make(__('Merchant detail'))
                             ->schema([
                                 SpatieMediaLibraryFileUpload::make('avatar')
+                                    ->image()
                                     ->label(__('Merchant picture'))
                                     ->collection('avatar')
                                     ->multiple(false),
@@ -57,7 +58,7 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Feature settings'))
                             ->statePath('setting')
-                            ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
+                            ->hidden(!Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('ikiosk_mode')
                                     ->hidden() // disabled
@@ -72,7 +73,7 @@ class MerchantProfile extends Page
                             ]),
                         Forms\Components\Tabs\Tab::make(__('Payment channels'))
                             ->statePath('setting')
-                            ->hidden(! Feature::for($this->tenant)->active('feature_payment'))
+                            ->hidden(!Feature::for($this->tenant)->active('feature_payment'))
                             ->schema([
                                 Forms\Components\Toggle::make('cash')
                                     ->helperText(__(':payment payment has a fee :value', [
@@ -116,11 +117,11 @@ class MerchantProfile extends Page
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            if (! app()->isProduction()) {
+            if (!app()->isProduction()) {
                 throw $th;
             }
 
-            logger()->error($th->getMessage(), $th->getTrace());
+            logger(null)->error($th->getMessage(), $th->getTrace());
 
             Notification::make()
                 ->title(app()->isProduction() ? __('Order success') : $th->getMessage())

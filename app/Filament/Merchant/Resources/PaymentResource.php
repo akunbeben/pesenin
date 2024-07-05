@@ -243,11 +243,11 @@ class PaymentResource extends Resource
                         } catch (\Throwable $th) {
                             DB::rollBack();
 
-                            if (! app()->isProduction()) {
+                            if (!app()->isProduction()) {
                                 throw $th;
                             }
 
-                            logger()->error($th->getMessage(), $th->getTrace());
+                            logger(null)->error($th->getMessage(), $th->getTrace());
 
                             Notification::make()
                                 ->title(app()->isProduction() ? __('Payment confirmation failed') : $th->getMessage())

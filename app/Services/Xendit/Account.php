@@ -33,7 +33,7 @@ class Account
                 'json' => ['url' => $url],
             ]);
         } catch (GuzzleException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             return null;
         }
@@ -53,7 +53,7 @@ class Account
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            logger()->error('Account creation fails: ', $validator->errors()->toArray());
+            logger(null)->error('Account creation fails: ', $validator->errors()->toArray());
 
             return null;
         }
@@ -61,7 +61,7 @@ class Account
         try {
             $response = $this->client->post('/v2/accounts', ['json' => $data]);
         } catch (GuzzleException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             return null;
         }

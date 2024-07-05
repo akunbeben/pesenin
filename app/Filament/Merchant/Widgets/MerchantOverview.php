@@ -26,7 +26,7 @@ class MerchantOverview extends BaseWidget
 
     public function getColumnSpan(): int | string | array
     {
-        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
+        return !Feature::for(Filament::getTenant())->active('feature_payment') ? [
             'default' => 6,
             'sm' => 6,
         ] : [
@@ -70,11 +70,11 @@ class MerchantOverview extends BaseWidget
         } catch (\Xendit\XenditSdkException $th) {
             $this->xenditNotReady = true;
 
-            logger()->error('Xendit error: ', $th->getTrace());
+            logger(null)->error('Xendit error: ', $th->getTrace());
         } catch (\Throwable $th) {
             $this->fetchFailed = true;
 
-            logger()->error('Xendit error: ', $th->getTrace());
+            logger(null)->error('Xendit error: ', $th->getTrace());
         }
     }
 

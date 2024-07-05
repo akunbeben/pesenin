@@ -90,6 +90,11 @@ class Order extends Model
         $query->where('status', Status::Success);
     }
 
+    public function scopeCash(Builder $query): void
+    {
+        $query->whereRelation('payment', fn ($subQuery) => $subQuery->whereJsonContains('data', ['payment_channel' => 'CASH']));
+    }
+
     public function scopeToday(Builder $query): void
     {
         $query->whereRelation('payment', fn ($subQuery) => $subQuery->whereBetween(
@@ -116,7 +121,7 @@ class Order extends Model
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             Notification::make()
                 ->title(__('Order cancelation failed, please try again.'))

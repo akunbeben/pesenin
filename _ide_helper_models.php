@@ -13,7 +13,7 @@
 
 namespace App\Models{
 /**
- * App\Models\Category
+ * 
  *
  * @property int $id
  * @property string|null $external_id
@@ -40,7 +40,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Integration
+ * 
  *
  * @property int $id
  * @property int $merchant_id
@@ -71,7 +71,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Item
+ * 
  *
  * @property int $id
  * @property int $order_id
@@ -104,7 +104,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Merchant
+ * 
  *
  * @property int $id
  * @property int $user_id
@@ -121,6 +121,7 @@ namespace App\Models{
  * @property string|null $business_id
  * @property mixed|null $webhook_token
  * @property bool $xendit_in_progress
+ * @property int $in_sync
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property bool|null $was_paid
@@ -154,6 +155,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereExternalName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereInSync($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Merchant whereUpdatedAt($value)
@@ -169,7 +171,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Order
+ * 
  *
  * @property int $id
  * @property int $scan_id
@@ -187,6 +189,7 @@ namespace App\Models{
  * @property-read \App\Models\Payment|null $payment
  * @property-read \App\Models\Scan|null $scan
  * @property-read \App\Models\Table|null $table
+ * @method static \Illuminate\Database\Eloquent\Builder|Order cash()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order paid()
@@ -210,7 +213,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Payment
+ * 
  *
  * @property int $id
  * @property int|null $merchant_id
@@ -247,7 +250,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Product
+ * 
  *
  * @property int $id
  * @property string|null $external_id
@@ -265,12 +268,15 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
+ * @property-read mixed $banner
  * @property-read \App\Models\Category|null $category
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \App\Models\Merchant $merchant
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
  * @property-read int|null $orders_count
+ * @property-read mixed $price_rupiah
+ * @property-read mixed $thumbnail
  * @method static \Illuminate\Database\Eloquent\Builder|Product available()
  * @method static \Illuminate\Database\Eloquent\Builder|Product highlights()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
@@ -297,7 +303,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Scan
+ * 
  *
  * @property int $id
  * @property int $table_id
@@ -326,7 +332,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Setting
+ * 
  *
  * @property int $id
  * @property int $merchant_id
@@ -361,7 +367,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Table
+ * 
  *
  * @property int $id
  * @property int $merchant_id
@@ -408,7 +414,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\User
+ * 
  *
  * @property int $id
  * @property string $uuid

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Table;
 use App\Support\Encoder;
+use App\Traits\Fingerprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Laravel\Pennant\Feature;
@@ -12,6 +13,8 @@ use Sqids\Sqids;
 
 class Redirector extends Component
 {
+    use Fingerprint;
+
     private string $url;
 
     protected Table $table;
@@ -26,7 +29,7 @@ class Redirector extends Component
         $scan = $this->table->scans()->create([
             'agent' => $request->userAgent(),
             'ip' => $request->ip(),
-            'fingerprint' => $request->fingerprint(),
+            'fingerprint' => $this->fingerprint(),
         ]);
 
         $this->url = route(match (Feature::for($this->table->merchant)->active('feature_ikiosk')) {

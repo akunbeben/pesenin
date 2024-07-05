@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\BrowseController;
+use App\Http\Controllers\API\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +18,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('scan.binding')->group(function () {
+    Route::get('{scanId}/products', ProductController::class)->name('products');
+    Route::get('{scanId}', BrowseController::class)->name('browse');
 });

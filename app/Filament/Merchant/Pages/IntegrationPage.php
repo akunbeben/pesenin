@@ -53,7 +53,7 @@ class IntegrationPage extends Page
             ],
         ];
 
-        if (Filament::getTenant()->integration && ! Filament::getTenant()->external_id) {
+        if (Filament::getTenant()->integration && !Filament::getTenant()->external_id) {
             $this->dispatch('get-outlets');
         }
     }
@@ -62,7 +62,7 @@ class IntegrationPage extends Page
     {
         return [
             Actions\Action::make('moka')
-                ->hidden(! Filament::getTenant()->integration && ! Filament::getTenant()->external_id)
+                ->hidden(!Filament::getTenant()->integration && !Filament::getTenant()->external_id)
                 ->requiresConfirmation()
                 ->size('lg')
                 ->label(__('Sync Products'))
@@ -110,9 +110,9 @@ class IntegrationPage extends Page
                     Service::new($merchant->integration)->connect();
                 } catch (\Throwable $th) {
                     DB::rollBack();
-                    logger()->error($th->getMessage());
+                    logger(null)->error($th->getMessage());
 
-                    if (! app()->isProduction()) {
+                    if (!app()->isProduction()) {
                         throw $th;
                     }
 
@@ -129,7 +129,7 @@ class IntegrationPage extends Page
     #[On('save-outlet')]
     public function saveOutlet(): void
     {
-        if (! $this->selectedOutlet) {
+        if (!$this->selectedOutlet) {
             return;
         }
 
@@ -141,9 +141,9 @@ class IntegrationPage extends Page
                 'external_name' => $name,
             ]);
         } catch (\Throwable $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
-            if (! app()->isProduction()) {
+            if (!app()->isProduction()) {
                 throw $th;
             }
 

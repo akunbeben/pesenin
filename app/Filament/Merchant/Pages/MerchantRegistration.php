@@ -108,7 +108,7 @@ class MerchantRegistration extends Page
                 throw $th;
             }
 
-            logger()->error($th->getMessage(), $th->getTrace());
+            logger(null)->error($th->getMessage(), $th->getTrace());
         }
 
         DB::commit();

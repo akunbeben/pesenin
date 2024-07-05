@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Scan;
 use App\Models\Table;
 use App\Support\Encoder;
+use App\Traits\Fingerprint;
 use App\Traits\Orders\Status;
 use Detection\MobileDetect;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -39,6 +40,7 @@ class Browse extends Component implements HasForms, HasInfolists
     use InteractsWithForms;
     use InteractsWithInfolists;
     use WithPagination;
+    use Fingerprint;
 
     #[Url]
     public ?string $search = null;
@@ -228,9 +230,10 @@ class Browse extends Component implements HasForms, HasInfolists
             return;
         }
 
-        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && ! $this->isIkiosk, 404);
+        abort_if($this->scan->fingerprint !== $this->fingerprint(), 403, 'Invalid request');
+        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && !$this->isIkiosk, 404);
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
-        abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
+        abort_if(!$this->scan->table, 403, 'Please rescan the QRCode');
 
         $this->cart = collect([]);
     }
@@ -238,7 +241,7 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('pay-now')]
     public function payNow(): void
     {
-        if (! in_array($this->paymentMethod, $this->allowedPayments)) {
+        if (!in_array($this->paymentMethod, $this->allowedPayments)) {
             Notification::make()
                 ->title(__('Invalid payment method'))
                 ->body(__('Please choose valid payment method'))
@@ -287,7 +290,7 @@ class Browse extends Component implements HasForms, HasInfolists
                 return $order;
             });
         } catch (\Throwable $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
 
             Notification::make()
                 ->title(__('Order failed, please try again.'))
@@ -396,7 +399,7 @@ class Browse extends Component implements HasForms, HasInfolists
 
             return $invoice->getInvoiceUrl();
         } catch (\Xendit\XenditSdkException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
         }
     }
 
@@ -411,7 +414,7 @@ class Browse extends Component implements HasForms, HasInfolists
         try {
             return $api->createInvoice($invoice, $this->table->merchant->business_id)->getInvoiceUrl();
         } catch (\Xendit\XenditSdkException $th) {
-            logger()->error($th->getMessage());
+            logger(null)->error($th->getMessage());
         }
     }
 }

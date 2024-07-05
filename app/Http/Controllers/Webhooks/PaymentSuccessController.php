@@ -17,7 +17,7 @@ class PaymentSuccessController extends Controller
      */
     public function __invoke(Merchant $merchant, Request $request)
     {
-        $merchant = ! $merchant->getKey()
+        $merchant = !$merchant->getKey()
             ? Merchant::query()->firstWhere('uuid', $request->merchant)
             : $merchant;
 
@@ -48,7 +48,7 @@ class PaymentSuccessController extends Controller
                 ]);
             });
         } catch (\Throwable $th) {
-            logger()->error($th->getMessage(), $th->getTrace());
+            logger(null)->error($th->getMessage(), $th->getTrace());
 
             return response()->json([
                 'success' => false,
