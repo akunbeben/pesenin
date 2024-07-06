@@ -54,17 +54,20 @@ class Routing
             throw new \Exception('Invalid email format');
         }
 
+        $payload = sha1(
+            implode(
+                '|',
+                array_merge([$destination, $suffix, now()->timestamp])
+            )
+        );
+
         if (filled($suffix)) {
-            $suffix = str($suffix)
-                ->append('-')
-                ->append(\Illuminate\Support\Str::random(8))
-                ->slug()
-                ->toString();
+            $suffix = $payload;
         }
 
         $slicedEmail = explode('@', $destination)[0];
 
-        $from = "{$slicedEmail}-{$suffix}@pesenin.online";
+        $from = "{$slicedEmail}_{$suffix}@pesenin.online";
 
         $response = $this->client->post(
             "/client/v4/zones/{$this->zone}/email/routing/rules",
