@@ -2,29 +2,27 @@ name: Continous Deployment
 
 on:
   push:
-    branches: [ "1.x" ]
+    branches: ["1.x"]
 
 jobs:
   deployment:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Deploy Using ssh
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE }}
-        port: 22
-        script: |
-          cd /home/beben/app
-          git pull origin 1.x
-          git status
-          rm -rf vendor
-          composer install --no-dev
-          php artisan optimize:clear
-          php artisan optimize
-          php artisan view:clear
+      - name: Deploy Using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE }}
+          port: 22
+          script: |
+            cd /var/www/app
+            git pull origin 1.x
+            rm -rf vendor
+            composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-scripts
+            php artisan optimize:clear
+            php artisan optimize
+            php artisan view:clear
