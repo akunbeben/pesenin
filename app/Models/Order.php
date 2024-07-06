@@ -95,6 +95,11 @@ class Order extends Model
         $query->whereRelation('payment', fn ($subQuery) => $subQuery->whereJsonContains('data', ['payment_channel' => 'CASH']));
     }
 
+    public function scopeNonCash(Builder $query): void
+    {
+        $query->whereRelation('payment', fn ($subQuery) => $subQuery->whereJsonDoesntContain('data', ['payment_channel' => 'CASH']));
+    }
+
     public function scopeToday(Builder $query): void
     {
         $query->whereRelation('payment', fn ($subQuery) => $subQuery->whereBetween(

@@ -4,12 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BrowseResource;
-use App\Models\Scan;
-use App\Support\Encoder;
 use App\Traits\Orders\Status;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Laravel\Pennant\Feature;
 
 class BrowseController extends Controller
 {
@@ -63,7 +60,7 @@ class BrowseController extends Controller
             ]), Response::HTTP_FORBIDDEN);
         }
 
-        if (!$scan->table) {
+        if (! $scan->table) {
             return response()->json(BrowseResource::make([
                 'scan' => $scan,
                 'table' => null,

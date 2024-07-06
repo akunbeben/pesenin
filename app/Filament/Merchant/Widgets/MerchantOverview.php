@@ -26,7 +26,7 @@ class MerchantOverview extends BaseWidget
 
     public function getColumnSpan(): int | string | array
     {
-        return !Feature::for(Filament::getTenant())->active('feature_payment') ? [
+        return ! Feature::for(Filament::getTenant())->active('feature_payment') ? [
             'default' => 6,
             'sm' => 6,
         ] : [

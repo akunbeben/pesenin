@@ -6,7 +6,7 @@ trait Fingerprint
 {
     public function fingerprint(): ?string
     {
-        if (!$route = request(null)->route()) {
+        if (! $route = request(null)->route()) {
             return null;
         }
 

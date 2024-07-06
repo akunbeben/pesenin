@@ -17,7 +17,7 @@ class PaymentSuccessController extends Controller
      */
     public function __invoke(Merchant $merchant, Request $request)
     {
-        $merchant = !$merchant->getKey()
+        $merchant = ! $merchant->getKey()
             ? Merchant::query()->firstWhere('uuid', $request->merchant)
             : $merchant;
 

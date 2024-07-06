@@ -73,7 +73,7 @@ class OrderInQueues extends Page implements HasActions
     {
         $order = Order::query()->with('payment')->where('number', $ref)->first();
 
-        if (!$order) {
+        if (! $order) {
             Notification::make()
                 ->title(__('Invalid QR'))
                 ->body(__('Please scan correct QR from the customer\'s receipt.'))
@@ -101,7 +101,7 @@ class OrderInQueues extends Page implements HasActions
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            if (!app()->isProduction()) {
+            if (! app()->isProduction()) {
                 throw $th;
             }
 

@@ -21,7 +21,7 @@ class BrowseResource extends JsonResource
             'meta' => [
                 'message' => $this->resource['meta']['message'] ?? null,
                 'code' => $this->resource['meta']['code'] ?? null,
-            ]
+            ],
         ];
     }
 }

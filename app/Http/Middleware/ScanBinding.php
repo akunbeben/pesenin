@@ -40,7 +40,7 @@ class ScanBinding
 
         $scan = Scan::query()->find($id);
 
-        if (!$scan) {
+        if (! $scan) {
             return response()->json(BrowseResource::make([
                 'scan' => null,
                 'table' => null,
@@ -113,7 +113,7 @@ class ScanBinding
             ]), Response::HTTP_FORBIDDEN);
         }
 
-        if (!$scan->table) {
+        if (! $scan->table) {
             return response()->json(BrowseResource::make([
                 'scan' => $scan,
                 'table' => null,

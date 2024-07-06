@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::preventSilentlyDiscardingAttributes(false);
 
-        if (!app()->isProduction()) {
+        if (! app()->isProduction()) {
             config(['media-library.url_generator' => DevelopmentUrlGenerator::class]);
         }
 

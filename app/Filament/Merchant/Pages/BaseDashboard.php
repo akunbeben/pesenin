@@ -10,6 +10,7 @@ use App\Filament\Merchant\Widgets\MostOrderedProducts;
 use App\Filament\Merchant\Widgets\MostScannedTables;
 use App\Filament\Merchant\Widgets\MostUsedPayments;
 use App\Filament\Merchant\Widgets\QRCode;
+use App\Filament\Merchant\Widgets\SalesDetailOverview;
 use App\Filament\Merchant\Widgets\SalesOverview;
 use App\Filament\Merchant\Widgets\XenditProgress;
 use Filament\Actions\Action;
@@ -106,6 +107,7 @@ class BaseDashboard extends Dashboard
         $widgets = [
             MerchantOverview::class,
             SalesOverview::class,
+            SalesDetailOverview::class,
             ActiveHours::class,
             MostScannedTables::class,
             MostUsedPayments::class,

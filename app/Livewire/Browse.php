@@ -37,10 +37,10 @@ use Xendit\Invoice\InvoiceApi;
 
 class Browse extends Component implements HasForms, HasInfolists
 {
+    use Fingerprint;
     use InteractsWithForms;
     use InteractsWithInfolists;
     use WithPagination;
-    use Fingerprint;
 
     #[Url]
     public ?string $search = null;
@@ -231,9 +231,9 @@ class Browse extends Component implements HasForms, HasInfolists
         }
 
         abort_if($this->scan->fingerprint !== $this->fingerprint(), 403, 'Invalid request');
-        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && !$this->isIkiosk, 404);
+        abort_if(Feature::for($this->table->merchant)->active('feature_ikiosk') && ! $this->isIkiosk, 404);
         abort_if($this->scan->created_at->diffInHours() > 1, 403, 'Please rescan the QRCode');
-        abort_if(!$this->scan->table, 403, 'Please rescan the QRCode');
+        abort_if(! $this->scan->table, 403, 'Please rescan the QRCode');
 
         $this->cart = collect([]);
     }
@@ -241,7 +241,7 @@ class Browse extends Component implements HasForms, HasInfolists
     #[On('pay-now')]
     public function payNow(): void
     {
-        if (!in_array($this->paymentMethod, $this->allowedPayments)) {
+        if (! in_array($this->paymentMethod, $this->allowedPayments)) {
             Notification::make()
                 ->title(__('Invalid payment method'))
                 ->body(__('Please choose valid payment method'))

@@ -53,7 +53,7 @@ class Service
         } catch (GuzzleException $th) {
             logger(null)->error($th->getMessage());
 
-            if (!app()->isProduction()) {
+            if (! app()->isProduction()) {
                 throw $th;
             }
 
